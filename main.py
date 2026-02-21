@@ -10,6 +10,27 @@ import os
 from datetime import datetime
 from fastapi import FastAPI, HTTPException
 
+from fastapi.responses import HTMLResponse
+
+@app.get("/", response_class=HTMLResponse)
+def home():
+    return """
+    <h2>Recherche licence FFTT</h2>
+    <input id='licence' placeholder='Licence'>
+    <button onclick='check()'>OK</button>
+    <pre id='result'></pre>
+
+    <script>
+    async function check(){
+        const lic = document.getElementById('licence').value;
+        const r = await fetch('/licence/' + lic);
+        const data = await r.json();
+        document.getElementById('result').innerText =
+            JSON.stringify(data,null,2);
+    }
+    </script>
+
+    
 # ===============================
 # CONFIG RENDER
 # ===============================
@@ -83,3 +104,4 @@ async def get_licence(licence: str):
 
     except Exception as e:
         raise HTTPException(400, str(e))
+
