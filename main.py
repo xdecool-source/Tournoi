@@ -67,21 +67,81 @@ async def appel_fftt(endpoint, params_metier):
 @app.get("/", response_class=HTMLResponse)
 def home():
     html = """
-    <h2>Recherche licence FFTT</h2>
-    <input id="licence" placeholder="Licence FFTT">
+    html = """
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Recherche licence FFTT</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#4facfe,#00f2fe);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+    margin:0;
+}
+
+.card {
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    width:350px;
+    text-align:center;
+}
+
+input {
+    width:100%;
+    padding:12px;
+    border-radius:8px;
+    border:1px solid #ddd;
+    margin-bottom:10px;
+}
+
+button {
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#4facfe;
+    color:white;
+    cursor:pointer;
+}
+
+#result {
+    margin-top:15px;
+    background:#f5f5f5;
+    padding:10px;
+    border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+<div class="card">
+    <h2>Licence FFTT</h2>
+    <input id="licence" placeholder="Numéro licence">
     <button onclick="check()">Rechercher</button>
     <pre id="result"></pre>
+</div>
 
-    <script>
-    async function check(){
-        const lic = document.getElementById("licence").value;
-        const r = await fetch("/licence/" + lic);
-        const data = await r.json();
-        document.getElementById("result").innerText =
-            JSON.stringify(data,null,2);
-    }
-    </script>
-    """
+<script>
+async function check(){
+    const lic = document.getElementById("licence").value;
+    const r = await fetch("/licence/" + lic);
+    const data = await r.json();
+    document.getElementById("result").innerText =
+        JSON.stringify(data,null,2);
+}
+</script>
+
+</body>
+</html>
+"""
     return html
 
 # ===============================
@@ -110,3 +170,4 @@ async def get_licence(licence: str):
 
     except Exception as e:
         raise HTTPException(400, str(e))
+
