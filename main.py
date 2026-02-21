@@ -65,7 +65,6 @@ async def appel_fftt(endpoint, params_metier):
 # PAGE INTERACTIVE
 # ===============================
 @app.get("/", response_class=HTMLResponse)
-@app.get("/", response_class=HTMLResponse)
 def home():
     html = """
 <!DOCTYPE html>
@@ -93,6 +92,54 @@ body {
     width:350px;
     text-align:center;
 }
+
+input {
+    width:100%;
+    padding:12px;
+    border-radius:8px;
+    border:1px solid #ddd;
+    margin-bottom:10px;
+}
+
+button {
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#4facfe;
+    color:white;
+    cursor:pointer;
+}
+
+.player-card {
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    margin-top:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.15);
+    text-align:left;
+}
+
+.player-name {
+    font-size:20px;
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
+.badge {
+    background:linear-gradient(45deg,#ff7e5f,#feb47b);
+    color:white;
+    padding:6px 10px;
+    border-radius:6px;
+    display:inline-block;
+    margin-bottom:10px;
+    font-weight:bold;
+}
+
+.info {
+    line-height:1.6;
+    font-size:14px;
+}
 </style>
 </head>
 
@@ -101,7 +148,7 @@ body {
 <h2>Licence FFTT</h2>
 <input id="licence" placeholder="Numéro licence">
 <button onclick="check()">Rechercher</button>
-<pre id="result"></pre>
+<div id="result"></div>
 </div>
 
 <script>
@@ -109,8 +156,21 @@ async function check(){
     const lic = document.getElementById("licence").value;
     const r = await fetch("/licence/" + lic);
     const data = await r.json();
-    document.getElementById("result").innerText =
-        JSON.stringify(data,null,2);
+
+    document.getElementById("result").innerHTML = `
+    <div class="player-card">
+        <div class="player-name">${data.prenom} ${data.nom}</div>
+
+        <div class="badge">Classement ${data.classement}</div>
+
+        <div class="info">
+            <b>Licence :</b> ${data.licence}<br>
+            <b>Club :</b> ${data.club}<br>
+            <b>Points :</b> ${Number(data.points).toFixed(1)}<br>
+            <b>Catégorie :</b> ${data.categorie}
+        </div>
+    </div>
+    `;
 }
 </script>
 
@@ -145,5 +205,6 @@ async def get_licence(licence: str):
 
     except Exception as e:
         raise HTTPException(400, str(e))
+
 
 
