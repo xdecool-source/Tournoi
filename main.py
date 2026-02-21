@@ -161,7 +161,7 @@ async function check(){
     <div class="player-card">
         <div class="player-name">${data.prenom} ${data.nom}</div>
 
-        <div class="badge">Classement ${data.classement}</div>
+        <div class="badge">Rang Français ${data.classement}</div>
 
         <div class="info">
             <b>Licence :</b> ${data.licence}<br>
@@ -198,13 +198,14 @@ async def get_licence(licence: str):
             "nom": joueur.findtext("nom", ""),
             "prenom": joueur.findtext("prenom", ""),
             "club": joueur.findtext("club", ""),
-            "classement": joueur.findtext("clglob", ""),
+            "Rang Français": joueur.findtext("clglob", ""),
             "points": joueur.findtext("point", ""),
             "categorie": joueur.findtext("categ", "")
         }
 
     except Exception as e:
         raise HTTPException(400, str(e))
+
 
 
 
