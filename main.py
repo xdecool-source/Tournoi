@@ -1,37 +1,36 @@
-import os
-import random
-import string
-import hashlib
-import hmac
+import xml.etree.ElementTree as ET
 import urllib.parse
 import httpx
-import xml.etree.ElementTree as ET
+import hashlib
+import hmac
+import random
+import string
+import os
+
 from datetime import datetime
 from fastapi import FastAPI, HTTPException
 
+# ===============================
+# CONFIG RENDER
+# ===============================
 BASE_URL = os.getenv("BASE_URL")
 APP_ID = os.getenv("APP_ID")
 MOT_DE_PASSE = os.getenv("MOT_DE_PASSE")
 
 app = FastAPI()
 
-print("BASE_URL =", BASE_URL)
-print("APP_ID =", APP_ID)
-print("MOT_DE_PASSE =", MOT_DE_PASSE)
-
-
-# =========================
-# SERIE (en mémoire Render)
-# =========================
+# ===============================
+# SERIE
+# ===============================
 def generer_serie():
     chars = string.ascii_uppercase + string.digits
     return "".join(random.choice(chars) for _ in range(15))
 
 SERIE_UTILISATEUR = generer_serie()
 
-# =========================
-# OUTILS FFTT
-# =========================
+# ===============================
+# CRYPTO FFTT
+# ===============================
 def timestamp():
     now = datetime.now()
     return now.strftime("%Y%m%d%H%M%S") + f"{int(now.microsecond/1000):03d}"
@@ -58,36 +57,29 @@ async def appel_fftt(endpoint, params_metier):
 
     return r.text
 
-# =========================
+# ===============================
 # ENDPOINT LICENCE
-# =========================
-@app.get("/licence/{licence_id}")
-async def licence(licence_id: str):
+# ===============================
+@app.get("/licence/{licence}")
+async def get_licence(licence: str):
     try:
-        xml_data = await appel_fftt(
-            "xml_licence_b.php",
-            {"licence": licence_id}
-        )
+        xml_data = await appel_fftt("xml_joueur.php", {"licence": licence})
 
         root = ET.fromstring(xml_data)
 
-        nom = (
-            root.findtext(".//nom", "") + " " +
-            root.findtext(".//prenom", "")
-        ).strip()
-
-        club = root.findtext(".//nomclub", "")
-        points = root.findtext(".//point", "")
-
-        if not nom:
+        joueur = root.find(".//joueur")
+        if joueur is None:
             raise Exception("Licence introuvable")
 
         return {
-            "nom": nom,
-            "club": club,
-            "points": points
+            "licence": joueur.findtext("licence", ""),
+            "nom": joueur.findtext("nom", ""),
+            "prenom": joueur.findtext("prenom", ""),
+            "club": joueur.findtext("club", ""),
+            "classement": joueur.findtext("clglob", ""),
+            "points": joueur.findtext("point", ""),
+            "categorie": joueur.findtext("categ", ""),
         }
 
     except Exception as e:
-
         raise HTTPException(400, str(e))
