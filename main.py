@@ -9,48 +9,8 @@ import os
 
 from datetime import datetime
 from fastapi import FastAPI, HTTPException
-
-from fastapi.responses import HTMLResponse
 from fastapi.responses import HTMLResponse
 
-@app.get("/", response_class=HTMLResponse)
-def home():
-    return """
-    <h2>Recherche licence FFTT</h2>
-    <input id='licence' placeholder='Licence FFTT'>
-    <button onclick='check()'>Rechercher</button>
-    <pre id='result'></pre>
-
-    <script>
-    async function check(){
-        const lic = document.getElementById('licence').value;
-        const r = await fetch('/licence/' + lic);
-        const data = await r.json();
-        document.getElementById('result').innerText =
-            JSON.stringify(data,null,2);
-    }
-    </script>
-
-
-@app.get("/", response_class=HTMLResponse)
-def home():
-    return """
-    <h2>Recherche licence FFTT</h2>
-    <input id='licence' placeholder='Licence'>
-    <button onclick='check()'>OK</button>
-    <pre id='result'></pre>
-
-    <script>
-    async function check(){
-        const lic = document.getElementById('licence').value;
-        const r = await fetch('/licence/' + lic);
-        const data = await r.json();
-        document.getElementById('result').innerText =
-            JSON.stringify(data,null,2);
-    }
-    </script>
-
-    
 # ===============================
 # CONFIG RENDER
 # ===============================
@@ -58,10 +18,13 @@ BASE_URL = os.getenv("BASE_URL")
 APP_ID = os.getenv("APP_ID")
 MOT_DE_PASSE = os.getenv("MOT_DE_PASSE")
 
+if not BASE_URL or not APP_ID or not MOT_DE_PASSE:
+    raise Exception("Variables d'environnement FFTT manquantes")
+
 app = FastAPI()
 
 # ===============================
-# SERIE
+# SERIE UTILISATEUR
 # ===============================
 def generer_serie():
     chars = string.ascii_uppercase + string.digits
@@ -70,7 +33,7 @@ def generer_serie():
 SERIE_UTILISATEUR = generer_serie()
 
 # ===============================
-# CRYPTO FFTT
+# TIMESTAMP + CRYPTO FFTT
 # ===============================
 def timestamp():
     now = datetime.now()
@@ -99,7 +62,30 @@ async def appel_fftt(endpoint, params_metier):
     return r.text
 
 # ===============================
-# ENDPOINT LICENCE
+# PAGE INTERACTIVE
+# ===============================
+@app.get("/", response_class=HTMLResponse)
+def home():
+    html = """
+    <h2>Recherche licence FFTT</h2>
+    <input id="licence" placeholder="Licence FFTT">
+    <button onclick="check()">Rechercher</button>
+    <pre id="result"></pre>
+
+    <script>
+    async function check(){
+        const lic = document.getElementById("licence").value;
+        const r = await fetch("/licence/" + lic);
+        const data = await r.json();
+        document.getElementById("result").innerText =
+            JSON.stringify(data,null,2);
+    }
+    </script>
+    """
+    return html
+
+# ===============================
+# ENDPOINT LICENCE FFTT
 # ===============================
 @app.get("/licence/{licence}")
 async def get_licence(licence: str):
@@ -107,8 +93,8 @@ async def get_licence(licence: str):
         xml_data = await appel_fftt("xml_joueur.php", {"licence": licence})
 
         root = ET.fromstring(xml_data)
-
         joueur = root.find(".//joueur")
+
         if joueur is None:
             raise Exception("Licence introuvable")
 
@@ -119,10 +105,8 @@ async def get_licence(licence: str):
             "club": joueur.findtext("club", ""),
             "classement": joueur.findtext("clglob", ""),
             "points": joueur.findtext("point", ""),
-            "categorie": joueur.findtext("categ", ""),
+            "categorie": joueur.findtext("categ", "")
         }
 
     except Exception as e:
         raise HTTPException(400, str(e))
-
-
