@@ -7,6 +7,9 @@ import random
 import string
 import os
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from datetime import datetime
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
@@ -161,7 +164,7 @@ async function check(){
     <div class="player-card">
         <div class="player-name">${data.prenom} ${data.nom}</div>
 
-        <div class="badge">Classement ${data.classement}</div>
+        <div class="badge">Rang National ${data.classement}</div>
 
         <div class="info">
             <b>Licence :</b> ${data.licence}<br>
@@ -205,10 +208,3 @@ async def get_licence(licence: str):
 
     except Exception as e:
         raise HTTPException(400, str(e))
-
-
-
-
-
-
-
