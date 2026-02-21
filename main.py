@@ -15,6 +15,11 @@ MOT_DE_PASSE = os.getenv("MOT_DE_PASSE")
 
 app = FastAPI()
 
+print("BASE_URL =", BASE_URL)
+print("APP_ID =", APP_ID)
+print("MOT_DE_PASSE =", MOT_DE_PASSE)
+
+
 # =========================
 # SERIE (en mémoire Render)
 # =========================
@@ -84,4 +89,5 @@ async def licence(licence_id: str):
         }
 
     except Exception as e:
+
         raise HTTPException(400, str(e))
