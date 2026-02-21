@@ -1,0 +1,41 @@
+power shell
+Cloner ton repo Render/GitHub en local
+git clone https://github.com/xdecool-source/Tournoi.git
+cd Tournoi
+
+update mon code python 
+
+Commit mon code 
+git add .
+git commit -m "modif UI fiche joueur"
+
+Push vers GitHub
+git push
+
+Puis 
+
+Render détecte le commit
+build automatique
+deploy
+
+pour lancer API (fftt) en local pour test :
+uvicorn main:app --reload
+si marche pas install uvicorn
+pip install uvicorn fastapi httpx
+
+http://127.0.0.1:8000
+
+
+créer .env :
+
+BASE_URL=https://www.fftt.com/mobile/pxml
+APP_ID=xxxx
+MOT_DE_PASSE=xxxx
+
+charger avec python-dotenv (si besoin)
+
+pour tester l'appli
+fastAPI attend un serveur ASGI (uvicorn)
+pas une exécution directe
+python -m uvicorn main:app --reload
+puis http://127.0.0.1:8000
