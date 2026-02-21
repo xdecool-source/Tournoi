@@ -65,14 +65,14 @@ async def appel_fftt(endpoint, params_metier):
 # PAGE INTERACTIVE
 # ===============================
 @app.get("/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse)
 def home():
-    html = """
     html = """
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
-<title>Recherche licence FFTT</title>
+<title>Licence FFTT</title>
 
 <style>
 body {
@@ -93,40 +93,15 @@ body {
     width:350px;
     text-align:center;
 }
-
-input {
-    width:100%;
-    padding:12px;
-    border-radius:8px;
-    border:1px solid #ddd;
-    margin-bottom:10px;
-}
-
-button {
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:8px;
-    background:#4facfe;
-    color:white;
-    cursor:pointer;
-}
-
-#result {
-    margin-top:15px;
-    background:#f5f5f5;
-    padding:10px;
-    border-radius:8px;
-}
 </style>
 </head>
 
 <body>
 <div class="card">
-    <h2>Licence FFTT</h2>
-    <input id="licence" placeholder="Numéro licence">
-    <button onclick="check()">Rechercher</button>
-    <pre id="result"></pre>
+<h2>Licence FFTT</h2>
+<input id="licence" placeholder="Numéro licence">
+<button onclick="check()">Rechercher</button>
+<pre id="result"></pre>
 </div>
 
 <script>
@@ -170,4 +145,5 @@ async def get_licence(licence: str):
 
     except Exception as e:
         raise HTTPException(400, str(e))
+
 
