@@ -198,13 +198,14 @@ async def get_licence(licence: str):
             "nom": joueur.findtext("nom", ""),
             "prenom": joueur.findtext("prenom", ""),
             "club": joueur.findtext("club", ""),
-            "rang": joueur.findtext("clglob", ""),
+            "classement": joueur.findtext("clglob", ""),
             "points": joueur.findtext("point", ""),
             "categorie": joueur.findtext("categ", "")
         }
 
     except Exception as e:
         raise HTTPException(400, str(e))
+
 
 
 
