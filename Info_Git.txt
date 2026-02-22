@@ -1,4 +1,4 @@
-power shell
+power shell de windows
 Cloner ton repo Render/GitHub en local
 git clone https://github.com/xdecool-source/Tournoi.git
 cd Tournoi
