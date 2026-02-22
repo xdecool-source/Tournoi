@@ -14,9 +14,7 @@ from datetime import datetime
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 
-# ===============================
 # CONFIG RENDER
-# ===============================
 BASE_URL = os.getenv("BASE_URL")
 APP_ID = os.getenv("APP_ID")
 MOT_DE_PASSE = os.getenv("MOT_DE_PASSE")
@@ -26,18 +24,14 @@ if not BASE_URL or not APP_ID or not MOT_DE_PASSE:
 
 app = FastAPI()
 
-# ===============================
 # SERIE UTILISATEUR
-# ===============================
 def generer_serie():
     chars = string.ascii_uppercase + string.digits
     return "".join(random.choice(chars) for _ in range(15))
 
 SERIE_UTILISATEUR = generer_serie()
 
-# ===============================
 # TIMESTAMP + CRYPTO FFTT
-# ===============================
 def timestamp():
     now = datetime.now()
     return now.strftime("%Y%m%d%H%M%S") + f"{int(now.microsecond/1000):03d}"
@@ -64,9 +58,12 @@ async def appel_fftt(endpoint, params_metier):
 
     return r.text
 
-# ===============================
+# Ping de reveille pour Render
+@app.get("/ping")
+def ping():
+    return {"status": "ok"}
+
 # PAGE INTERACTIVE
-# ===============================
 @app.get("/", response_class=HTMLResponse)
 def home():
     html = """
@@ -182,9 +179,7 @@ async function check(){
 """
     return html
 
-# ===============================
 # ENDPOINT LICENCE FFTT
-# ===============================
 @app.get("/licence/{licence}")
 async def get_licence(licence: str):
     try:
