@@ -11,6 +11,7 @@ git commit -m "modif UI fiche joueur"
 
 Push vers GitHub
 git push
+si pb faire git pull --rebase origin main (recupere github avec de pusher avec le nouveau fichier)
 
 Puis 
 
