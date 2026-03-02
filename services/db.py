@@ -35,6 +35,7 @@ async def init_db_pool():
             max_size=10,
             ssl="require"
         )
+print("CREATING TABLES NOW")
 
 # ----------- init DB
 async def init_db():
