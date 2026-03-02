@@ -3,7 +3,9 @@ import os
 import psycopg2
 from psycopg2.extras import DictCursor
 
-load_dotenv()
+if os.getenv("ENV") != "production":
+    load_dotenv()
+    
 
 QUERY = """
 SELECT 

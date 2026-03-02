@@ -4,20 +4,37 @@ from datetime import datetime
 from core.config import TABLEAUX
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
-load_dotenv()  # charge le fichier .env
+if os.getenv("ENV") != "production":
+    load_dotenv()
+    
+#     load_dotenv()  # charge le fichier .env
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    
 pool = None
 
 # ----------- init pool
 async def init_db_pool():
     global pool
-    pool = await asyncpg.create_pool(
-        DATABASE_URL,
-        min_size=5,
-        max_size=20
-    )
+
+    if DATABASE_URL and "localhost" in DATABASE_URL:
+        # 🔹 Local (pas de SSL)
+        pool = await asyncpg.create_pool(
+            DATABASE_URL,
+            min_size=1,
+            max_size=5
+        )
+    else:
+        # 🔹 Production (Scalingo → SSL obligatoire)
+        pool = await asyncpg.create_pool(
+            DATABASE_URL,
+            min_size=1,
+            max_size=10,
+            ssl="require"
+        )
 
 # ----------- init DB
 async def init_db():

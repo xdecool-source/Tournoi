@@ -7,7 +7,8 @@ from core.config import TABLEAUX
 from services.db import get_conn
 
 
-load_dotenv()
+if os.getenv("ENV") != "production":
+    load_dotenv()
 
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
