@@ -255,6 +255,6 @@ button:disabled{
 .logo {
     position: fixed;
     top: 90px;
-    left: 30px;
+    right: 25px;
     width: 100px;
 }
