@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/static/css/style.css">
+<script src="/static/js/app.js?v=5" defer></script>
+<link rel="icon" href="/static/favicon.ico">
+</head>
+
+<body>
+
+<img src="/static/Logo_Thuir.png" alt="Logo du club" class="logo">
+
+<div class="page">
+<div class="container">
+    <div id="inscriptionRow">
+
+        <div id="licenceCard" class="card">
+            <h2>Saisir son N° Licence</h2>
+
+            <input id="licence"
+              placeholder="licence"
+              inputmode="numeric"
+              oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            <div id="licenceError" class="licence-error hidden"></div>
+            <div id="result"></div>
+        </div>
+
+        <div id="inscriptionCard" class="card hidden">
+            <h2>👍🏻 Homopongistus : Inscription Tableaux</h2>
+
+            <input id="email" type="email" placeholder="Email">
+            <div id="emailError" class="error"></div>
+
+            <div id="tableauxContainer"></div>
+
+            <button onclick="sendInscription()">Valider</button>
+        </div>
+
+    </div>
+</div>
+</div>
+
+<!-- RECAP -->
+<div id="recapCard" class="hidden">
+  <div class="card" style="max-width:400px;margin:auto">
+    <h2>✅Récapitulatif Inscription</h2>
+    <div id="recapContent"></div>
+  </div>
+</div>
+
+<div id="errorModal" class="modal hidden">
+  <div class="modal-box">
+    <h3>⛔️Erreur</h3>
+    <p id="modalMsg"></p>
+    <button onclick="closeModal()">OK</button>
+  </div>
+</div>
+
+<button onclick="loginAdmin()" style="position:fixed; top:10px; right:10px;">
+    Admin
+</button>
+
+<button id="logoutBtn"
+        onclick="logoutAdmin()"
+        style="position:fixed; top:50px; right:10px;">
+    Logout admin
+</button>
+
+<div id="alreadyMsg" class="hidden infoBox">
+    ⚠️ Vous êtes déjà inscrit.  
+    Si vous souhaitez modifier votre inscription, merci d'envoyer un mail.
+</div>
+
+<div id="successCard" class="hidden card">
+    <h2 style="color:green">✅ Inscription enregistrée</h2>
+    <p>
+        Merci pour votre inscription.<br>
+        Redirection automatique...
+    </p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0; padding:0; background:#f2f4f8; font-family:Arial, sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="padding:30px 0;">
+<tr>
+<td align="center">
+
+<table width="600" cellpadding="0" cellspacing="0" style="background:white; border-radius:10px; overflow:hidden; box-shadow:0 5px 20px rgba(0,0,0,0.1);">
+
+<tr>
+<td style="background:#ff9800; padding:20px; text-align:center; color:white;">
+<h2 style="margin:0;">✏️ Modification d'inscription Homopongistus</h2>
+</td>
+</tr>
+
+<tr>
+<td style="padding:30px;">
+
+<h3 style="margin-top:0;">Vos informations ont été mises à jour</h3>
+
+<p>Bonjour <b>{{ prenom }} {{ nom }}</b>,</p>
+
+<p>
+Votre inscription au tournoi a été modifiée avec succès.
+</p>
+
+<table width="100%" cellpadding="8" style="background:#f9f9f9; border-radius:6px;">
+<tr><td><b>Licence :</b></td><td>{{ licence }}</td></tr>
+<tr><td><b>Club :</b></td><td>{{ club }}</td></tr>
+<tr><td><b>Points :</b></td><td>{{ points }}</td></tr>
+<tr><td><b>Tableaux actuels :</b></td><td>{{ tableaux | safe }}</td></tr>
+</table>
+
+<p style="margin-top:25px;">
+<a href="{{ site_url }}" 
+style="display:inline-block; padding:12px 20px; background:#ff9800; color:white; text-decoration:none; border-radius:6px; font-weight:bold;">
+Pas d'information sur les tableaux signifie que votre participation au tournoi a été annulée
+</a>
+</p>
+
+<p style="margin-top:25px; color:#555;">
+Si cette modification n'est pas de votre fait, merci de contacter l'organisation
+ a cette adresse : <a href="mailto:thuirtt66@gmail.com"
+       style="color:red; text-decoration:underline;">
+        thuirtt66@gmail.com
+    </a>
+`;
+</p>
+
+</td>
+</tr>
+
+<tr>
+<td style="background:#f2f2f2; padding:15px; text-align:center; font-size:12px; color:#666;">
+Le bureau du TT Thuirinois  – Merci de votre confiance
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>

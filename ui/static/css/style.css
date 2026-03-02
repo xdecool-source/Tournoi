@@ -1,0 +1,260 @@
+/* =========================
+   GLOBAL
+========================= */
+body{
+    font-family:Arial, sans-serif;
+    margin:0;
+    background:#f5f5f5;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    margin-top:20px;
+}
+
+/* ===============================
+   INPUTS (corrigé pour checkbox)
+================================== */
+input[type="text"],
+input[type="email"],
+input[type="number"]{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border-radius:8px;
+    border:1px solid #ddd;
+}
+
+#tableauxContainer input[type="checkbox"]{
+    width:auto;
+    padding:0;
+    margin:0;
+    border:none;
+    pointer-events:auto;
+    opacity:1;
+}
+
+/* =========================
+   TABLEAUX
+========================= */
+#tableauxContainer label{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:6px;
+    cursor:pointer;
+}
+
+#tableauxContainer span{
+    white-space:nowrap;
+}
+
+#tableauxContainer{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+/* =========================
+   BUTTON
+========================= */
+button{
+    padding:10px 15px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#007bff;
+    color:#fff;
+    margin-top:20px;
+}
+
+button:disabled{
+    opacity:0.5;
+}
+
+/* =========================
+   MODAL  
+========================= */
+.modal{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:999;
+    pointer-events:none;   /* ⭐ CORRECTION */
+}
+
+.modal:not(.hidden){
+    pointer-events:auto;   /* ⭐ CORRECTION */
+}
+
+.modal.hidden{
+    display:none !important;
+    pointer-events:none;
+}
+
+.modal-box{
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    max-width:400px;
+}
+
+/* =========================
+   UTILITIES
+========================= */
+.hidden{
+    display:none !important;
+}
+
+/* =========================
+   CARD PREMIER ECRAN
+========================= */
+#licenceCard{
+    max-width:300px;;          /* aligne à gauche */
+}
+
+#licence{
+    width:100%;
+    max-width:240px;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ddd;
+}
+
+/* =========================
+   LAYOUT INSCRIPTION
+========================= */
+#inscriptionRight{
+    flex:1;
+    max-width:450px;
+}
+
+#inscriptionRow{
+    display:flex;
+    gap:20px;
+    align-items:flex-start;
+    margin-top:60px;
+}
+
+#licenceCard,
+#inscriptionCard{
+    margin-top:0;
+}
+
+#licence{
+    width:80%;
+    max-width:50px;
+}
+
+#email{
+    width:100%;
+    max-width:280px;
+}
+#result{
+    margin-top:25px;
+    padding-top:10px;
+    border-top:1px solid #eee;
+}
+
+.infoBox{
+    position: fixed;   /* clé */
+    bottom: 180px;      /* plus haut */
+    left: 20px;        /* plus à droite  */
+    padding:10px;
+    background:#eef6ff;
+    border-left:4px solid #ea5f8b; /* message deja inscrit liseré a gauche */
+    border-radius:8px;
+    max-width:340px;
+}
+
+#alreadyMsg{
+    margin-left:40px;
+}
+
+.tableau-row{
+    padding:6px 4px;
+    border-radius:6px;
+    width:100%;
+}
+
+.tableau-row:hover{
+    background:#f5f5f5;
+}
+
+#tableauxContainer{
+    display:grid;
+    grid-template-columns: 22px 40px 80px 130px 1fr;    
+    column-gap:10px;
+    row-gap:6px;
+    align-items:center;
+}
+
+.tableau-row{
+    display:contents;
+}
+
+.col-tranche{
+    color:#777;
+    font-size:12px;
+    white-space:nowrap;
+}
+
+.col-attente{
+    white-space:nowrap;
+}
+
+.tranche-ok{
+    color:#777;
+}
+
+.tranche-ko{
+    color:#d00000;
+    font-weight:bold;
+}
+
+.green  { color:green;  font-weight:bold; }
+.orange { color:orange; font-weight:bold; }
+.red    { color:red;    font-weight:bold; }
+.grey   { color:grey;   font-weight:bold; }
+
+.licence-error{
+    margin-top:8px;
+    font-size:14px;
+    color:#c00000;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:#ffe5e5;
+    padding:6px 10px;
+    border-radius:6px;
+}
+
+.licence-error .icon{
+    font-size:16px;
+}
+
+.hidden{
+    display:none;
+}
+
+.logo {
+    position: fixed;
+    top: 90px;
+    left: 30px;
+    width: 100px;
+}
