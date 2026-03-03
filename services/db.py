@@ -175,11 +175,10 @@ async def save_inscription(data):
             for t in data["tableaux"]:
 
                 # 🔒 verrouille les lignes de ce tableau
-                await conn.execute("""
-                SELECT 1 FROM inscription_tableaux
-                WHERE tableau=$1
-                FOR UPDATE
-                """, t)
+                await conn.execute(
+                "SELECT pg_advisory_xact_lock(hashtext($1))",
+                t
+                )
 
                 conf = TABLEAUX[t]
 
@@ -258,25 +257,25 @@ async def get_conn():
 
 # ----------- 
 async def check_and_trigger_export(conn):
-    # 🔒 On verrouille la ligne pour éviter double déclenchement
+
     row = await conn.fetchrow("""
-        SELECT counter, trigger_count
-        FROM export_control
-        WHERE id=1
-        FOR UPDATE
+        INSERT INTO export_control (id, counter, trigger_count)
+        VALUES (1, 1, 5)
+        ON CONFLICT (id)
+        DO UPDATE
+        SET counter = export_control.counter + 1
+        RETURNING counter, trigger_count
     """)
 
-    counter = row["counter"] + 1
+    counter = row["counter"]
     trigger = row["trigger_count"]
 
     if counter >= trigger:
-        # reset compteur
         await conn.execute("""
             UPDATE export_control
             SET counter = 0
-            WHERE id=1
+            WHERE id = 1
         """)
-
         # lancement batch (non bloquant)
         subprocess.Popen(["run_export.bat"], shell=True)
 

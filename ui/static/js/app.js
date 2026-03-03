@@ -351,10 +351,10 @@ async function check(){
                 msg.classList.remove("hidden");
                 msg.innerHTML = `
                     Vous êtes déjà inscrit.<br>
-                    Si vous souhaitez modifier votre inscription,<br>
-                    merci d'envoyer un mail à cette adresse :
+                    Pour modifier votre inscription<br>
+                    merci d'envoyer un mail à <br>
                     <a href="mailto:thuirtt66@gmail.com" style="color:red; text-decoration:underline;">
-                        thuirtt66@gmail.com
+                    thuirtt66@gmail.com
                     </a>
                 `;
 }

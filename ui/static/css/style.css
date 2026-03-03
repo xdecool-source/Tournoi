@@ -149,11 +149,13 @@ button:disabled{
     gap:20px;
     align-items:flex-start;
     margin-top:60px;
+    flex-wrap:wrap;              /* 🔥 permet de passer à la ligne */
 }
 
 #licenceCard,
 #inscriptionCard{
-    margin-top:0;
+    flex:1 1 350px;   /* largeur mini 350px */
+    min-width:280px;  /* sécurité mobile */
 }
 
 #licence{
@@ -172,18 +174,17 @@ button:disabled{
 }
 
 .infoBox{
-    position: fixed;   /* clé */
-    bottom: 180px;      /* plus haut */
-    left: 20px;        /* plus à droite  */
+    margin-top:15px;
     padding:10px;
     background:#eef6ff;
-    border-left:4px solid #ea5f8b; /* message deja inscrit liseré a gauche */
+    border-left:4px solid #ea5f8b;
     border-radius:8px;
-    max-width:340px;
+    width:100%;
+    box-sizing:border-box;
 }
 
-#alreadyMsg{
-    margin-left:40px;
+.card{
+    width:100%;
 }
 
 .tableau-row{
@@ -257,4 +258,20 @@ button:disabled{
     top: 150px;
     right: 25px;
     width: 100px;
+}
+
+@media (max-width: 700px){
+
+    #tableauxContainer{
+        grid-template-columns: 1fr;
+        row-gap:10px;
+    }
+
+    .tableau-row{
+        display:block;
+        padding:10px;
+        border:1px solid #eee;
+        border-radius:8px;
+    }
+
 }

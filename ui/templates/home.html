@@ -15,16 +15,22 @@
 <div class="container">
     <div id="inscriptionRow">
 
-        <div id="licenceCard" class="card">
-            <h2>Saisir son N° Licence</h2>
+   <div id="licenceCard" class="card">
+    <h2>Saisir son N° Licence</h2>
 
-            <input id="licence"
-              placeholder="licence"
-              inputmode="numeric"
-              oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-            <div id="licenceError" class="licence-error hidden"></div>
-            <div id="result"></div>
-        </div>
+    <input id="licence"
+        placeholder="licence"
+        inputmode="numeric"
+        oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+
+    <div id="licenceError" class="licence-error hidden"></div>
+    <div id="result"></div>
+
+    <div id="alreadyMsg" class="hidden infoBox">
+        ⚠️ Vous êtes déjà inscrit.<br>
+        Si vous souhaitez modifier votre inscription, merci d'envoyer un mail.
+    </div>
+</div>
 
         <div id="inscriptionCard" class="card hidden">
             <h2>👍🏻 Homopongistus : Inscription Tableaux</h2>
@@ -67,10 +73,6 @@
     Logout admin
 </button>
 
-<div id="alreadyMsg" class="hidden infoBox">
-    ⚠️ Vous êtes déjà inscrit.  
-    Si vous souhaitez modifier votre inscription, merci d'envoyer un mail.
-</div>
 
 <div id="successCard" class="hidden card">
     <h2 style="color:green">✅ Inscription enregistrée</h2>
