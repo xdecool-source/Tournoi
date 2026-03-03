@@ -79,7 +79,8 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
         "subject": subject,
         "htmlContent": html_content,
     }
-
+    print("BREVO_API_KEY =", BREVO_API_KEY)
+    print("FROM_EMAIL =", FROM_EMAIL)
     async with httpx.AsyncClient(timeout=20.0) as client:
         response = await client.post(
             "https://api.brevo.com/v3/smtp/email",
