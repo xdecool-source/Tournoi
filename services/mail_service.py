@@ -1,20 +1,17 @@
 import os
-from email.message import EmailMessage
-import aiosmtplib
+import httpx
 from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
 from core.config import TABLEAUX
 from services.db import get_conn
 
-# Service mail protocol smtp (gmail pour local)
+# Service mail protocol https 
 
-if os.getenv("ENV") != "production":
+# Charger .env uniquement en local
+if os.getenv("ENV") == "development":
     load_dotenv()
-    
-SMTP_HOST = os.getenv("SMTP_HOST")
-SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
-SMTP_USER = os.getenv("SMTP_USER")
-SMTP_PASS = os.getenv("SMTP_PASS")
+
+BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 SITE_URL = os.getenv("SITE_URL")
@@ -31,18 +28,16 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
 
     template = env.get_template(template_name)
 
-    # 🔹 Construction des tableaux avec statut réel
     tableaux_details = []
 
     async with get_conn() as conn:
         for t in data["tableaux"]:
-
             conf = TABLEAUX.get(t, {})
             min_pts = conf.get("min")
             max_pts = conf.get("max")
 
-            min_pts = min_pts if min_pts is not None else "Non défini"
-            max_pts = max_pts if max_pts is not None else "Non défini"
+            min_pts = min_pts if min_pts is not None else " - "
+            max_pts = max_pts if max_pts is not None else " - "
 
             statut = await conn.fetchval("""
                 SELECT statut
@@ -73,29 +68,33 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
         site_url=SITE_URL
     )
 
-    message = EmailMessage()
-    message["From"] = FROM_EMAIL
-    message["To"] = to_email
-    message["Cc"] = ADMIN_EMAIL
-
-    message["Subject"] = (
+    subject = (
         "Confirmation d'inscription - Tournoi Homopongistus"
         if type_mail == "creation"
         else "Modification d'inscription - Tournoi Homopongistus"
     )
 
-    message.set_content("Votre client mail ne supporte pas le HTML.")
-    message.add_alternative(html_content, subtype="html")
+    payload = {
+        "sender": {"email": FROM_EMAIL},
+        "to": [{"email": to_email}],
+        "cc": [{"email": ADMIN_EMAIL}] if ADMIN_EMAIL else [],
+        "subject": subject,
+        "htmlContent": html_content,
+    }
+    print("BREVO_API_KEY =", BREVO_API_KEY)
+    print("FROM_EMAIL =", FROM_EMAIL)
+    async with httpx.AsyncClient(timeout=20.0) as client:
+        response = await client.post(
+            "https://api.brevo.com/v3/smtp/email",
+            headers={
+                "accept": "application/json",
+                "api-key": BREVO_API_KEY,
+                "content-type": "application/json",
+            },
+            json=payload,
+        )
 
-    print("ENV =", os.getenv("ENV"))
-    print("SMTP_HOST =", SMTP_HOST)
-    print("SMTP_PORT =", SMTP_PORT)
+        print("Brevo status:", response.status_code)
+        print("Brevo response:", response.text)
 
-    await aiosmtplib.send(
-        message,
-        hostname=SMTP_HOST,
-        port=SMTP_PORT,
-        username=SMTP_USER,
-        password=SMTP_PASS,
-        start_tls=True,
-    )
+        response.raise_for_status()
