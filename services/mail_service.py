@@ -86,6 +86,10 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
     message.set_content("Votre client mail ne supporte pas le HTML.")
     message.add_alternative(html_content, subtype="html")
 
+    print("ENV =", os.getenv("ENV"))
+    print("SMTP_HOST =", SMTP_HOST)
+    print("SMTP_PORT =", SMTP_PORT)
+
     await aiosmtplib.send(
         message,
         hostname=SMTP_HOST,
