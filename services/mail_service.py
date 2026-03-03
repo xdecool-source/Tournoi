@@ -78,9 +78,9 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
     message["Cc"] = ADMIN_EMAIL
 
     message["Subject"] = (
-        "Confirmation d'inscription - Tournoi"
+        "Confirmation d'inscription - Tournoi Homopongistus"
         if type_mail == "creation"
-        else "Modification d'inscription - Tournoi"
+        else "Modification d'inscription - Tournoi Homopongistus"
     )
 
     message.set_content("Votre client mail ne supporte pas le HTML.")
