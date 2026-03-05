@@ -4,7 +4,8 @@
 # pour construire les différentes feuilles Excel 
 # (Joueurs, Tableaux, statistiques, prix).
 
-from io import BytesIO
+import os
+
 from openpyxl import Workbook
 from services.db import get_all
 from export.price import create_price_sheet
@@ -15,6 +16,9 @@ from export.excel_builder import (
     create_table_sheets,
     create_tableaux_sheet
 )
+
+FINAL_FILE = "/tmp/Inscriptions.xlsx"
+
 
 async def generate():
 
