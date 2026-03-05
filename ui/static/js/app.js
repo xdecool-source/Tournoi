@@ -276,6 +276,8 @@ function renderTableaux(){
         
     }).join("");
 
+    /* force recalcul layout sur mobile */
+    box.offsetHeight;
     // 🔹 Restauration focus + curseur
     if(activeElement && document.body.contains(activeElement)){
         activeElement.focus();
@@ -696,3 +698,19 @@ document.addEventListener("keydown", e => {
 });
 
 window.limitSelection = limitSelection;
+
+document.addEventListener("change", function(e){
+
+if(e.target.matches('#tableauxContainer input[type="checkbox"]')){
+
+const card = e.target.closest(".tableau-row");
+
+if(e.target.checked){
+card.classList.add("selected");
+}else{
+card.classList.remove("selected");
+}
+
+}
+
+});

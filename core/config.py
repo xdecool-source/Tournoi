@@ -35,4 +35,4 @@ MOT_DE_PASSE = os.getenv("MOT_DE_PASSE", "")
 ADMIN_PASSWORD_HASH = os.getenv("ADMIN_PASSWORD_HASH")
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FINAL_FILE = os.path.join(ROOT_DIR, "inscription", "Inscriptions.xlsx")
+#FINAL_FILE = os.path.join(ROOT_DIR, "inscription", "Inscriptions.xlsx")

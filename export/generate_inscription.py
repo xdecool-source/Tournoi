@@ -1,61 +1,40 @@
-
-# génère le fichier Excel des inscriptions du tournoi
-# Organisation par joueur et par tableau 
-# pour construire les différentes feuilles Excel 
-# (Joueurs, Tableaux, statistiques, prix).
-
-import os
-
+#from pathlib import Path
 from openpyxl import Workbook
-from services.db import get_all
-from export.price import create_price_sheet
-from core.config import FINAL_FILE, ROOT_DIR
+from export.db import fetch_inscriptions
 from export.excel_builder import (
     build_data,
     create_players_sheet,
     create_table_sheets,
     create_tableaux_sheet
 )
+from export.price import create_price_sheet
+from export.excel_builder import create_tableaux_sheet
+from io import BytesIO
+from pathlib import Path
+root_dir = Path(__file__).resolve().parent.parent
 
-FINAL_FILE = "/tmp/Inscriptions.xlsx"
+#ROOT_DIR = Path(__file__).resolve().parent.parent
+#EXPORT_DIR = ROOT_DIR / "inscription"
+#EXPORT_DIR.mkdir(parents=True, exist_ok=True)
+#FINAL_FILE = EXPORT_DIR / "Inscription.xlsx"
 
-
-async def generate():
-
-    print("STEP A - récupération DB")
-    inscriptions = await get_all()
-    if not inscriptions:
+def generate():
+    rows = fetch_inscriptions()
+    if not rows:
         print("Aucune donnée.")
         return None
 
-    # ---------- transformation pour excel_builder ----------
-    rows = []
-    i = 1   # ← AJOUT ICI
-    for joueur in inscriptions:
-        tableaux = joueur.get("tableaux", [])
-        for t in tableaux:
-            rows.append({
-                "id": joueur.get("id"),   # ← AJOUT ICI
-                "Licence": joueur.get("licence"),
-                "Nom Prénom": f"{joueur.get('nom')} {joueur.get('prenom')}",
-                "Club": joueur.get("club"),
-                "Points": joueur.get("points"),
-                "Classement": joueur.get("classement", ""),   # ← AJOUT
-                "Mail": joueur.get("mail", ""),   # ← AJOUT ICI
-                "tableau": t,
-                "statut": "OK"
-            })
-            i += 1
-
-    print("STEP B - construction excel")
     data_by_table, data_joueurs = build_data(rows)
     wb = Workbook()
     wb.remove(wb.active)
     create_players_sheet(wb, data_joueurs)
     create_table_sheets(wb, data_by_table)
     create_tableaux_sheet(wb, data_by_table)
-    create_price_sheet(wb, data_joueurs, ROOT_DIR)
+    create_price_sheet(wb, data_joueurs,root_dir)
 
-    # ---------- sauvegarde disque ----------
-    wb.save(FINAL_FILE)
-    print("✅ Excel généré :", FINAL_FILE)
+    # génération en mémoire
+    stream = BytesIO()
+    wb.save(stream)
+    stream.seek(0)
+    print("✅ Excel généré en mémoire")
+    return stream

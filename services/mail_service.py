@@ -66,22 +66,14 @@ async def build_email_html(data: dict, type_mail: str):
     )
 
     print("STEP 1 - chargement template")
-
     template = env.get_template(template_name)
-
     print("STEP 2 - construction tableaux")
-
     tableaux_details = []
-
     async with get_conn() as conn:
-
         for t in data["tableaux"]:
-
             conf = TABLEAUX.get(t, {})
-
             min_pts = conf.get("min")
             max_pts = conf.get("max")
-
             statut = await conn.fetchval(
                 """
                 SELECT statut
@@ -94,30 +86,20 @@ async def build_email_html(data: dict, type_mail: str):
 
             if statut == "OK":
                 statut_txt = "✅ Confirmé"
-
             elif statut == "ATTENTE":
                 statut_txt = "⏳ Liste d'attente"
-
             else:
                 statut_txt = "🔒 Non validé"
-
             if min_pts is None and max_pts is None:
-
                 ligne = f"{t} {statut_txt}"
-
             else:
-
                 min_aff = min_pts if min_pts is not None else "x"
                 max_aff = max_pts if max_pts is not None else "x"
-
                 ligne = f"{t} ({min_aff}-{max_aff} pts) — {statut_txt}"
-
             tableaux_details.append(ligne)
-
     tableaux_str = "<br>".join(tableaux_details)
-
     print("STEP 3 - render HTML")
-
+    
     html_content = template.render(
         prenom=data["prenom"],
         nom=data["nom"],
@@ -127,29 +109,22 @@ async def build_email_html(data: dict, type_mail: str):
         tableaux=tableaux_str,
         site_url=SITE_URL
     )
-
     return html_content
-
 
 # --------------------------------------------------
 # Envoi SMTP (DEV)
 # --------------------------------------------------
 
 async def send_smtp_email(to_email: str, subject: str, html_content: str):
-
     print("STEP 4 - envoi SMTP")
-
     message = EmailMessage()
-
     message["From"] = FROM_EMAIL
     message["To"] = to_email
     message["Subject"] = subject
-
     message.set_content("Votre client mail ne supporte pas le HTML.")
     message.add_alternative(html_content, subtype="html")
 
     try:
-
         await aiosmtplib.send(
             message,
             hostname=SMTP_HOST,
@@ -158,11 +133,8 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
             password=SMTP_PASS,
             start_tls=True,
         )
-
         print("✅ MAIL SMTP ENVOYÉ")
-
     except Exception as e:
-
         print("❌ ERREUR SMTP :", e)
 
 
@@ -173,7 +145,6 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
 async def send_brevo_email(to_email: str, subject: str, html_content: str):
 
     print("STEP 4 - envoi BREVO")
-
     payload = {
         "sender": {"email": FROM_EMAIL},
         "to": [{"email": to_email}],
@@ -181,10 +152,8 @@ async def send_brevo_email(to_email: str, subject: str, html_content: str):
         "subject": subject,
         "htmlContent": html_content,
     }
-
     print("BREVO_API_KEY =", BREVO_API_KEY)
     print("FROM_EMAIL =", FROM_EMAIL)
-
     async with httpx.AsyncClient(timeout=20) as client:
 
         response = await client.post(
@@ -196,12 +165,9 @@ async def send_brevo_email(to_email: str, subject: str, html_content: str):
             },
             json=payload,
         )
-
         print("Brevo status:", response.status_code)
         print("Brevo response:", response.text)
-
         response.raise_for_status()
-
 
 # --------------------------------------------------
 # Fonction principale
@@ -210,23 +176,18 @@ async def send_brevo_email(to_email: str, subject: str, html_content: str):
 async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
 
     html_content = await build_email_html(data, type_mail)
-
     subject = (
         "Confirmation d'inscription - Tournoi Homopongistus"
         if type_mail == "creation"
         else "Modification d'inscription - Tournoi Homopongistus"
     )
-
     if ENV == "production":
-
         await send_brevo_email(
             to_email,
             subject,
             html_content
         )
-
     else:
-
         await send_smtp_email(
             to_email,
             subject,

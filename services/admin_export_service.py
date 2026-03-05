@@ -43,7 +43,7 @@ async def process_admin_export():
         msg.set_content("Fichier Excel en pièce jointe")
 
         msg.add_attachment(
-            excel_stream.read(),
+            excel_stream.getvalue(),
             maintype="application",
             subtype="vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             filename="Inscriptions.xlsx"

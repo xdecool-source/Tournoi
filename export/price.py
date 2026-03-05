@@ -1,7 +1,3 @@
-
-# crée la feuille Excel “Prix” dans le fichier du tournoi
-# plus mise en forme Excel
-
 from openpyxl.styles import PatternFill, Font, Alignment
 from openpyxl.drawing.image import Image
 from core.config import PRIX
@@ -11,12 +7,13 @@ def create_price_sheet(wb, data_joueurs, root_dir):
 
     ws = wb.create_sheet("Prix")
     # -------- IMAGE --------
-    image_path = Path(root_dir) / "assets" / "Tournoi.jpg"
+    image_path = root_dir / "assets" / "Tournoi.jpg"
     if image_path.exists():
         img = Image(str(image_path))
         img.width = 600
         img.height = 110
         ws.add_image(img, "C1")
+
     start_row = 8
     total_valide_general = 0
     total_attente_general = 0
@@ -46,24 +43,20 @@ def create_price_sheet(wb, data_joueurs, root_dir):
     # -------- TOTAUX --------
     ws[f"A{start_row}"] = "Montants par joueur"
     ws[f"A{start_row}"].font = Font(bold=True, size=14)
-
     ws[f"A{start_row+1}"] = "Total encaissé (validés) :"
     ws[f"A{start_row+2}"] = "Total en attente :"
-
     ws[f"E{start_row+1}"] = total_valide_general
     ws[f"F{start_row+2}"] = total_attente_general
-
     ws[f"E{start_row+1}"].number_format = '#,##0.00 €'
     ws[f"F{start_row+2}"].number_format = '#,##0.00 €'
-
     ws[f"E{start_row+1}"].font = Font(bold=True)
     ws[f"F{start_row+2}"].font = Font(bold=True)
-
     ws[f"A{start_row+1}"].font = Font(bold=True)
     ws[f"A{start_row+2}"].font = Font(bold=True)
 
     # -------- TABLEAU DÉTAILLÉ --------
     header_row = start_row + 4
+
     headers = [
         "Dossard",
         "Nom Prénom",
@@ -72,14 +65,16 @@ def create_price_sheet(wb, data_joueurs, root_dir):
         "Montant validé (€)",
         "Montant en attente (€)"
     ]
+
     for col_index, value in enumerate(headers, 1):
         ws.cell(row=header_row, column=col_index, value=value).font = Font(bold=True)
     data_row = header_row + 1
     light_gray = PatternFill(start_color="F2F2F2", fill_type="solid")
+
     for index, ligne in enumerate(lignes_prix):
         for col_index, value in enumerate(ligne, 1):
             ws.cell(row=data_row, column=col_index, value=value)
-    
+            
         ws[f"B{data_row}"].font = Font(bold=True)
         ws[f"E{data_row}"].number_format = '#,##0.00 €'
         ws[f"F{data_row}"].number_format = '#,##0.00 €'
@@ -93,7 +88,6 @@ def create_price_sheet(wb, data_joueurs, root_dir):
     ws.freeze_panes = f"A{header_row+1}"
 
     # -------- AUTO WIDTH --------
-    
     for col in ws.columns:
         max_length = 0
         col_letter = col[0].column_letter
