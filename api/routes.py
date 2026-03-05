@@ -306,7 +306,9 @@ def logout_admin(response: Response):
 from tasks.ex_tournoi import main as ex_tournoi
 import asyncio
 
-@router.get("/admin/export")
+# ---------- export excel avec token  ----------
+
+@router.get("/admin/{ADMIN_PATH}/export")
 
 async def export():
     await ex_tournoi()

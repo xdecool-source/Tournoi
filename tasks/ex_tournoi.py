@@ -66,9 +66,7 @@ async def send_smtp_email(msg):
 async def send_brevo_email(to_email, subject, html_content, excel_stream):
 
     print("STEP 4 - envoi BREVO")
-
     attachment = base64.b64encode(excel_stream.read()).decode()
-
     payload = {
         "sender": {"email": FROM_EMAIL},
         "to": [{"email": to_email}],
@@ -94,12 +92,9 @@ async def send_brevo_email(to_email, subject, html_content, excel_stream):
             },
             json=payload,
         )
-
         print("Brevo status:", response.status_code)
         print("Brevo response:", response.text)
-
         response.raise_for_status()
-
 
 # --------------------------------------------------
 # ROUTEUR MAIL
@@ -111,33 +106,25 @@ async def send_email(excel_stream):
     html = "<h3>Fichier Excel des inscriptions en pièce jointe</h3>"
 
     if ENV == "production":
-
         await send_brevo_email(
             ADMIN_EMAIL,
             subject,
             html,
             excel_stream
         )
-
     else:
-
         msg = EmailMessage()
-
         msg["From"] = FROM_EMAIL
         msg["To"] = ADMIN_EMAIL
         msg["Subject"] = subject
-
         msg.set_content("Fichier Excel des inscriptions en pièce jointe")
-
         msg.add_attachment(
             excel_stream.read(),
             maintype="application",
             subtype="vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             filename="Inscriptions.xlsx"
         )
-
         await send_smtp_email(msg)
-
 
 # --------------------------------------------------
 # MAIN
@@ -150,13 +137,9 @@ async def main():
 
     # génération Excel
     excel_stream = generate()
-
     if not excel_stream:
         print("Aucun fichier généré")
         return
-
     print("Excel généré")
-
     await send_email(excel_stream)
-
     print("Mail envoyé")
