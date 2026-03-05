@@ -78,7 +78,7 @@ async def get_licence(licence: str):
         raise HTTPException(400, "Licence numérique obligatoire")
     already = await licence_exists(licence)
     tableaux_inscrits = []
-    mail = f"{licence}@mock.fr"   #  FIX
+    mail = "xavier.decool@outlook.com"   #  FIX
     if already:
         tableaux_inscrits = await get_tableaux_by_licence(licence)
         async with get_conn() as conn:
