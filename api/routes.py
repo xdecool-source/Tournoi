@@ -301,3 +301,13 @@ def login_admin(data: dict, response: Response):
 def logout_admin(response: Response):
     response.delete_cookie("admin")
     return {"success": True}
+
+
+from tasks.ex_tournoi import main as ex_tournoi
+import asyncio
+
+@router.get("/admin/export")
+
+async def export():
+    await ex_tournoi()
+    return {"status": "excel envoyé"}
