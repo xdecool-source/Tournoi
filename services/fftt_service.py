@@ -1,3 +1,8 @@
+# appeler l’API de la FFTT
+# récupérer les informations d’un joueur
+# générer les paramètres de sécurité (tm, tmc, série)
+# fournir un mode mock (imiter , simuler )pour le développement
+
 import os
 import urllib.parse
 import httpx
@@ -25,6 +30,7 @@ def tmc(tm):
 async def appel_fftt(endpoint, params_metier):
 
     # -----------  MOCK DEV
+    
     if MOCK_FFTT:
         licence = params_metier.get("licence")
         return f"""

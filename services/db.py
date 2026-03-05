@@ -1,34 +1,45 @@
+
+# connexion PostgreSQL
+# création des tables
+# gestion des inscriptions
+# gestion des tableaux et listes d’attente
+# déclenchement des exports / mails admin
+
 import asyncpg, os
-import subprocess
 from datetime import datetime
 from core.config import TABLEAUX
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
+from datetime import date
+
+load_dotenv(".env", override=False)
 if os.getenv("ENV") != "production":
-    load_dotenv()
-    
-#     load_dotenv()  # charge le fichier .env
+    print("Mode dev")
+        
+# load_dotenv()  # charge le fichier .env
+# Variable globale (railway) on la priorité car il n'existe pas de .env 
+# python ne trouve rien donc charge rien
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
     
 pool = None
 
 # ----------- init pool
+
 async def init_db_pool():
     global pool
 
     if DATABASE_URL and "localhost" in DATABASE_URL:
-        # 🔹 Local (pas de SSL)
+        # Local (pas de SSL)
         pool = await asyncpg.create_pool(
             DATABASE_URL,
             min_size=1,
             max_size=5
         )
     else:
-        # 🔹 Production (Scalingo → SSL obligatoire)
+        # Production (Raiway → SSL obligatoire)
         pool = await asyncpg.create_pool(
             DATABASE_URL,
             min_size=1,
@@ -38,6 +49,7 @@ async def init_db_pool():
 print("CREATING TABLES NOW")
 
 # ----------- init DB
+
 async def init_db():
     async with pool.acquire() as conn:
 
@@ -72,14 +84,29 @@ async def init_db():
         )
         """)
         
-        # 🔹 Initialisation si vide
+        await conn.execute("""
+        CREATE TABLE IF NOT EXISTS mail_control (
+            id INT PRIMARY KEY DEFAULT 1,
+            last_admin_mail DATE,
+            last_count INT
+        )
+        """)
+        
+        #  Initialisation si vide
         await conn.execute("""
         INSERT INTO export_control (id, counter, trigger_count)
         VALUES (1, 0, 5)
         ON CONFLICT (id) DO NOTHING
         """)
+        
+        await conn.execute("""
+        INSERT INTO mail_control (id, last_admin_mail, last_count)
+        VALUES (1, NULL, 0)
+        ON CONFLICT (id) DO NOTHING
+        """)
 
 # ----------- licence déjà inscrite
+
 async def licence_exists(licence):
     async with pool.acquire() as conn:
         r = await conn.fetchrow(
@@ -89,6 +116,7 @@ async def licence_exists(licence):
         return r is not None
 
 # ----------- toutes inscriptions
+
 async def get_all():
     async with pool.acquire() as conn:
         rows = await conn.fetch("""
@@ -102,6 +130,7 @@ async def get_all():
         return [dict(r) for r in rows]
 
 # ----------- classement par tableau
+
 async def get_classement_par_tableau():
     async with pool.acquire() as conn:
         rows = await conn.fetch("""
@@ -116,6 +145,7 @@ async def get_classement_par_tableau():
         return classement
 
 # ----------- comptage
+
 async def count_tableau(t, statut=None):
     async with pool.acquire() as conn:
         if statut:
@@ -128,6 +158,8 @@ async def count_tableau(t, statut=None):
             WHERE tableau=$1
         """, t)
 
+# ----------- comptage en attente
+
 async def count_tableau_attente(t):
     async with pool.acquire() as conn:
         return await conn.fetchval("""
@@ -135,8 +167,8 @@ async def count_tableau_attente(t):
             WHERE tableau=$1 AND statut='ATTENTE'
         """, t)
 
-
 # ----------- statut tableau
+
 async def tableau_status(t):
     conf = TABLEAUX[t]
     used_ok = await count_tableau(t, "OK")
@@ -149,14 +181,14 @@ async def tableau_status(t):
 
 
 # ----------- sauvegarde inscription
+
 async def save_inscription(data):
     if await licence_exists(data["licence"]):
         raise ValueError("Licence déjà inscrite")
-
     async with pool.acquire() as conn:
         async with conn.transaction():   # ⭐ transaction globale
 
-            # 1️⃣ insertion joueur
+            # 1 insertion joueur
             await conn.execute("""
             INSERT INTO inscriptions
             (nom, prenom, club, points, date_inscription, licence, mail)
@@ -171,17 +203,14 @@ async def save_inscription(data):
             data["mail"]
             )
 
-            # 2️⃣ insertion tableaux avec verrouillage
+            # 2 insertion tableaux avec verrouillage
             for t in data["tableaux"]:
-
-                # 🔒 verrouille les lignes de ce tableau
+                # verrouille les lignes de ce tableau merci chatgpt
                 await conn.execute(
                 "SELECT pg_advisory_xact_lock(hashtext($1))",
                 t
                 )
-
                 conf = TABLEAUX[t]
-
                 used_ok = await conn.fetchval("""
                     SELECT COUNT(*) FROM inscription_tableaux
                     WHERE tableau=$1 AND statut='OK'
@@ -194,12 +223,10 @@ async def save_inscription(data):
                         SELECT COUNT(*) FROM inscription_tableaux
                         WHERE tableau=$1 AND statut='ATTENTE'
                     """, t)
-
                     if used_att < conf.get("attente", 0):
                         status = "ATTENTE"
                     else:
                         raise ValueError(f"{t} complet")
-
                 await conn.execute("""
                 INSERT INTO inscription_tableaux
                 (licence, tableau, statut)
@@ -208,13 +235,10 @@ async def save_inscription(data):
                 data["licence"],
                 t,
                 status
-                )
-            await check_and_trigger_export(conn)   
-    
-                
-                
+                )      
 
 # ----------- promotion attente
+
 async def promote_attente(t):
     async with pool.acquire() as conn:
         ok = await count_tableau(t, "OK")
@@ -235,7 +259,10 @@ async def promote_attente(t):
             WHERE licence=$1 AND tableau=$2
             """, row["licence"], t)
 
+# ----------- Tableau par licencie 
+
 async def get_tableaux_by_licence(licence):
+    
     async with pool.acquire() as conn:
         rows = await conn.fetch("""
         SELECT tableau
@@ -245,6 +272,7 @@ async def get_tableaux_by_licence(licence):
         return [r["tableau"] for r in rows]
 
 # ----------- connexion transaction
+
 @asynccontextmanager
 async def get_conn():
     conn = await pool.acquire()
@@ -254,35 +282,37 @@ async def get_conn():
         await pool.release(conn)
 
 
+# ----------- Check Envoi 
 
-# ----------- 
-async def check_and_trigger_export(conn):
+async def should_send_admin_mail(conn, current_count):
 
     row = await conn.fetchrow("""
-        INSERT INTO export_control (id, counter, trigger_count)
-        VALUES (1, 1, 5)
-        ON CONFLICT (id)
-        DO UPDATE
-        SET counter = export_control.counter + 1
-        RETURNING counter, trigger_count
+        SELECT last_admin_mail, last_count
+        FROM mail_control
+        WHERE id=1
     """)
 
-    counter = row["counter"]
-    trigger = row["trigger_count"]
+    if not row:
+        return True
+    last_date = row["last_admin_mail"]
+    last_count = row["last_count"]
+    today = date.today()
 
-    if counter >= trigger:
-        await conn.execute("""
-            UPDATE export_control
-            SET counter = 0
-            WHERE id = 1
-        """)
-        # lancement batch (non bloquant)
-        subprocess.Popen(["run_export.bat"], shell=True)
+    # envoyer seulement si
+    # 1 nouvelle journée
+    # 2 inscriptions différentes
+    if last_date != today and current_count != last_count:
+        return True
+    return False
 
-    else:
-        # incrément simple
-        await conn.execute("""
-            UPDATE export_control
-            SET counter = $1
-            WHERE id=1
-        """, counter)
+
+# ----------- Mise a Jour  
+async def update_admin_mail_status(conn, current_count):
+
+    from datetime import date
+    await conn.execute("""
+        UPDATE mail_control
+        SET last_admin_mail=$1,
+            last_count=$2
+        WHERE id=1
+    """, date.today(), current_count)

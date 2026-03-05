@@ -1,3 +1,9 @@
+# Création une application web avec FastAPI
+# Initialise la connexion à la base de données au démarrage
+# Charge les routes de l’API
+# Sert les fichiers statiques (CSS, JS, images)
+# Expose une route /ping pour tester si le serveur fonctionne.
+
 from fastapi import FastAPI
 from api.routes import router
 from services.db import init_db_pool, init_db

@@ -1,6 +1,19 @@
+
+# organise les données des inscriptions récupérées de la base 
+# (par tableau et par joueur).
+# crée une feuille "Joueurs" avec tous les participants et leurs tableaux.
+# crée une feuille pour chaque tableau avec les joueurs inscrits et leur statut 
+# (OK / ATTENTE).
+# crée une feuille "Tableaux" avec les statistiques : 
+# capacité, prix, nombre d’inscrits, validés et en attente.
+# applique mise en forme Excel (bordures, couleurs, largeur colonnes).
+# Construit et met en forme les feuilles du fichier Excel des inscriptions du tournoi
+
 from collections import defaultdict
 from openpyxl.styles import PatternFill, Font, Border, Side, Alignment
 from core.config import PRIX
+from core.config import TABLEAUX, PRIX
+from openpyxl.styles import Font, PatternFill, Alignment
 
 # -------- STYLES --------
 header_fill = PatternFill(start_color="FFFF00", fill_type="solid")
@@ -12,7 +25,6 @@ thin_border = Border(
     bottom=Side(style='thin')
 )
 
-
 def auto_adjust_width(ws):
     for col in ws.columns:
         max_length = 0
@@ -21,7 +33,6 @@ def auto_adjust_width(ws):
             if cell.value is not None:
                 max_length = max(max_length, len(str(cell.value)))
         ws.column_dimensions[col_letter].width = max_length + 2
-
 
 def format_sheet(ws):
     for row in ws.iter_rows():
@@ -32,7 +43,6 @@ def format_sheet(ws):
                 vertical="center"
             )
     auto_adjust_width(ws)
-
 
 def build_data(rows):
     data_by_table = defaultdict(list)
@@ -47,7 +57,6 @@ def build_data(rows):
 
     for row in rows:
         r = dict(row)
-
         data_by_table[r["tableau"]].append({
             "Dossard": r["id"],
             "Licence": r["Licence"],
@@ -57,7 +66,6 @@ def build_data(rows):
             "Mail": r["Mail"],
             "Statut": r["statut"]
         })
-
         joueur = data_joueurs[r["id"]]
         joueur["Licence"] = r["Licence"]
         joueur["Nom"] = r["Nom Prénom"]
@@ -68,21 +76,16 @@ def build_data(rows):
 
     return data_by_table, data_joueurs
 
-
 def create_players_sheet(wb, data_joueurs):
     ws = wb.create_sheet("Joueurs")
-
     ws["A1"] = f"Total joueurs : {len(data_joueurs)}"
     ws["A1"].font = Font(bold=True)
-
     ws.append([])
     headers = ["Dossard","Licence","Nom Prénom","Classement","Club","Mail","Tableaux"]
     ws.append(headers)
-
     for col in ws[3]:
         col.fill = header_fill
         col.font = header_font
-
     for dossard, infos in sorted(data_joueurs.items()):
         ws.append([
             dossard,
@@ -93,16 +96,12 @@ def create_players_sheet(wb, data_joueurs):
             infos["Mail"],
             ", ".join([f"{t} ({s})" for t, s in infos["Inscriptions"]])
         ])
-
     format_sheet(ws)
-
 
 def create_table_sheets(wb, data_by_table):
     for tableau, joueurs in sorted(data_by_table.items()):
         ws = wb.create_sheet(tableau)
-
         joueurs_sorted = sorted(joueurs, key=lambda x: x["Dossard"])
-
         ws["A1"] = f"Total joueurs : {len(joueurs_sorted)}"
         ws.append([])
         headers = ["Dossard","Licence","Nom Prénom","Classement","Club","Mail","Statut"]
@@ -111,7 +110,6 @@ def create_table_sheets(wb, data_by_table):
         for col in ws[3]:
             col.fill = header_fill
             col.font = header_font
-
         for joueur in joueurs_sorted:
             ws.append([
                 joueur["Dossard"],
@@ -124,23 +122,13 @@ def create_table_sheets(wb, data_by_table):
             ])
 
         format_sheet(ws)
-
         ws["A3"].alignment = Alignment(horizontal="center")
         for row in range(4, ws.max_row + 1):
             ws[f"A{row}"].alignment = Alignment(horizontal="center")
             
-
-
-
-
-from core.config import TABLEAUX, PRIX
-from openpyxl.styles import Font, PatternFill, Alignment
-
-
 def create_tableaux_sheet(wb, data_by_table):
 
     ws = wb.create_sheet("Tableaux")
-
     headers = [
         "Tableau",
         "Points min",
@@ -152,26 +140,20 @@ def create_tableaux_sheet(wb, data_by_table):
         "Nb validés",
         "Nb attente"
     ]
-
     # ---- En-têtes
     for col_index, value in enumerate(headers, 1):
         cell = ws.cell(row=1, column=col_index, value=value)
         cell.font = Font(bold=True)
-
     row = 2
     light_gray = PatternFill(start_color="F2F2F2", fill_type="solid")
 
     # On parcourt tous les tableaux définis dans config
     for index, (tableau, config) in enumerate(sorted(TABLEAUX.items())):
-
         joueurs = data_by_table.get(tableau, [])
-
         prix = PRIX.get(tableau, 0)
-
         nb_inscrits = len(joueurs)
         nb_valides = sum(1 for j in joueurs if j["Statut"].upper() == "OK")
         nb_attente = sum(1 for j in joueurs if j["Statut"].upper() == "ATTENTE")
-
         ws.cell(row=row, column=1, value=tableau)
         ws.cell(row=row, column=2, value=config["min"])
         ws.cell(row=row, column=3, value=config["max"])
@@ -181,16 +163,13 @@ def create_tableaux_sheet(wb, data_by_table):
         ws.cell(row=row, column=7, value=nb_inscrits)
         ws.cell(row=row, column=8, value=nb_valides)
         ws.cell(row=row, column=9, value=nb_attente)
-
         ws.cell(row=row, column=6).number_format = '#,##0.00 €'
 
         # Ligne alternée gris clair
         if index % 2 == 0:
             for col in range(1, 10):
                 ws.cell(row=row, column=col).fill = light_gray
-
         ws.cell(row=row, column=1).alignment = Alignment(horizontal="center")
-
         row += 1
 
     # ---- Ajustement largeur colonnes
@@ -201,5 +180,4 @@ def create_tableaux_sheet(wb, data_by_table):
             if cell.value is not None:
                 max_length = max(max_length, len(str(cell.value)))
         ws.column_dimensions[col_letter].width = max_length + 2
-        
         

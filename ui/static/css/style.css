@@ -1,277 +1,346 @@
 /* =========================
-   GLOBAL
+GLOBAL
+Ce fichier gère le design (CSS) de l'app :
+mise en page
+style des cartes, tableaux, boutons, formulaire licence
+responsive mobile
 ========================= */
+
 body{
-    font-family:Arial, sans-serif;
-    margin:0;
-    background:#f5f5f5;
+font-family:Arial, sans-serif;
+margin:0;
+background:linear-gradient(180deg,#f6f8fb,#eef1f6);
 }
 
 .container{
-    max-width:900px;
-    margin:auto;
-    padding:20px;
+max-width:900px;
+margin:auto;
+padding:20px;
 }
 
 .card{
-    background:#fff;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
-    margin-top:20px;
-}
-
-/* ===============================
-   INPUTS (corrigé pour checkbox)
-================================== */
-input[type="text"],
-input[type="email"],
-input[type="number"]{
-    width:100%;
-    padding:10px;
-    margin-top:10px;
-    border-radius:8px;
-    border:1px solid #ddd;
-}
-
-#tableauxContainer input[type="checkbox"]{
-    width:auto;
-    padding:0;
-    margin:0;
-    border:none;
-    pointer-events:auto;
-    opacity:1;
+background:#fff;
+padding:20px;
+border-radius:12px;
+box-shadow:0 4px 14px rgba(0,0,0,0.08);
+margin-top:20px;
+width:100%;
 }
 
 /* =========================
-   TABLEAUX
+   INPUTS
 ========================= */
-#tableauxContainer label{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-bottom:6px;
-    cursor:pointer;
-}
 
-#tableauxContainer span{
-    white-space:nowrap;
-}
-
-#tableauxContainer{
-    display:flex;
-    flex-direction:column;
-    gap:20px;
+input[type="text"],
+input[type="email"],
+input[type="number"]{
+width:100%;
+padding:10px;
+margin-top:10px;
+border-radius:8px;
+border:1px solid #ddd;
 }
 
 /* =========================
    BUTTON
 ========================= */
+
 button{
-    padding:10px 15px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    background:#007bff;
-    color:#fff;
-    margin-top:20px;
+padding:10px 15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+background:#007bff;
+color:#fff;
+margin-top:20px;
 }
 
 button:disabled{
-    opacity:0.5;
+opacity:0.5;
 }
 
 /* =========================
-   MODAL  
+   MODAL
 ========================= */
+
 .modal{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.6);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    z-index:999;
-    pointer-events:none;   /* ⭐ CORRECTION */
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:999;
+pointer-events:none;
 }
 
 .modal:not(.hidden){
-    pointer-events:auto;   /* ⭐ CORRECTION */
+pointer-events:auto;
 }
 
 .modal.hidden{
-    display:none !important;
-    pointer-events:none;
+display:none !important;
 }
 
 .modal-box{
-    background:#fff;
-    padding:20px;
-    border-radius:10px;
-    max-width:400px;
+background:#fff;
+padding:20px;
+border-radius:10px;
+max-width:400px;
 }
 
 /* =========================
    UTILITIES
 ========================= */
+
 .hidden{
-    display:none !important;
+display:none !important;
 }
 
 /* =========================
-   CARD PREMIER ECRAN
+   LAYOUT
 ========================= */
-#licenceCard{
-    max-width:300px;;          /* aligne à gauche */
-}
-
-#licence{
-    width:100%;
-    max-width:240px;
-    padding:10px;
-    border-radius:8px;
-    border:1px solid #ddd;
-}
-
-/* =========================
-   LAYOUT INSCRIPTION
-========================= */
-#inscriptionRight{
-    flex:1;
-    max-width:450px;
-}
 
 #inscriptionRow{
-    display:flex;
-    gap:20px;
-    align-items:flex-start;
-    margin-top:60px;
-    flex-wrap:wrap;              /* 🔥 permet de passer à la ligne */
+display:flex;
+gap:20px;
+align-items:flex-start;
+flex-wrap:wrap;
 }
 
 #licenceCard,
 #inscriptionCard{
-    flex:1 1 350px;   /* largeur mini 350px */
-    min-width:280px;  /* sécurité mobile */
+flex:1 1 350px;
+min-width:280px;
 }
 
-#licence{
-    width:80%;
-    max-width:50px;
-}
-
-#email{
-    width:100%;
-    max-width:280px;
-}
-#result{
-    margin-top:25px;
-    padding-top:10px;
-    border-top:1px solid #eee;
-}
+/* =========================
+   INFO BOX
+========================= */
 
 .infoBox{
-    margin-top:15px;
-    padding:10px;
-    background:#eef6ff;
-    border-left:4px solid #ea5f8b;
-    border-radius:8px;
-    width:100%;
-    box-sizing:border-box;
+margin-top:16px;
+padding:14px;
+background:#eef6ff;
+border-left:4px solid #ea5f8b;
+border-radius:10px;
+font-size:14px;
 }
 
-.card{
-    width:100%;
+/* =========================
+   TABLEAUX
+========================= */
+
+#tableauxContainer{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+gap:14px;
+margin-top:15px;
 }
+
+/* carte tableau */
 
 .tableau-row{
-    padding:6px 4px;
-    border-radius:6px;
-    width:100%;
+position:relative;
+display:flex;
+flex-direction:column;
+gap:4px;
+padding:10px;
+border-radius:12px;
+border:1px solid #e5e5e5;
+background:white;
+box-shadow:0 2px 5px rgba(0,0,0,0.05);
+transition:all 0.2s;
+cursor:pointer;
 }
 
 .tableau-row:hover{
-    background:#f5f5f5;
+transform:translateY(-2px);
+box-shadow:0 6px 14px rgba(0,0,0,0.12);
+border-color:#007bff;
 }
 
-#tableauxContainer{
-    display:grid;
-    grid-template-columns: 22px 40px 80px 130px 1fr;    
-    column-gap:10px;
-    row-gap:6px;
-    align-items:center;
+/* =========================
+   CHECKBOX
+========================= */
+
+#tableauxContainer input[type="checkbox"]{
+appearance:none;
+width:22px;
+height:22px;
+border:2px solid #bdbdbd;
+border-radius:6px;
+position:absolute;
+top:12px;
+right:12px;
+background:white;
+cursor:pointer;
 }
 
-.tableau-row{
-    display:contents;
+#tableauxContainer input[type="checkbox"]:checked{
+background:#007bff;
+border-color:#007bff;
+}
+
+#tableauxContainer input[type="checkbox"]:checked::after{
+content:"✓";
+color:white;
+font-weight:bold;
+position:absolute;
+left:50%;
+top:50%;
+transform:translate(-50%,-55%);
+}
+
+/* =========================
+   TABLEAU INTERDIT
+========================= */
+
+.tableau-interdit{
+opacity:0.55;
+}
+
+.tableau-interdit input[type="checkbox"]{
+background:#f3f3f3;
+border-color:#ccc;
+}
+
+.tableau-interdit input[type="checkbox"]::after{
+content:"⛔";
+font-size:14px;
+position:absolute;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+}
+
+/* =========================
+   INFOS TABLEAU
+========================= */
+
+.col-tableau{
+font-size:18px;
+font-weight:700;
 }
 
 .col-tranche{
-    color:#777;
-    font-size:12px;
-    white-space:nowrap;
+font-size:12px;
 }
 
-.col-attente{
-    white-space:nowrap;
+.stat-inscrit{
+font-weight:bold;
 }
 
-.tranche-ok{
-    color:#777;
+.stat-attente{
+font-size:13px;
+opacity:0.9;
 }
 
-.tranche-ko{
-    color:#d00000;
-    font-weight:bold;
+/* couleurs statut */
+
+.green{color:green;font-weight:bold;}
+.orange{color:orange;font-weight:bold;}
+.red{color:red;font-weight:bold;}
+.grey{color:grey;font-weight:bold;}
+
+/* =========================
+   LICENCE
+========================= */
+
+#licenceCard{
+max-width:340px;
+border-radius:16px;
+box-shadow:0 8px 20px rgba(0,0,0,0.08);
+border:1px solid #e8e8e8;
 }
 
-.green  { color:green;  font-weight:bold; }
-.orange { color:orange; font-weight:bold; }
-.red    { color:red;    font-weight:bold; }
-.grey   { color:grey;   font-weight:bold; }
-
-.licence-error{
-    margin-top:8px;
-    font-size:14px;
-    color:#c00000;
-    display:flex;
-    align-items:center;
-    gap:6px;
-    background:#ffe5e5;
-    padding:6px 10px;
-    border-radius:6px;
+#licenceCard h2{
+font-size:20px;
+margin-bottom:16px;
+display:flex;
+align-items:center;
+gap:8px;
 }
 
-.licence-error .icon{
-    font-size:16px;
+#licenceCard h2::before{
+content:"🎫";
 }
 
-.hidden{
-    display:none;
+/* =========================
+   champ licence
+========================= */
+
+#licence{
+width:140px;
+font-size:18px;
+text-align:center;
+font-weight:600;
+padding:8px;
+border-radius:8px;
+border:2px solid #d6d6d6;
+background:white;
+transition:all 0.2s;
 }
 
-.logo {
-    position: fixed;
-    top: 150px;
-    right: 25px;
-    width: 100px;
+#licence:focus{
+outline:none;
+border-color:#007bff;
+box-shadow:0 0 0 3px rgba(0,123,255,0.15);
 }
 
-@media (max-width: 700px){
+/* =========================
+   RESULTAT JOUEUR
+========================= */
 
-    #tableauxContainer{
-        grid-template-columns: 1fr;
-        row-gap:10px;
-    }
+#result{
+margin-top:20px;
+padding-top:14px;
+border-top:1px solid #eee;
+font-size:14px;
+line-height:1.6;
+}
 
-    .tableau-row{
-        display:block;
-        padding:10px;
-        border:1px solid #eee;
-        border-radius:8px;
-    }
+/* =========================
+   LOGO
+========================= */
+
+.logo{
+position:fixed;
+top:150px;
+right:25px;
+width:100px;
+}
+
+/* ===== MOBILE ===== */
+
+@media screen and (max-width:700px){
+
+#inscriptionRow{
+display:block;
+}
+
+#licenceCard{
+max-width:100%;
+width:100%;
+}
+
+#inscriptionCard{
+max-width:100%;
+width:100%;
+}
+
+#tableauxContainer{
+grid-template-columns:1fr;
+}
+
+.logo{
+position:static;
+display:block;
+margin:auto;
+margin-bottom:10px;
+}
 
 }

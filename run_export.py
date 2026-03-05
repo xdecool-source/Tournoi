@@ -1,1 +1,0 @@
-subprocess.Popen(["python3", "run_export.py"])

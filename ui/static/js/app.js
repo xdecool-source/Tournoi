@@ -1,3 +1,10 @@
+
+// vérification de licence FFTT
+// affichage des tableaux disponibles
+// sélection des tableaux
+// envoi de l’inscription au backend
+// affichage du récapitulatif et gestion admin.
+
 let tableaux = {};
 let joueurPoints = null;
 let currentPlayer = null;
@@ -72,9 +79,26 @@ async function init(){
 
 init();
 
-// Reset de l'interface
-document.getElementById("licence").addEventListener("input", () => {
+// saisir sur smartphone 
+// saisie licence (compatible smartphone)
+let licenceTimer = null;
+
+document.getElementById("licence").addEventListener("input", (e) => {
+
     resetInterface();
+
+    const val = e.target.value.trim();
+
+    clearTimeout(licenceTimer);
+
+    if(val.length >= 3){
+
+        licenceTimer = setTimeout(()=>{
+            check();
+        },400);   // délai rapide  mais sécurisé
+
+    }
+
 });
 
 document.querySelector("#licence").addEventListener("keydown", e=>{
@@ -145,7 +169,7 @@ function resetToStart(){
 
     setTimeout(()=>{
         document.getElementById("licence")?.focus();
-    },150);
+    },800);
 }
 
 
@@ -221,32 +245,35 @@ function renderTableaux(){
             color = "orange";
         }
 
-        // 🔹 On ne coche que si pas disabled
         const isChecked =
             (checked.includes(key) && disabledAttr === "")
                 ? "checked"
                 : "";
 
         return `
-        <div class="tableau-row ${color}">
+        <div class="tableau-row ${color} ${interdit ? "tableau-interdit" : ""}">
             <input type="checkbox"
                 value="${key}"
                 ${disabledAttr}
                 ${isChecked}
                 onchange="limitSelection.call(this)">
 
-            <span>${key}</span>
+            <span class="col-tableau">${key}</span>
 
             <span class="col-tranche ${interdit ? "tranche-ko" : "tranche-ok"}">
                 ${min ?? "-"}-${max ?? "-"}
             </span>
 
-            <span>🏓Inscrit ${used}/${cap}</span>
+            <span class="stat-inscrit">
+                🏓 Inscrit ${used}/${cap}
+            </span>
 
-            <span class="col-attente">
+            <span class="stat-attente">
                 ⏳ Attente ${badge}
             </span>
+
         </div>`;
+        
     }).join("");
 
     // 🔹 Restauration focus + curseur
@@ -337,9 +364,15 @@ async function check(){
                 card.classList.remove("hidden");
                 card.style.display="block";
             }
+
             const mailInput = document.getElementById("email");
             if(mailInput){
                 mailInput.value = data.mail || "";
+
+                // focus automatique email
+                setTimeout(()=>{
+                    mailInput.focus();
+                },120);
             }
             await loadTableaux();
             await loadPlaces();
