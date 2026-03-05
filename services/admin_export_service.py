@@ -29,7 +29,7 @@ async def process_admin_export():
 
         print("Génération Excel")
 
-        excel_stream = await generate()
+        excel_stream =  enerate()
 
         if not excel_stream:
             return
