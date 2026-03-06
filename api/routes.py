@@ -247,8 +247,11 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
     try:
         await save_inscription(data)
         print("INSCRIPTION OK - lancement mail")
+        
         # EXPORT ADMIN (indépendant du mail)
-        await process_admin_export()
+        # EXPORT ADMIN en arrière-plan
+        background_tasks.add_task(process_admin_export)
+        
         # SEND MAIL JOUEUR
         background_tasks.add_task(
             send_confirmation_email,
