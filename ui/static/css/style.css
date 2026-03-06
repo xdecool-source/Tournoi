@@ -1,29 +1,21 @@
 /* =========================
 GLOBAL
-Ce fichier gère le design (CSS) de l'app :
-mise en page
-style des cartes, tableaux, boutons, formulaire licence
-responsive mobile
 ========================= */
+
 *{
 box-sizing:border-box;
 }
-
-@media screen and (max-width:420px){
-
-button[onclick="loginAdmin()"],
-#logoutBtn{
-display:none;
-}
-
-}
-
 
 body{
 font-family:Arial, sans-serif;
 margin:0;
 background:linear-gradient(180deg,#f6f8fb,#eef1f6);
 }
+
+.licence-btn{
+display:none;
+}
+
 
 .container{
 max-width:820px;
@@ -41,7 +33,7 @@ width:100%;
 }
 
 /* =========================
-   INPUTS
+INPUTS
 ========================= */
 
 input[type="text"],
@@ -61,9 +53,8 @@ border-radius:8px;
 border:1px solid #ddd;
 }
 
-
 /* =========================
-   BUTTON
+BUTTON
 ========================= */
 
 button{
@@ -81,7 +72,7 @@ opacity:0.5;
 }
 
 /* =========================
-   MODAL
+MODAL
 ========================= */
 
 .modal{
@@ -114,7 +105,7 @@ max-width:400px;
 }
 
 /* =========================
-   UTILITIES
+UTILITIES
 ========================= */
 
 .hidden{
@@ -122,7 +113,7 @@ display:none !important;
 }
 
 /* =========================
-   LAYOUT
+LAYOUT
 ========================= */
 
 #inscriptionRow{
@@ -139,7 +130,7 @@ min-width:280px;
 }
 
 /* =========================
-   INFO BOX
+INFO BOX
 ========================= */
 
 .infoBox{
@@ -152,16 +143,12 @@ font-size:14px;
 }
 
 /* =========================
-   TABLEAUX
-========================= */
-
-/* =========================
-   TABLEAUX
+TABLEAUX
 ========================= */
 
 #tableauxContainer{
 display:grid;
-grid-template-columns:repeat(2, 1fr);
+grid-template-columns:repeat(2,1fr);
 gap:14px;
 margin-top:15px;
 }
@@ -170,9 +157,9 @@ margin-top:15px;
 position:relative;
 display:flex;
 flex-direction:column;
-gap:6px;
-padding:14px;
-min-height:95px;
+gap:3px;
+padding:10px;
+min-height:65px;
 border-radius:12px;
 border:1px solid #e5e5e5;
 background:white;
@@ -181,12 +168,6 @@ transition:all 0.2s;
 cursor:pointer;
 width:100%;
 }
-
-.tableau-row{
-width:100%;
-max-width:220px;
-}
-
 
 .tableau-row:hover{
 transform:translateY(-3px);
@@ -199,9 +180,8 @@ border:2px solid #007bff;
 background:#f4f8ff;
 }
 
-
 /* =========================
-   CHECKBOX
+CHECKBOX
 ========================= */
 
 #tableauxContainer input[type="checkbox"]{
@@ -233,7 +213,7 @@ transform:translate(-50%,-55%);
 }
 
 /* =========================
-   TABLEAU INTERDIT
+TABLEAU INTERDIT
 ========================= */
 
 .tableau-interdit{
@@ -255,7 +235,7 @@ transform:translate(-50%,-50%);
 }
 
 /* =========================
-   INFOS TABLEAU
+INFOS TABLEAU
 ========================= */
 
 .col-tableau{
@@ -267,13 +247,45 @@ font-weight:700;
 font-size:12px;
 }
 
+/* =========================
+STATS TABLEAU
+========================= */
+
+/* mobile par défaut */
+
+.tableau-stats{
+display:block;
+margin-top:3px;
+font-size:13px;
+}
+
+.tableau-stats span{
+display:block;
+margin-top:2px;
+}
+
 .stat-inscrit{
 font-weight:bold;
 }
 
 .stat-attente{
-font-size:13px;
 opacity:0.9;
+}
+
+/* desktop */
+
+@media screen and (min-width:601px){
+
+.tableau-stats{
+display:flex;
+gap:12px;
+align-items:center;
+}
+
+.tableau-stats span{
+display:inline-block;
+}
+
 }
 
 /* couleurs statut */
@@ -284,15 +296,15 @@ opacity:0.9;
 .grey{color:grey;font-weight:bold;}
 
 /* =========================
-   Taille titre 
+TITRES
 ========================= */
 
 h2{
-font-size:1,1rem
+font-size:1.1rem;
 }
 
 /* =========================
-   LICENCE
+LICENCE
 ========================= */
 
 #licenceCard{
@@ -300,21 +312,13 @@ max-width:340px;
 border-radius:16px;
 box-shadow:0 8px 20px rgba(0,0,0,0.08);
 border:1px solid #e8e8e8;
+text-align:center;
 }
 
 #licenceCard h2{
 font-size:18px;
 margin-bottom:10px;
 }
-
-
-
-#licenceCard{
-text-align:center;
-}
-/* =========================
-   champ licence
-========================= */
 
 #licence{
 width:90px;
@@ -337,7 +341,7 @@ background:white;
 }
 
 /* =========================
-   RESULTAT JOUEUR
+RESULTAT JOUEUR
 ========================= */
 
 #result{
@@ -349,7 +353,7 @@ line-height:1.6;
 }
 
 /* =========================
-   LOGO
+LOGO
 ========================= */
 
 .logo{
@@ -359,31 +363,20 @@ right:40px;
 width:60px;
 }
 
-/* ===== MOBILE ===== */
-
 /* =========================
-   MOBILE
+MOBILE
 ========================= */
 
 @media screen and (max-width:600px){
 
-/* cacher bouton admin */
-
-button[onclick="loginAdmin()"]{
-display:none !important;
-}
-
+button[onclick="loginAdmin()"],
 #logoutBtn{
 display:none !important;
 }
 
-/* texte général */
-
 body{
 font-size:14px;
 }
-
-/* container général */
 
 .container{
 max-width:340px;
@@ -391,20 +384,14 @@ margin:auto;
 padding:10px;
 }
 
-/* cartes */
-
 .card{
 padding:12px;
 margin-top:12px;
 }
 
-/* layout vertical */
-
 #inscriptionRow{
 display:block;
 }
-
-/* cartes licence et inscription */
 
 #licenceCard,
 #inscriptionCard{
@@ -413,14 +400,30 @@ max-width:340px;
 margin:auto;
 }
 
-/* titres */
+.licence-input{
+display:flex;
+gap:8px;
+justify-content:center;
+align-items:center;
+}
+
+.licence-btn{
+display:inline-block;
+margin-top:10px;
+padding:8px 14px;
+font-size:14px;
+background:#007bff;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+width:auto;
+}
 
 h2{
 font-size:16px;
 margin-bottom:8px;
 }
-
-/* champ licence */
 
 #licence{
 width:65px;
@@ -428,30 +431,21 @@ font-size:14px;
 padding:3px;
 }
 
-/* champ email */
-
 input[type="email"]{
 width:100%;
 }
-
-/* résultat joueur */
 
 #result{
 font-size:13px;
 line-height:1.4;
 }
 
-/* tableaux */
-
 #tableauxContainer{
-display:grid;
 grid-template-columns:1fr;
 gap:8px;
 max-width:240px;
 margin:auto;
 }
-
-/* cartes tableaux */
 
 .tableau-row{
 max-width:240px;
@@ -460,8 +454,6 @@ padding:10px;
 min-height:auto;
 margin:auto;
 }
-
-/* texte tableau */
 
 .col-tableau{
 font-size:15px;
@@ -479,8 +471,6 @@ font-size:12px;
 font-size:11px;
 }
 
-/* checkbox */
-
 #tableauxContainer input[type="checkbox"]{
 width:18px;
 height:18px;
@@ -488,15 +478,11 @@ top:10px;
 right:10px;
 }
 
-/* bouton validation */
-
 button{
 width:100%;
 font-size:15px;
 padding:12px;
 }
-
-/* logo */
 
 .logo{
 position:static;

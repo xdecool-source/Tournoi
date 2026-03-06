@@ -83,23 +83,12 @@ init();
 // saisie licence (compatible smartphone)
 let licenceTimer = null;
 
-document.getElementById("licence").addEventListener("input", (e) => {
-
-    resetInterface();
-
-    const val = e.target.value.trim();
-
-    clearTimeout(licenceTimer);
-
-    if(val.length >= 3){
-
-        licenceTimer = setTimeout(()=>{
-            check();
-        },400);   // délai rapide  mais sécurisé
-
+document.getElementById("licence").addEventListener("keydown", e=>{
+    if(e.key === "Enter"){
+        check();
     }
-
 });
+
 
 document.querySelector("#licence").addEventListener("keydown", e=>{
     if(e.key === "Enter" || e.key === "NumpadEnter" || e.keyCode === 13){
@@ -264,6 +253,8 @@ function renderTableaux(){
                 ${min ?? "-"}-${max ?? "-"}
             </span>
 
+           <div class="tableau-stats">
+
             <span class="stat-inscrit">
                 🏓 Inscrit ${used}/${cap}
             </span>
@@ -272,6 +263,8 @@ function renderTableaux(){
                 ⏳ Attente ${badge}
             </span>
 
+            </div>
+            
         </div>`;
         
     }).join("");

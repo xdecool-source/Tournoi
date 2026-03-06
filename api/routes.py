@@ -34,13 +34,15 @@ from services.db import (
     get_classement_par_tableau,
     promote_attente
 )
+
 # ---------- CACHE PLACES 
 
 places_cache = None
 places_cache_time = 0
 CACHE_TTL = 5
 
-# Backend 
+# --------- Backend 
+
 router = APIRouter()
 
 # ---------- HOME ----------
@@ -55,19 +57,17 @@ async def get_tableaux():
 
 # ---------- LICENCE FFTT ----------
 
+
 async def check_fftt_player(licence: str):
-    """Retourne joueur FFTT ou None"""
-    if MOCK_FFTT:
-        return None   #  IMPORTANT
     try:
         xml_data = await appel_fftt("xml_joueur.php", {"licence": licence})
         if not xml_data.strip():
             return None
-
         root = ET.fromstring(xml_data)
         return root.find(".//joueur")
     except Exception:
         return None
+    
 
 # ---------- LICENCE FFTT ----------
 
@@ -87,30 +87,25 @@ async def get_licence(licence: str):
                 licence
             ) or ""
     #  MODE MOCK → joueur fictif mais VALIDE
-    if MOCK_FFTT:
-        return {
-            "licence": licence,
-            "nom": "No Access FFTT",
-            "prenom": "Player",
-            "club": "Club Mock",
-            "points": "1000",
-            "classement": "10",
-            "categorie": "Senior",
-            "already_inscrit": already,
-            "tableaux_inscrits": tableaux_inscrits,
-            "mail": mail,
-            "fftt": True
-        }
-    #  MODE FFTT RÉEL
-    joueur = await check_fftt_player(licence)
+    
+    
+    xml_data = await appel_fftt("xml_joueur.php", {"licence": licence})
+
+    root = ET.fromstring(xml_data)
+    joueur = root.find(".//joueur")
 
     if joueur is not None:
+        points_raw = joueur.findtext("point", "0")
+        try:
+            points = int(float(points_raw))
+        except:
+            points = 0
         return {
             "licence": joueur.findtext("licence", licence),
             "nom": joueur.findtext("nom", ""),
             "prenom": joueur.findtext("prenom", ""),
             "club": joueur.findtext("club", ""),
-            "points": joueur.findtext("point", ""),
+            "points": points,
             "classement": joueur.findtext("clglob", ""),
             "categorie": joueur.findtext("categ", ""),
             "already_inscrit": already,
@@ -118,11 +113,36 @@ async def get_licence(licence: str):
             "mail": mail,
             "fftt": True
         }
-    #  inconnu FFTT
+    
+        
+# -------- MODE FFTT RÉEL
+
+    joueur = await check_fftt_player(licence)
+
+    if joueur is not None:
+        points_raw = joueur.findtext("point", "0")
+        try:
+            points = int(float(points_raw))
+        except:
+            points = 0
+        return {
+            "licence": joueur.findtext("licence", licence),
+            "nom": joueur.findtext("nom", ""),
+            "prenom": joueur.findtext("prenom", ""),
+            "club": joueur.findtext("club", ""),
+            "points": points,
+            "classement": joueur.findtext("clglob", ""),
+            "categorie": joueur.findtext("categ", ""),
+            "already_inscrit": already,
+            "tableaux_inscrits": tableaux_inscrits,
+            "mail": mail,
+            "fftt": True
+        }
+#  ------- Inconnu FFTT
     return {
         "licence": licence,
-        "nom": "Inconnu",
-        "prenom": "Inconnu",
+        "nom": "Inconnu FFTT",
+        "prenom": "Inconnu FFTT",
         "club": "TT Inconnu",
         "points": "1000",
         "classement": "00",

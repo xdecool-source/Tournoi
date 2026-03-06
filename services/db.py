@@ -1,4 +1,3 @@
-
 # connexion PostgreSQL
 # création des tables
 # gestion des inscriptions
@@ -46,7 +45,7 @@ async def init_db_pool():
             max_size=10,
             ssl="require"
         )
-print("CREATING TABLES NOW")
+print("Creation tables si besoin")
 
 # ----------- init DB
 
@@ -77,14 +76,6 @@ async def init_db():
         """)
         
         await conn.execute("""
-        CREATE TABLE IF NOT EXISTS export_control (
-            id INTEGER PRIMARY KEY,
-            counter INTEGER NOT NULL DEFAULT 0,
-            trigger_count INTEGER NOT NULL DEFAULT 5
-        )
-        """)
-        
-        await conn.execute("""
         CREATE TABLE IF NOT EXISTS mail_control (
             id INT PRIMARY KEY DEFAULT 1,
             last_admin_mail DATE,
@@ -93,11 +84,6 @@ async def init_db():
         """)
         
         #  Initialisation si vide
-        await conn.execute("""
-        INSERT INTO export_control (id, counter, trigger_count)
-        VALUES (1, 0, 5)
-        ON CONFLICT (id) DO NOTHING
-        """)
         
         await conn.execute("""
         INSERT INTO mail_control (id, last_admin_mail, last_count)

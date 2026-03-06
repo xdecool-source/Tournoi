@@ -1,14 +1,26 @@
 # Config de L"Appli : Parametres
+######  Si chgt des ses parametres : Arret server et reload ceci pour le mode local ou distant FFTT
+######  python -m uvicorn main:app --reload
 
 import os
 from dotenv import load_dotenv
 load_dotenv()    # si existe .env et pas de variable globale alors .env
 
+MOCK_FFTT = os.getenv("MOCK_FFTT", "true").lower() == "true"
+BASE_URL = os.getenv("BASE_URL", "")
+APP_ID = os.getenv("APP_ID", "")
+MOT_DE_PASSE = os.getenv("MOT_DE_PASSE", "")
+ADMIN_PASSWORD_HASH = os.getenv("ADMIN_PASSWORD_HASH")
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+#FINAL_FILE = os.path.join(ROOT_DIR, "inscription", "Inscriptions.xlsx")
+# ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
+
 TABLEAUX = {
     "T1": {"min": 500, "max": 799, "capacite": 10, "attente": 2},
     "T2": {"min": 500, "max": 999, "capacite": 10, "attente": 2},
-    "T3": {"min": 500, "max": 1299, "capacite": 3, "attente": 2},
-    "T4": {"min": 700, "max": 1599, "capacite": 3, "attente": 2},
+    "T3": {"min": 500, "max": 1299, "capacite": 10, "attente": 2},
+    "T4": {"min": 700, "max": 1599, "capacite": 10, "attente": 2},
     "T5": {"min": 800, "max": 1999, "capacite": 30, "attente": 2},
     "TS": {"min": None, "max": None,"capacite": 30, "attente": 3},
     "TH": {"min": None, "max": None,"capacite": 30, "attente": 2}
@@ -24,15 +36,3 @@ PRIX = {
     "TH": 9
 }
 
-######  Si chgt des ses parametres : Arret server et reload ceci pour le mode local ou distant FFTT
-######  python -m uvicorn main:app --reload
-
-# ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
-MOCK_FFTT = os.getenv("MOCK_FFTT", "true").lower() == "true"
-BASE_URL = os.getenv("BASE_URL", "")
-APP_ID = os.getenv("APP_ID", "")
-MOT_DE_PASSE = os.getenv("MOT_DE_PASSE", "")
-ADMIN_PASSWORD_HASH = os.getenv("ADMIN_PASSWORD_HASH")
-
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-#FINAL_FILE = os.path.join(ROOT_DIR, "inscription", "Inscriptions.xlsx")

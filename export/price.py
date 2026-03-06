@@ -1,3 +1,7 @@
+# Prix dans confi.py
+# Calcul des prix pour la feuille 
+
+
 from openpyxl.styles import PatternFill, Font, Alignment
 from openpyxl.drawing.image import Image
 from core.config import PRIX
@@ -6,7 +10,9 @@ from pathlib import Path
 def create_price_sheet(wb, data_joueurs, root_dir):
 
     ws = wb.create_sheet("Prix")
-    # -------- IMAGE --------
+    
+# -------- LOGO TOURNOI --------
+
     image_path = root_dir / "assets" / "Tournoi.jpg"
     if image_path.exists():
         img = Image(str(image_path))
@@ -19,7 +25,8 @@ def create_price_sheet(wb, data_joueurs, root_dir):
     total_attente_general = 0
     lignes_prix = []
 
-    # -------- CALCUL DES MONTANTS --------
+# -------- CALCUL DES MONTANTS --------
+
     for dossard, infos in sorted(data_joueurs.items()):
         montant_valide = 0
         montant_attente = 0
@@ -40,7 +47,8 @@ def create_price_sheet(wb, data_joueurs, root_dir):
             montant_attente
         ])
 
-    # -------- TOTAUX --------
+# -------- TOTAUX --------
+
     ws[f"A{start_row}"] = "Montants par joueur"
     ws[f"A{start_row}"].font = Font(bold=True, size=14)
     ws[f"A{start_row+1}"] = "Total encaissé (validés) :"
@@ -54,9 +62,9 @@ def create_price_sheet(wb, data_joueurs, root_dir):
     ws[f"A{start_row+1}"].font = Font(bold=True)
     ws[f"A{start_row+2}"].font = Font(bold=True)
 
-    # -------- TABLEAU DÉTAILLÉ --------
-    header_row = start_row + 4
+# -------- TABLEAU DÉTAILLÉ --------
 
+    header_row = start_row + 4
     headers = [
         "Dossard",
         "Nom Prénom",
@@ -87,7 +95,8 @@ def create_price_sheet(wb, data_joueurs, root_dir):
         data_row += 1
     ws.freeze_panes = f"A{header_row+1}"
 
-    # -------- AUTO WIDTH --------
+# -------- AUTO WIDTH --------
+
     for col in ws.columns:
         max_length = 0
         col_letter = col[0].column_letter

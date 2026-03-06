@@ -30,23 +30,34 @@ def tmc(tm):
 async def appel_fftt(endpoint, params_metier):
 
     # -----------  MOCK DEV
+    # simule un retour xml
     
     if MOCK_FFTT:
-        licence = params_metier.get("licence")
+        licence = params_metier.get("licence", "000000")
+
+        joueurs = {
+            "111": ("Decool", "Xavier", "TT Thuirinois", 1100),
+            "222": ("Durand", "Paul", "Montpellier TT", 1450)
+        }
+
+        nom, prenom, club, point = joueurs.get(
+            licence,
+            ("Inconnu", "Test", "Club Dev", 1000)
+        )
+
         return f"""
         <root>
             <joueur>
                 <licence>{licence}</licence>
-                <nom>Decool</nom>
-                <prenom>Xavier</prenom>
-                <club>TT Thuirinois</club>
-                <clglob>15000</clglob>
-                <point>1100</point>
+                <nom>{nom}</nom>
+                <prenom>{prenom}</prenom>
+                <club>{club}</club>
+                <clglob>{point}</clglob>
+                <point>{point}</point>
                 <categ>S</categ>
             </joueur>
         </root>
         """
-
     tm = timestamp()
     params = {
         "id": APP_ID,

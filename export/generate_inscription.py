@@ -1,3 +1,11 @@
+# Génération du fichier Excel des Inscriptions 
+# Sauvegarde en memoir du fichier Excel
+# Pour un envoi par mail selon l'algo suivant  
+# dernier mail n'a pas été envoyé aujourd'hui
+# et nombre d'inscriptions a changé
+# attention derniere journée pas d'envoi de mail donc pas de fichier jour
+# il faut lancer le batch !!!!!
+
 #from pathlib import Path
 from openpyxl import Workbook
 from export.db import fetch_inscriptions
@@ -32,7 +40,7 @@ def generate():
     create_tableaux_sheet(wb, data_by_table)
     create_price_sheet(wb, data_joueurs,root_dir)
 
-    # génération en mémoire
+# --------- génération en mémoire
     stream = BytesIO()
     wb.save(stream)
     stream.seek(0)

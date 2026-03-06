@@ -15,47 +15,35 @@ import aiosmtplib
 from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
 from email.message import EmailMessage
-
 from core.config import TABLEAUX
 from services.db import get_conn
 
-# --------------------------------------------------
-# Chargement environnement
-# --------------------------------------------------
+# ------------- Chargement environnement
 
 load_dotenv(".env", override=False)
-
 ENV = os.getenv("ENV", "dev")
 print("MAIL MODE =", ENV)
 
-# --------------------------------------------------
-# SMTP (DEV / LOCAL)
-# --------------------------------------------------
+# ------------ SMTP (DEV / LOCAL)
 
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
 SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASS = os.getenv("SMTP_PASS")
 
-# --------------------------------------------------
-# BREVO (PRODUCTION)
-# --------------------------------------------------
+# ------------ BREVO (PRODUCTION)
 
 BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 
-# --------------------------------------------------
-# COMMUN
-# --------------------------------------------------
+# ------------ IDENTIQUE
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 SITE_URL = os.getenv("SITE_URL")
 
 env = Environment(loader=FileSystemLoader("templates"))
 
-# --------------------------------------------------
-# Construction HTML email
-# --------------------------------------------------
+# ------------ Construction HTML email
 
 async def build_email_html(data: dict, type_mail: str):
 
@@ -111,9 +99,7 @@ async def build_email_html(data: dict, type_mail: str):
     )
     return html_content
 
-# --------------------------------------------------
-# Envoi SMTP (DEV)
-# --------------------------------------------------
+# ------------ Envoi SMTP (DEV)
 
 async def send_smtp_email(to_email: str, subject: str, html_content: str):
     print("STEP 4 - envoi SMTP")
@@ -138,9 +124,7 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
         print("❌ ERREUR SMTP :", e)
 
 
-# --------------------------------------------------
-# Envoi BREVO (PROD)
-# --------------------------------------------------
+# ------------ Envoi BREVO (PROD)
 
 async def send_brevo_email(to_email: str, subject: str, html_content: str):
 
@@ -169,9 +153,7 @@ async def send_brevo_email(to_email: str, subject: str, html_content: str):
         print("Brevo response:", response.text)
         response.raise_for_status()
 
-# --------------------------------------------------
-# Fonction principale
-# --------------------------------------------------
+# ------------ Fonction principale
 
 async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
 

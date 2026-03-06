@@ -1,4 +1,4 @@
-# Génere fichier excel inscription et l'envoie par mail
+# Génere fichier excel inscription.xlsx et l'envoie par mail
 
 import asyncio
 import os
@@ -11,40 +11,31 @@ from dotenv import load_dotenv
 from services.db import init_db_pool, init_db
 from export.generate_inscription import generate
 
-# --------------------------------------------------
-# Chargement environnement
-# --------------------------------------------------
+# ---------- Chargement environnement
+
 
 load_dotenv(".env", override=False)
 ENV = os.getenv("ENV", "dev")
 print("MAIL MODE =", ENV)
 
-# --------------------------------------------------
-# SMTP (DEV / LOCAL)
-# --------------------------------------------------
+ # ---------- SMTP (DEV / LOCAL)
 
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
 SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASS = os.getenv("SMTP_PASS")
 
-# --------------------------------------------------
-# BREVO (PRODUCTION)
-# --------------------------------------------------
+# ---------- BREVO (PRODUCTION)
 
 BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 
-# --------------------------------------------------
-# COMMUN
-# --------------------------------------------------
+# ---------- COMMUN
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 SITE_URL = os.getenv("SITE_URL")
 
-# --------------------------------------------------
-# ENVOI SMTP
-# --------------------------------------------------
+# ---------- ENVOI SMTP
 
 async def send_smtp_email(msg):
 
@@ -59,9 +50,7 @@ async def send_smtp_email(msg):
     )
     print("SMTP mail envoyé")
 
-# --------------------------------------------------
-# ENVOI BREVO
-# --------------------------------------------------
+# ---------- ENVOI BREVO
 
 async def send_brevo_email(to_email, subject, html_content, excel_stream):
 
@@ -96,9 +85,7 @@ async def send_brevo_email(to_email, subject, html_content, excel_stream):
         print("Brevo response:", response.text)
         response.raise_for_status()
 
-# --------------------------------------------------
-# ROUTEUR MAIL
-# --------------------------------------------------
+# ---------- ROUTEUR MAIL
 
 async def send_email(excel_stream):
 
@@ -126,9 +113,7 @@ async def send_email(excel_stream):
         )
         await send_smtp_email(msg)
 
-# --------------------------------------------------
-# MAIN
-# --------------------------------------------------
+# ---------- MAIN
 
 async def main():
 

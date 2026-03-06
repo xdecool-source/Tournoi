@@ -1,4 +1,5 @@
 # Génere fichier excel inscription et l'envoie par mail
+# Mode batch en local sur Pc
 
 import asyncio
 import os
