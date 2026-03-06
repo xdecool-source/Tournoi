@@ -96,6 +96,29 @@ document.querySelector("#licence").addEventListener("keydown", e=>{
     }
 });
 
+/* RESET SI ON RECLIQUE DANS LICENCE */
+document.getElementById("licence").addEventListener("click", ()=>{
+    if(currentPlayer){
+        resetInterface();
+        document.getElementById("licence").value="";
+    }
+});
+
+const licenceInput = document.getElementById("licence");
+
+/* reset interface si on clique dans licence */
+licenceInput.addEventListener("click", ()=>{
+    resetInterface();
+});
+
+/* reset si on commence une nouvelle saisie */
+licenceInput.addEventListener("input", ()=>{
+    if(currentPlayer){
+        resetInterface();
+    }
+});
+
+
 function resetInterface(){
 
     // reset variables

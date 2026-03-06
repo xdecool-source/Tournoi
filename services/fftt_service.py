@@ -42,7 +42,7 @@ async def appel_fftt(endpoint, params_metier):
 
         nom, prenom, club, point = joueurs.get(
             licence,
-            ("Inconnu", "Test", "Club Dev", 1000)
+            ("Le Joueur", "Xavier", "Perpignan La Rayonnante", 1000)
         )
 
         return f"""
