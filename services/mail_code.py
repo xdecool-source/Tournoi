@@ -16,6 +16,7 @@ from services.db import get_conn
 
 load_dotenv(".env", override=False)
 ENV = os.getenv("ENV", "dev")
+print("ENV VALUE =", ENV)
 
 # ------------ SMTP (DEV / LOCAL)
 
