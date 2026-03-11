@@ -48,7 +48,7 @@ def store_verification_code(email):
     if email in verification_codes:
         data = verification_codes[email]
         if now < data["expire"]:
-            raise ValueError("Un code est déjà envoyé. Attendez 10 minutes.")
+            raise ValueError("Un code est déjà envoyé. Attendez 5 minutes.")
     code = generate_code()
     verification_codes[email] = {
         "code": code,
@@ -127,7 +127,7 @@ async def send_confirmation_email(to_email: str, html_content: str, type_mail: s
         if type_mail == "creation"
         else "Modification d'inscription - Tournoi Homopongistus"
     )
-    if ENV == "prod":
+    if ENV == "production":
         await send_brevo_email(
             to_email,
             subject,

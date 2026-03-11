@@ -240,14 +240,17 @@ font-size:12px;
 /*  STATS TABLEAU */
 
 .tableau-stats{
-display:block;
-margin-top:3px;
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:4px;
 font-size:13px;
 }
 
 .tableau-stats span{
-display:block;
-margin-top:2px;
+display:flex;
+align-items:center;
+gap:4px;
 }
 
 .stat-inscrit{
@@ -505,22 +508,22 @@ margin-left:auto;
 
 .tableau-row.green{
 background:#73e5a4;
-border-left:6px solid #036b1de5;
+border-left:4px solid #036b1de5;
 }
 
 .tableau-row.orange{
 background:#fff6e5;
-border-left:6px solid #d88a14;
+border-left:4px solid #d88a14;
 }
 
 .tableau-row.red{
-background:#fdeaea;
-border-left:6px solid #e53935;
+background:#f69aa5;
+border-left:4px solid #e53935;
 }
 
 .tableau-row.grey{
 background:#f1f1f1;
-border-left:6px solid #9e9e9e;
+border-left:4px solid #9e9e9e;
 }
 
 /* EMAIL + CODE VERIFICATION */
