@@ -127,7 +127,7 @@ async def send_confirmation_email(to_email: str, html_content: str, type_mail: s
         if type_mail == "creation"
         else "Modification d'inscription - Tournoi Homopongistus"
     )
-    if ENV == "production":
+    if ENV != "dev":
         await send_brevo_email(
             to_email,
             subject,
