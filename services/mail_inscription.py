@@ -174,3 +174,24 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
             subject,
             html_content
         )
+        
+# ------- FONCTION GENERIQUE ENVOI MAIL
+
+async def send_email(to_email: str, subject: str, html_content: str):
+
+    print("ENV VALUE =", ENV)
+
+    if ENV != "dev":
+        await send_brevo_email(
+            to_email,
+            subject,
+            html_content
+        )
+    else:
+        await send_smtp_email(
+            to_email,
+            subject,
+            html_content
+        )
+        
+    
