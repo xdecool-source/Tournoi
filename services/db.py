@@ -5,6 +5,7 @@
 # déclenchement des exports / mails admin
 
 import asyncpg, os
+
 from datetime import datetime
 from core.config import TABLEAUX
 from contextlib import asynccontextmanager
@@ -12,8 +13,6 @@ from dotenv import load_dotenv
 from datetime import date
 
 load_dotenv(".env", override=False)
-if os.getenv("ENV") != "production":
-    print("Mode dev")
         
 # load_dotenv()  # charge le fichier .env
 # Variable globale (railway) on la priorité car il n'existe pas de .env 
@@ -273,29 +272,23 @@ async def get_conn():
 async def should_send_admin_mail(conn, current_count):
 
     row = await conn.fetchrow("""
-        SELECT last_admin_mail, last_count
+        SELECT last_count
         FROM mail_control
         WHERE id=1
     """)
-
+    # premier envoi si la ligne n'existe pas
     if not row:
         return True
-    last_date = row["last_admin_mail"]
     last_count = row["last_count"]
-    today = date.today()
-
-    # envoyer seulement si
-    # 1 nouvelle journée
-    # 2 inscriptions différentes
-    if last_date != today and current_count != last_count:
+    # envoyer seulement si le nombre d'inscriptions a changé
+    if current_count != last_count:
         return True
     return False
-
-
+	
 # ----------- Mise a Jour  
+
 async def update_admin_mail_status(conn, current_count):
 
-    from datetime import date
     await conn.execute("""
         UPDATE mail_control
         SET last_admin_mail=$1,

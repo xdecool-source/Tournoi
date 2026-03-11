@@ -16,15 +16,9 @@ from export.excel_builder import (
     create_tableaux_sheet
 )
 from export.price import create_price_sheet
-from export.excel_builder import create_tableaux_sheet
 from io import BytesIO
 from pathlib import Path
 root_dir = Path(__file__).resolve().parent.parent
-
-#ROOT_DIR = Path(__file__).resolve().parent.parent
-#EXPORT_DIR = ROOT_DIR / "inscription"
-#EXPORT_DIR.mkdir(parents=True, exist_ok=True)
-#FINAL_FILE = EXPORT_DIR / "Inscription.xlsx"
 
 def generate():
     rows = fetch_inscriptions()
@@ -44,5 +38,7 @@ def generate():
     stream = BytesIO()
     wb.save(stream)
     stream.seek(0)
+    # ------ libere memoire 
+    wb.close()  
     print("✅ Excel généré en mémoire")
     return stream

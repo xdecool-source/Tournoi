@@ -1,5 +1,4 @@
-# Génere fichier excel inscription.xlsx et l'envoie par mail
-
+# Génère un Excel des inscriptions et l’envoie par email à l’admin.
 import asyncio
 import os
 import base64
@@ -13,10 +12,8 @@ from export.generate_inscription import generate
 
 # ---------- Chargement environnement
 
-
 load_dotenv(".env", override=False)
 ENV = os.getenv("ENV", "dev")
-print("MAIL MODE =", ENV)
 
  # ---------- SMTP (DEV / LOCAL)
 

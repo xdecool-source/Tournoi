@@ -22,7 +22,6 @@ from services.db import get_conn
 
 load_dotenv(".env", override=False)
 ENV = os.getenv("ENV", "dev")
-print("MAIL MODE =", ENV)
 
 # ------------ SMTP (DEV / LOCAL)
 
@@ -122,7 +121,6 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
         print("✅ MAIL SMTP ENVOYÉ")
     except Exception as e:
         print("❌ ERREUR SMTP :", e)
-
 
 # ------------ Envoi BREVO (PROD)
 

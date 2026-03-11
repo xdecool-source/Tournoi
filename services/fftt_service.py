@@ -29,8 +29,8 @@ def tmc(tm):
 
 async def appel_fftt(endpoint, params_metier):
 
-    # -----------  MOCK DEV
-    # simule un retour xml
+# -----------  MOCK DEV -------------
+# ---------Simule un retour xml------
     
     if MOCK_FFTT:
         licence = params_metier.get("licence", "000000")

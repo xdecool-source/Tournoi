@@ -16,7 +16,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="/static/css/style.css">
-<script src="/static/js/app.js?v=5" defer></script>
+<!-- <script src="/userinterface/javascript/app.js?v=5" defer></script> -->
+<script type="module" src="/static/javascript/app.js"></script>
 <link rel="icon" href="/static/favicon.ico">
 </head>
 
@@ -58,14 +59,23 @@ Si vous souhaitez modifier votre inscription, merci d'envoyer un mail.
 ========================= -->
 
 <div id="inscriptionCard" class="card hidden">
+
 <h2>👍🏻Selection des Tableaux</h2>
-<input id="email" type="email" placeholder="Email">
+
+<div class="email-row">
+    <input id="email" type="email" placeholder="Ton mail">
+    <button class="btn-code" onclick="sendCode()">Envoie le code</button>
+</div>
 <div id="emailError" class="error"></div>
-<div id="tableauxContainer"></div>
-<button onclick="sendInscription()">Valider</button>
+
+<div class="code-row">
+    <input id="verificationCode" placeholder="Saisir votre Code reçu par Mail">
+    <button class="btn-code" onclick="verifyCode()">Vérifie le code</button>
 </div>
-</div>
-</div>
+<div id="tableauxContainer" class="hidden"></div>
+<button id="btnValider" onclick="sendInscription()" style="display:none;">
+Valider
+</button>
 </div>
 
 <!-- =========================
@@ -116,12 +126,11 @@ Merci pour votre inscription.<br>
 Redirection automatique...
 </p>
 </div>
-
 ...
 </div>
 
 <div style="position:fixed; bottom:5px; right:10px; font-size:11px; opacity:0.5;">
-TT Thuir XDC Version: v1.6
+TT Thuir XDC Version: v1.7
 </div>
 
 </body>

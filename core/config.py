@@ -13,9 +13,6 @@ MOT_DE_PASSE = os.getenv("MOT_DE_PASSE", "")
 ADMIN_PASSWORD_HASH = os.getenv("ADMIN_PASSWORD_HASH")
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-#FINAL_FILE = os.path.join(ROOT_DIR, "inscription", "Inscriptions.xlsx")
-# ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
-
 TABLEAUX = {
     "T1": {"min": 500, "max": 799, "capacite": 10, "attente": 2},
     "T2": {"min": 500, "max": 999, "capacite": 10, "attente": 2},

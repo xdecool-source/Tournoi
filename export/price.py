@@ -13,7 +13,7 @@ def create_price_sheet(wb, data_joueurs, root_dir):
     
 # -------- LOGO TOURNOI --------
 
-    image_path = root_dir / "assets" / "Tournoi.jpg"
+    image_path = root_dir / "ressources" / "Tournoi.jpg"
     if image_path.exists():
         img = Image(str(image_path))
         img.width = 600

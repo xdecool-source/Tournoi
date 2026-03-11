@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv(".env", override=False)
 if os.getenv("ENV") != "production":
-    print("Mode dev")
+    print("Mode Test No access FFTT")
         
 # load_dotenv()  # charge le fichier .env
 # Variable globale (railway) on la priorité car il n'existe pas de .env 

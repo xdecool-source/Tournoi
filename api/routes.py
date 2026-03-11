@@ -6,16 +6,17 @@
 # fournit les exports admin
 # gère login admin
 
-from fastapi import APIRouter, HTTPException, Request, Response
+from fastapi import APIRouter, HTTPException, Request, Response, BackgroundTasks
 from fastapi.responses import HTMLResponse
-from services.fftt_service import appel_fftt
-from ui.screens import home_screen
-from core.config import TABLEAUX, ADMIN_PASSWORD_HASH, MOCK_FFTT
-from fastapi import BackgroundTasks
-from services.mail_service import send_confirmation_email
 from fastapi.responses import StreamingResponse
+from core.config import TABLEAUX, ADMIN_PASSWORD_HASH, MOCK_FFTT
+from services.fftt_service import appel_fftt
+from userinterface.screens import home_screen
 from export.generate_inscription import generate 
-from services.admin_export_service import process_admin_export
+from services.admin_ex_mail import process_admin_export
+from services.mail_inscription import send_confirmation_email, send_smtp_email
+from services.mail_code import store_verification_code, verify_code
+from tasks.excel_tournoi import main as ex_tournoi
 
 import xml.etree.ElementTree as ET
 import time
@@ -68,7 +69,6 @@ async def check_fftt_player(licence: str):
     except Exception:
         return None
     
-
 # ---------- LICENCE FFTT ----------
 
 @router.get("/licence/{licence}")
@@ -88,12 +88,9 @@ async def get_licence(licence: str):
             ) or ""
     #  MODE MOCK → joueur fictif mais VALIDE
     
-    
     xml_data = await appel_fftt("xml_joueur.php", {"licence": licence})
-
     root = ET.fromstring(xml_data)
     joueur = root.find(".//joueur")
-
     if joueur is not None:
         points_raw = joueur.findtext("point", "0")
         try:
@@ -113,7 +110,6 @@ async def get_licence(licence: str):
             "mail": mail,
             "fftt": True
         }
-    
         
 # -------- MODE FFTT RÉEL
 
@@ -268,10 +264,6 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
         await save_inscription(data)
         print("INSCRIPTION OK - lancement mail")
         
-        # EXPORT ADMIN (indépendant du mail)
-        # EXPORT ADMIN en arrière-plan
-        background_tasks.add_task(process_admin_export)
-        
         # SEND MAIL JOUEUR
         background_tasks.add_task(
             send_confirmation_email,
@@ -325,10 +317,6 @@ def logout_admin(response: Response):
     response.delete_cookie("admin")
     return {"success": True}
 
-
-from tasks.ex_tournoi import main as ex_tournoi
-import asyncio
-
 # ---------- export excel avec token  ----------
 
 @router.get("/admin/{ADMIN_PATH}/export")
@@ -336,3 +324,40 @@ import asyncio
 async def export():
     await ex_tournoi()
     return {"status": "excel envoyé"}
+
+# ---------- Verification Mail  ----------
+
+@router.post("/send-code")
+
+async def send_code(data: dict, background_tasks: BackgroundTasks):
+
+    email = data["email"].strip().lower()
+    try:
+        code = store_verification_code(email)
+    except ValueError as e:
+        return {
+            "success": False,
+            "error": str(e)
+        }
+    html = f"""
+    <h2>Code de vérification de l'Homopongistus</h2>
+    <p>Votre code est :</p>
+    <h1>{code}</h1>
+    """
+    background_tasks.add_task(
+        send_smtp_email,
+        email,
+        "Code de vérification",
+        html
+    )
+    return {"success": True}
+
+@router.post("/verify-code")
+
+async def verify_code_api(data: dict):
+
+    email = data["email"].strip().lower()
+    code = data["code"]
+    print("VERIFY CALL:", email, code)
+    valid = verify_code(email, code)
+    return {"success": valid}
