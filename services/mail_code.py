@@ -131,9 +131,13 @@ async def send_confirmation_email(to_email: str, html_content: str, type_mail: s
     
     print("ENV VALUE =", ENV)
     print("USING BREVO MODE")
-    
+    if ENV != "dev":
+        await send_brevo_email(to_email, subject, html_content)
+    else:
+        await send_smtp_email(to_email, subject, html_content)
     
     if ENV != "dev":
+        
         await send_brevo_email(
             to_email,
             subject,

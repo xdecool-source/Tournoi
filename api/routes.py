@@ -13,8 +13,7 @@ from core.config import TABLEAUX, ADMIN_PASSWORD_HASH, MOCK_FFTT
 from services.fftt_service import appel_fftt
 from userinterface.screens import home_screen
 from export.generate_inscription import generate 
-from services.admin_ex_mail import process_admin_export
-from services.mail_inscription import send_confirmation_email, send_smtp_email
+from services.mail_inscription import send_email, send_confirmation_email
 from services.mail_code import store_verification_code, verify_code
 from tasks.excel_tournoi import main as ex_tournoi
 
@@ -345,9 +344,9 @@ async def send_code(data: dict, background_tasks: BackgroundTasks):
     <h1>{code}</h1>
     """
     background_tasks.add_task(
-        send_smtp_email,
+        send_email,
         email,
-        "Code de vérification",
+        "Code de vérification - Homopongistus",
         html
     )
     return {"success": True}

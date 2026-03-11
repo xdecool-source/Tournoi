@@ -101,6 +101,7 @@ async def build_email_html(data: dict, type_mail: str):
 # ------------ Envoi SMTP (DEV)
 
 async def send_smtp_email(to_email: str, subject: str, html_content: str):
+    
     print("STEP 4 - envoi SMTP")
     message = EmailMessage()
     message["From"] = FROM_EMAIL
