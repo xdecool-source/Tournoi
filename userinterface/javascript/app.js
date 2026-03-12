@@ -1,5 +1,4 @@
-console.log("APP JS CHARGE");
-
+console.log("APP TOURNOI CHARGEE");
 
 import { loginAdmin, logoutAdmin } from "./admin.js"
 import { sendInscription } from "./inscription.js"
@@ -36,7 +35,6 @@ async function init(){
     setTimeout(()=>{
         document.getElementById("licence")?.focus();
     },200);
-
 
     // déclenche check quand on appuie sur Entrée
     document.getElementById("licence").addEventListener("keydown", e=>{
@@ -207,8 +205,8 @@ window.check = check;
 
 function updateAdminButtons(){
 
+    console.log("APP UPDATE ADMIN BUTTONS");
     const isAdmin = document.cookie.includes("admin=1");
-
     const adminBtn  = document.querySelector("button[onclick='loginAdmin()']");
     const logoutBtn = document.getElementById("logoutBtn");
     if(isAdmin){

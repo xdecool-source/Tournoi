@@ -3,7 +3,6 @@ import { setCurrentPlayer, setJoueurPoints, setEmailVerified } from "./state.js"
 
 export function resetInterface(){
 
-
     setCurrentPlayer(null);
     setJoueurPoints(null);
     setEmailVerified(false);

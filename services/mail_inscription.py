@@ -52,9 +52,9 @@ async def build_email_html(data: dict, type_mail: str):
         else "email_modification.html"
     )
 
-    print("STEP 1 - chargement template")
+    # ----------- print("STEP 1 - chargement template")
     template = env.get_template(template_name)
-    print("STEP 2 - construction tableaux")
+    # ----------- print("STEP 2 - construction tableaux")
     tableaux_details = []
     async with get_conn() as conn:
         for t in data["tableaux"]:
@@ -85,7 +85,7 @@ async def build_email_html(data: dict, type_mail: str):
                 ligne = f"{t} ({min_aff}-{max_aff} pts) — {statut_txt}"
             tableaux_details.append(ligne)
     tableaux_str = "<br>".join(tableaux_details)
-    print("STEP 3 - render HTML")
+    # ----------- print("STEP 3 - render HTML")
     
     html_content = template.render(
         prenom=data["prenom"],
@@ -102,7 +102,7 @@ async def build_email_html(data: dict, type_mail: str):
 
 async def send_smtp_email(to_email: str, subject: str, html_content: str):
     
-    print("STEP 4 - envoi SMTP")
+    # ----------- print("STEP 4 - envoi SMTP")
     message = EmailMessage()
     message["From"] = FROM_EMAIL
     message["To"] = to_email
@@ -127,7 +127,7 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
 
 async def send_brevo_email(to_email: str, subject: str, html_content: str):
 
-    print("STEP 4 - envoi BREVO")
+    # ----------- print("STEP 4 - envoi BREVO")
     payload = {
         "sender": {"email": FROM_EMAIL},
         "to": [{"email": to_email}],
