@@ -1,4 +1,6 @@
 import { resetInterface } from "./reset.js";
+import { openModal } from "./modal.js";
+import { currentPlayer } from "./state.js";
 
 export async function loginAdmin(){
 
@@ -10,34 +12,43 @@ export async function loginAdmin(){
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({pwd})
     });
+
     const data = await res.json();
+
     if(data.success){
-        // Met à jour les boutons sans reload
+
         const adminBtn = document.querySelector("button[onclick='loginAdmin()']");
         const logoutBtn = document.getElementById("logoutBtn");
+
         if(adminBtn) adminBtn.style.display="none";
         if(logoutBtn) logoutBtn.style.display="block";
-        // Si une licence est déjà chargée → on recharge juste son état
+
         if(currentPlayer){
-            await check();
+            await window.check();   // ✔ correction
         }
+
     }else{
         openModal("Mot de passe incorrect");
     }
+
     setTimeout(()=>{
-    document.getElementById("licence")?.focus();
-    }, 100);
+        document.getElementById("licence")?.focus();
+    },100);
 }
 
 export async function logoutAdmin(){
 
     await fetch("/logout-admin",{method:"POST"});
+
     const adminBtn = document.querySelector("button[onclick='loginAdmin()']");
     const logoutBtn = document.getElementById("logoutBtn");
+
     if(adminBtn) adminBtn.style.display="block";
     if(logoutBtn) logoutBtn.style.display="none";
+
     resetInterface();
+
     setTimeout(()=>{
-    document.getElementById("licence")?.focus();
-    }, 100);
+        document.getElementById("licence")?.focus();
+    },100);
 }

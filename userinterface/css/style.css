@@ -526,6 +526,11 @@ background:#f1f1f1;
 border-left:4px solid #9e9e9e;
 }
 
+.tableau-row.red,
+.tableau-row.grey{
+    cursor:not-allowed;
+}
+
 /* EMAIL + CODE VERIFICATION */
 
 .email-row,

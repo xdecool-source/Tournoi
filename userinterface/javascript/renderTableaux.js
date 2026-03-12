@@ -1,15 +1,8 @@
-// ------------ Comptage pour les tableaux ---------------------
-// ------------ function renderTableaux(tableaux, places) ------
+// ------------ RENDER TABLEAUX ---------------------
 
 export function renderTableaux(TABLEAUX, places, joueurPoints){
 
     const isAdmin = document.cookie.includes("admin=1");
-    // 🔹 Sauvegarde focus + position curseur
-    const activeElement = document.activeElement;
-    let cursorPosition = null;
-    if(activeElement && activeElement.tagName === "INPUT"){
-        cursorPosition = activeElement.selectionStart;
-    }
     const checked = Array.from(
         document.querySelectorAll("#tableauxContainer input:checked")
     ).map(cb => cb.value);
@@ -25,71 +18,52 @@ export function renderTableaux(TABLEAUX, places, joueurPoints){
         const min = conf.min ?? null;
         const max = conf.max ?? null;
         let interdit = false;
-
         if(joueurPoints !== null){
-        if(min !== null && joueurPoints < min) interdit = true;
-        if(max !== null && joueurPoints > max) interdit = true;
-    }
-
-    let disabledAttr = "";
-    let color = "green";
-    let badge = `${att}/${attMax}`;
-
-    if(interdit){
-        color = "grey";
-        badge = `${att}/${attMax} ⛔️ Interdit`;
-        if(!isAdmin){
-            disabledAttr = "disabled";
+            if(min !== null && joueurPoints < min) interdit = true;
+            if(max !== null && joueurPoints > max) interdit = true;
         }
-    }
-    else if(used >= cap && att >= attMax){
-        color = "red";
-        badge = "🔒 COMPLET";
-        if(!isAdmin){
-            disabledAttr = "disabled";
+        let color = "green";
+        let disabled = false;
+        let badge = `${att}/${attMax}`;
+
+        // ------------ règles état tableau ------------
+
+        if(interdit){
+            color = "grey";
+            badge = `${att}/${attMax} ⛔️ Interdit`;
+            disabled = true;
         }
-    }
-    else if(used >= cap){
-        color = "orange";
-    }
-
-
-        const isChecked =
-            checked.includes(key)
-                ? "checked"
-                : "";
-
+        else if(att >= attMax){
+            color = "red";
+            badge = "🔒 COMPLET";
+            disabled = true;
+        }
+        else if(used >= cap){
+            color = "orange";
+        }
+        if(isAdmin) disabled = false;
+        const isChecked = checked.includes(key) ? "checked" : "";
         return `
         <div class="tableau-row ${color} ${interdit ? "tableau-interdit" : ""}">
             <input type="checkbox"
                 value="${key}"
-                ${disabledAttr}
+                ${disabled ? "disabled" : ""}
                 ${isChecked}
-                onchange="limitSelection.call(this)">
+                onchange="limitSelection.call(this)">  
             <span class="col-tableau">${key}</span>
             <span class="col-tranche ${interdit ? "tranche-ko" : "tranche-ok"}">
                 ${min ?? "-"}-${max ?? "-"}
             </span>
-           <div class="tableau-stats">
-            <span class="stat-inscrit">
-                🏓 Inscrit ${used}/${cap}
-            </span>
-            <span class="stat-attente">
-                ⏳ Attente ${badge}
-            </span>
+            <div class="tableau-stats">
+                <span class="stat-inscrit">
+                    🏓 Inscrit ${used}/${cap}
+                </span>
+                <span class="stat-attente">
+                    ⏳ Attente ${badge}
+                </span>
             </div>
         </div>`;
     }).join("");
-
-    /* force recalcul layout sur mobile */
-    box.offsetHeight;
-    // 🔹 Restauration focus + curseur
-    if(activeElement && document.body.contains(activeElement)){
-        activeElement.focus();
-        if(cursorPosition !== null){
-            activeElement.setSelectionRange(cursorPosition, cursorPosition);
-        }
-    }
 }
 
 export function limitSelection(){
@@ -104,13 +78,17 @@ export function limitSelection(){
 }
 
 window.limitSelection = limitSelection;
+
+// gestion visuelle sélection
+
 document.addEventListener("change", function(e){
-if(e.target.matches('#tableauxContainer input[type="checkbox"]')){
-const card = e.target.closest(".tableau-row");
-if(e.target.checked){
-card.classList.add("selected");
-}else{
-card.classList.remove("selected");
-}
-}
+
+    if(e.target.matches('#tableauxContainer input[type="checkbox"]')){
+        const card = e.target.closest(".tableau-row");
+        if(e.target.checked){
+            card.classList.add("selected");
+        }else{
+            card.classList.remove("selected");
+        }
+    }
 });

@@ -1,4 +1,3 @@
-console.log("APP JS CHARGE");
 
 
 import { loginAdmin, logoutAdmin } from "./admin.js"
@@ -11,11 +10,13 @@ import { places, setCurrentPlayer, setJoueurPoints, setEmailVerified  } from "./
 import { sendCode, verifyCode } from "./mail.js"
 import { showRecap } from "./recap.js"
 import { renderTableaux, limitSelection } from "./renderTableaux.js"
+console.log("JS START")
 
 window.loginAdmin = loginAdmin;
 window.logoutAdmin = logoutAdmin;
 window.sendInscription = sendInscription;
 window.places = places;
+window.check = check;
 window.closeModal = closeModal;
 window.sendCode = sendCode;
 window.verifyCode = verifyCode;
@@ -23,14 +24,15 @@ window.limitSelection = limitSelection;
 window.showRecap = showRecap
 window.renderTableaux = renderTableaux
 
-let tableauxGlobal = null;
+console.log("APP JS LOADED");
+
 
 async function init(){
     console.log("INIT RUN");
     updateAdminButtons();
-    tableauxGlobal  = await loadTableaux()
+    const tableaux = await loadTableaux()
     await loadPlaces()
-    renderTableaux(tableauxGlobal, places)
+    renderTableaux(tableaux, places)
 
      // focus automatique licence
     setTimeout(()=>{
@@ -53,12 +55,19 @@ async function init(){
         //licenceInput.focus();      // remet le curseur
         licenceInput.select();   // sélectionne tout le texte
     });
+
+    
+
+        
+
+    
+
+
+
 }
 
 let checkTimer = null;
-
 async function check(){
-
     console.log("CHECK START");
     resetInterface();   // ← remet toute l'interface à zéro
     const input = document.getElementById("licence");
@@ -68,7 +77,7 @@ async function check(){
     clearTimeout(checkTimer);
     checkTimer = setTimeout(async ()=>{
         const isAdmin = document.cookie.includes("admin=1");
-        if(isNaN(Number(lic))){
+        if(!/^\d+$/.test(lic)){
             openModal("Licence numérique obligatoire");
             return;
         }
@@ -85,15 +94,21 @@ async function check(){
                 return;
             }
             const data = await r.json();
+
             if(isAdmin){
+
                 setEmailVerified(true);
+
                 const emailRow = document.querySelector(".email-row");
                 const codeRow = document.querySelector(".code-row");
+
                 if(emailRow) emailRow.style.display = "none";
                 if(codeRow) codeRow.style.display = "none";
+
                 document
                 .getElementById("tableauxContainer")
                 .classList.remove("hidden");
+
                 const btnValider = document.getElementById("btnValider");
                 if(btnValider) btnValider.style.display = "block";
 
@@ -110,16 +125,20 @@ async function check(){
                     errBox.innerText = "Licence inconnue FFTT";
                     errBox.classList.remove("hidden");
                 }
+
                 // masquer tableaux
                 document.getElementById("tableauxContainer").innerHTML="";
+
                 // masquer inscription
                 const card = document.getElementById("inscriptionCard");
                 if(card){
                     card.style.display="none";
                     card.classList.add("hidden");
                 }
+
                 return; // STOP ici
             }
+
             setJoueurPoints(data.points ? Number(data.points) : 9999);
             const res = document.getElementById("result");
             if(res){
@@ -136,14 +155,15 @@ async function check(){
             const mailInput = document.getElementById("email");
             if(mailInput){
                 mailInput.value = data.mail || "";
+
                 // focus automatique email
                 setTimeout(()=>{
                     mailInput.focus();
                 },120);
             }
-    
+            await loadTableaux();
             await loadPlaces();
-            renderTableaux(tableauxGlobal, places);
+            renderTableaux();
 
             if(data.already_inscrit){
                 // cacher verification email
@@ -202,8 +222,6 @@ async function check(){
         }
     }, 250);
 }
-window.check = check;
-
 
 function updateAdminButtons(){
 
