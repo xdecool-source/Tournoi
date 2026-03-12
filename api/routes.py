@@ -350,6 +350,27 @@ async def send_code(data: dict, background_tasks: BackgroundTasks):
         html
     )
     return {"success": True}
+@router.post("/send-code")
+async def send_code(data: dict, background_tasks: BackgroundTasks):
+
+    email = data["email"].strip().lower()
+
+    code = store_verification_code(email)
+
+    html = f"""
+    <h2>Code de vérification</h2>
+    <h1>{code}</h1>
+    """
+
+    background_tasks.add_task(
+        send_email,
+        email,
+        "Code de vérification",
+        html
+    )
+
+    return {"success": True}
+
 
 @router.post("/verify-code")
 

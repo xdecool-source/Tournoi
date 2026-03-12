@@ -179,8 +179,6 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
 
 async def send_email(to_email: str, subject: str, html_content: str):
 
-    print("ENV VALUE =", ENV)
-
     if ENV != "dev":
         await send_brevo_email(
             to_email,

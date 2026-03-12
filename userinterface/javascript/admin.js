@@ -1,3 +1,5 @@
+import { resetInterface } from "./reset.js";
+
 export async function loginAdmin(){
 
     const pwd = prompt("Mot de passe admin");
@@ -34,7 +36,7 @@ export async function logoutAdmin(){
     const logoutBtn = document.getElementById("logoutBtn");
     if(adminBtn) adminBtn.style.display="block";
     if(logoutBtn) logoutBtn.style.display="none";
-    resetToStart();
+    resetInterface();
     setTimeout(()=>{
     document.getElementById("licence")?.focus();
     }, 100);

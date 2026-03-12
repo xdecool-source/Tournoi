@@ -1,151 +1,154 @@
-# services/mail_service.py
-# Gestion du mail pour le code de validation en saisie
-
-import random
 import os
+import random
+import time
 import httpx
 import aiosmtplib
-import time
 
 from dotenv import load_dotenv
 from email.message import EmailMessage
-from core.config import TABLEAUX
-from services.db import get_conn
 
-# ------------ Chargement environnement
+# -------- ENV
 
 load_dotenv(".env", override=False)
 ENV = os.getenv("ENV", "dev")
-print("ENV VALUE =", ENV)
 
-# ------------ SMTP (DEV / LOCAL)
+# -------- SMTP (DEV)
 
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
 SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASS = os.getenv("SMTP_PASS")
 
-# ------------ BREVO (PRODUCTION)
+# -------- BREVO
 
 BREVO_API_KEY = os.getenv("BREVO_API_KEY")
-ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 
-# ------------ IDENTIQUE
+# -------- COMMUN
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
-SITE_URL = os.getenv("SITE_URL")
+
+print("ENV VALUE =", ENV)
+print("SMTP_HOST =", SMTP_HOST)
+print("FROM_EMAIL =", FROM_EMAIL)
+
+# -------- STOCKAGE CODES
 
 verification_codes = {}
 
-# ---------------  GENERATION CODE
+# -----------------------------------
+# GENERATION CODE
+# -----------------------------------
 
 def generate_code():
     return str(random.randint(100000, 999999))
 
+
 def store_verification_code(email):
 
     now = time.time()
-    print("DICT ACTUEL:", verification_codes)
+
     if email in verification_codes:
         data = verification_codes[email]
+
         if now < data["expire"]:
             raise ValueError("Un code est déjà envoyé. Attendez 5 minutes.")
+
     code = generate_code()
+
     verification_codes[email] = {
         "code": code,
-        "expire": now + 300  # ---- 5 minutes 
+        "expire": now + 300
     }
-    print(f"Code généré pour {email} : {code}")
+
+    print("Code généré pour", email, ":", code)
+
     return code
+
 
 def verify_code(email, code):
 
     data = verification_codes.get(email)
+
     if not data:
         return False
+
     if time.time() > data["expire"]:
         del verification_codes[email]
         return False
+
     if data["code"] == code:
-        del verification_codes[email]   # supprime le code utilisé
+        del verification_codes[email]
         return True
+
     return False
 
-# --------------- ENVOI EMAIL SMTP
 
-async def send_smtp_email(to_email: str, subject: str, html_content: str):
+# -----------------------------------
+# SMTP DEV
+# -----------------------------------
 
-    print("STEP 4 - envoi SMTP")
-    message = EmailMessage()
-    message["From"] = FROM_EMAIL
-    message["To"] = to_email
-    message["Subject"] = subject
-    message.set_content("Votre client mail ne supporte pas le HTML.")
-    message.add_alternative(html_content, subtype="html")
+async def send_smtp_email(to_email, subject, html):
 
-    try:
-        await aiosmtplib.send(
-            message,
-            hostname=SMTP_HOST,
-            port=SMTP_PORT,
-            username=SMTP_USER,
-            password=SMTP_PASS,
-            start_tls=True,
-        )
-        print("✅ MAIL SMTP ENVOYÉ")
-    except Exception as e:
-        print("❌ ERREUR SMTP :", e)
+    print("STEP SMTP")
 
-# ------------  ENVOI EMAIL BREVO
+    msg = EmailMessage()
+    msg["From"] = FROM_EMAIL
+    msg["To"] = to_email
+    msg["Subject"] = subject
 
-async def send_brevo_email(to_email: str, subject: str, html_content: str):
+    msg.set_content("Votre client mail ne supporte pas HTML")
+    msg.add_alternative(html, subtype="html")
 
-    print("STEP 4 - envoi BREVO")
-    url = "https://api.brevo.com/v3/smtp/email"
-    headers = {
-        "accept": "application/json",
-        "api-key": BREVO_API_KEY,
-        "content-type": "application/json",
-    }
+    await aiosmtplib.send(
+        msg,
+        hostname=SMTP_HOST,
+        port=SMTP_PORT,
+        username=SMTP_USER,
+        password=SMTP_PASS,
+        start_tls=True
+    )
+
+    print("MAIL SMTP ENVOYÉ")
+
+
+# -----------------------------------
+# BREVO PROD
+# -----------------------------------
+
+async def send_brevo_email(to_email, subject, html):
+
+    print("STEP BREVO")
+
     payload = {
         "sender": {"email": FROM_EMAIL},
         "to": [{"email": to_email}],
         "subject": subject,
-        "htmlContent": html_content,
+        "htmlContent": html
     }
-    async with httpx.AsyncClient() as client:
-        response = await client.post(url, headers=headers, json=payload)
-        if response.status_code in [200, 201]:
-            print("✅ MAIL BREVO ENVOYÉ")
-        else:
-            print("❌ ERREUR BREVO :", response.text)
 
-# ------- FONCTION PRINCIPALE
+    async with httpx.AsyncClient(timeout=20) as client:
 
-async def send_confirmation_email(to_email: str, html_content: str, type_mail: str):
-    subject = (
-        "Confirmation d'inscription - Tournoi Homopongistus"
-        if type_mail == "creation"
-        else "Modification d'inscription - Tournoi Homopongistus"
-    )
-    
-    print("ENV VALUE =", ENV)
-    print("USING BREVO MODE")
-    if ENV != "dev":
-        await send_brevo_email(to_email, subject, html_content)
-    else:
-        await send_smtp_email(to_email, subject, html_content)
-    
-    if ENV != "dev":
-        
-        await send_brevo_email(
-            to_email,
-            subject,
-            html_content
+        r = await client.post(
+            "https://api.brevo.com/v3/smtp/email",
+            headers={
+                "api-key": BREVO_API_KEY,
+                "content-type": "application/json"
+            },
+            json=payload
         )
+
+        print("BREVO STATUS", r.status_code)
+
+
+# -----------------------------------
+# ROUTEUR MAIL
+# -----------------------------------
+
+async def send_email(to_email, subject, html):
+
+    print("MODE MAIL =", "SMTP" if ENV == "dev" else "BREVO")
+
+    if ENV == "dev":
+        await send_smtp_email(to_email, subject, html)
     else:
-        await send_smtp_email(
-            to_email,
-            subject,
-            html_content
-        )
+        await send_brevo_email(to_email, subject, html)
