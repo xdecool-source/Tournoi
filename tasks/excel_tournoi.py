@@ -1,4 +1,5 @@
 # Génère un Excel des inscriptions et l’envoie par email à l’admin.
+
 import asyncio
 import os
 import base64

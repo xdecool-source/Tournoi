@@ -14,13 +14,13 @@ ADMIN_PASSWORD_HASH = os.getenv("ADMIN_PASSWORD_HASH")
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 TABLEAUX = {
-    "T1": {"min": 500, "max": 799, "capacite": 10, "attente": 2},
-    "T2": {"min": 500, "max": 999, "capacite": 10, "attente": 2},
-    "T3": {"min": 500, "max": 1299, "capacite": 10, "attente": 2},
-    "T4": {"min": 700, "max": 1599, "capacite": 10, "attente": 2},
+    "T1": {"min": 500, "max": 799, "capacite": 4, "attente": 2},
+    "T2": {"min": 500, "max": 999, "capacite": 4, "attente": 2},
+    "T3": {"min": 500, "max": 1299, "capacite": 4, "attente": 2},
+    "T4": {"min": 700, "max": 1599, "capacite": 4, "attente": 2},
     "T5": {"min": 800, "max": 1999, "capacite": 4, "attente": 2},
-    "TS": {"min": None, "max": None,"capacite": 4, "attente": 3},
-    "TH": {"min": None, "max": None,"capacite": 4, "attente": 2}
+    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 4, "attente": 2},
+    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 4, "attente": 2}
 }
 
 PRIX = {

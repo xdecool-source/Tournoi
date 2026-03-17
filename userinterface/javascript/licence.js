@@ -1,3 +1,6 @@
+// Appelle le serveur pour valider une licence 
+// Renvoie les infos du joueur ou une erreur si elle n’existe pas.
+
 // ---------- CHECK LICENCE ----------
 export async function checkLicence(lic){
 

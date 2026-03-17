@@ -1,3 +1,6 @@
+// Construit et affiche un résumé final de l’inscription 
+// (joueur, email, tableaux, places restantes).
+
 export async function showRecap(player, email, tableauxSel){
 
     // 1 cacher les autres cartes
@@ -45,7 +48,7 @@ export async function showRecap(player, email, tableauxSel){
     document.getElementById("recapContent").classList.remove("hidden");
     document.getElementById("recapContent").innerHTML = `
         <b>${player.prenom} ${player.nom}</b><br>
-        N° de Licence: ${player.licence}<br>
+        N° de Licence: <b>${player.licence}</b><br>
         Licencié au Club: ${player.club}<br>
         Ayant ${player.points} Points en Phase 2<br>
         Votre Adresse Mail: ${email}<br><br>
@@ -53,7 +56,7 @@ export async function showRecap(player, email, tableauxSel){
         ${tableauxHTML}
         <br><br>
         <b style="color:#007bff;">
-        Un mail vous sera envoyé pour confirmer votre inscription
+        Un mail va suivre afin de confirmer votre inscription
         </b>
         <br><br>
             `;

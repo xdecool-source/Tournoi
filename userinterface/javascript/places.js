@@ -1,3 +1,8 @@
+// Récupère depuis le serveur l’état des places disponibles (avec cache ETag) 
+// Mise à jour les données côté client.
+// ETAG = identifiant de version d’une ressource côté serveur
+// evite le renvoi de données
+
 // ---------- LOAD PLACES ----------
 import { places } from "./state.js";
 

@@ -1,3 +1,5 @@
+// réinitialisation interface.
+// Il remet toute l’interface à zéro (données, champs, boutons, affichage).
 
 import { setCurrentPlayer, setJoueurPoints, setEmailVerified } from "./state.js";
 

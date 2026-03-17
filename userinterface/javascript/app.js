@@ -1,3 +1,6 @@
+// Vérifie une licence, récupère les infos d’un joueura
+// Affiche et gère son inscription à un tournoi (avec gestion admin, email, tableaux, etc.).
+
 console.log("APP TOURNOI CHARGEE");
 
 import { loginAdmin, logoutAdmin } from "./admin.js"
@@ -29,7 +32,7 @@ async function init(){
     updateAdminButtons();
     tableauxGlobal  = await loadTableaux()
     await loadPlaces()
-    renderTableaux(tableauxGlobal, places)
+    renderTableaux(tableauxGlobal, places, null)
 
      // focus automatique licence
     setTimeout(()=>{
@@ -44,7 +47,6 @@ async function init(){
     });
 
     const licenceInput = document.getElementById("licence");
-    
     licenceInput.addEventListener("click", () => {
         resetInterface();          // remet l'interface à zéro
         //licenceInput.value = "";   // vide la licence
@@ -54,7 +56,6 @@ async function init(){
 }
 
 let checkTimer = null;
-
 async function check(){
 
     console.log("CHECK START");
@@ -141,7 +142,13 @@ async function check(){
             }
     
             await loadPlaces();
-            renderTableaux(tableauxGlobal, places);
+            renderTableaux(
+                tableauxGlobal,
+                places,
+                Number(data.points),
+                data.already_inscrit,
+                data.tableaux_inscrits || []
+            );
 
             if(data.already_inscrit){
                 // cacher verification email
@@ -161,7 +168,7 @@ async function check(){
                         msg.classList.remove("hidden");
                         msg.innerHTML = `
                             Vous êtes déjà inscrit.<br>
-                            Pour modifier votre inscription<br>
+                            Si vous souhaitez modifier votre inscription<br>
                             merci d'envoyer un mail à <br>
                             <a href="mailto:thuirtt66@gmail.com"
                             style="color:red;text-decoration:underline;">
@@ -173,13 +180,7 @@ async function check(){
                         msg.innerHTML = "";
                     }
                 }
-            data.tableaux_inscrits?.forEach(t=>{
-                const el = document.querySelector(`input[value="${t}"]`);
-                if(el){
-                    el.checked = true;
-                    el.disabled = !isAdmin; // admin peut modifier
-                }
-            });
+  
                 const btn = document.querySelector("button[onclick='sendInscription()']");
                 if(btn){
                     if(!isAdmin){
@@ -201,7 +202,6 @@ async function check(){
     }, 250);
 }
 window.check = check;
-
 
 function updateAdminButtons(){
 

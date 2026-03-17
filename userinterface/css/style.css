@@ -204,6 +204,34 @@ top:50%;
 transform:translate(-50%,-55%);
 }
 
+.tableau-row:hover {
+    transform: scale(1.04) translateY(-2px);
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.6);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(46, 204, 113, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+    }
+}
+.tableau-row.green {
+    animation: pulse 2s infinite;
+}
+.tableau-row.green:hover {
+    animation: none;
+}
+
+.tableau-row.locked,
+.tableau-row.red,
+.tableau-row.grey {
+    animation: none;
+}
+
 /* =========================
 TABLEAU INTERDIT
 ========================= */
@@ -238,28 +266,47 @@ font-size:12px;
 }
 
 /*  STATS TABLEAU */
-
-.tableau-stats{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-margin-top:4px;
-font-size:13px;
+.tableau-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14px;
 }
 
-.tableau-stats span{
-display:flex;
-align-items:center;
-gap:4px;
+.stat-inscrit {
+    font-weight: 600;
 }
 
-.stat-inscrit{
-font-weight:bold;
+.stat-attente {
+    color: #555;
 }
 
-.stat-attente{
-opacity:0.9;
+.badge-inscrit {
+    color: #2ecc71;
+    font-weight: bold;
+    margin-left: 6px;
 }
+
+.tableau-row.locked {
+    opacity: 0.65;
+}
+
+.tableau-row.green {
+    border-left: 5px solid #2ecc71;
+}
+
+.tableau-row.orange {
+    border-left: 5px solid #f39c12;
+}
+
+.tableau-row.red {
+    border-left: 5px solid #e74c3c;
+}
+
+.tableau-row.grey {
+    border-left: 5px solid #7f8c8d;
+}
+
 
 #btnValider{
 display:none;
@@ -529,6 +576,11 @@ border-left:4px solid #9e9e9e;
 .tableau-row.red,
 .tableau-row.grey{
     cursor:not-allowed;
+}
+
+.tableau-row.locked {
+    opacity: 0.6;
+    pointer-events: none;
 }
 
 /* EMAIL + CODE VERIFICATION */

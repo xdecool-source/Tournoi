@@ -1,3 +1,5 @@
+# envoie un code aléatoire pour inscription par mail 
+
 import os
 import random
 import time

@@ -1,4 +1,10 @@
+// Vérifie les données (joueur, email, sélection)
+// envoie l’inscription au serveur (création ou modification)
+// gère les erreurs/tableaux pleins
+// puis affiche un récapitulatif.
+
 // ---------- SEND INSCRIPTION ----------
+
 import { currentPlayer, emailVerified, places, isAdmin } from "./state.js";
 import { showRecap } from "./recap.js"
 

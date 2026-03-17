@@ -1,3 +1,6 @@
+// Envoie un code par mail 
+// puis vérifie ce code pour valider l’email avant l’inscription.
+
 import { setEmailVerified } from "./state.js";
 
 export async function sendCode(){
