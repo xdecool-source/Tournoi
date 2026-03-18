@@ -1,4 +1,4 @@
-// Vérifie une licence, récupère les infos d’un joueura
+// Vérifie une licence, récupère les infos d’un joueur
 // Affiche et gère son inscription à un tournoi (avec gestion admin, email, tableaux, etc.).
 
 console.log("APP TOURNOI CHARGEE");

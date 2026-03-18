@@ -77,7 +77,8 @@ async def get_licence(licence: str):
         raise HTTPException(400, "Licence numérique obligatoire")
     already = await licence_exists(licence)
     tableaux_inscrits = []
-    mail = "xavier.decool@outlook.com"   #  FIX
+    # mail = "xavier.decool@outlook.com"   #  FIX
+    mail = ""
     if already:
         tableaux_inscrits = await get_tableaux_by_licence(licence)
         async with get_conn() as conn:
@@ -349,7 +350,7 @@ async def send_code(data: dict, background_tasks: BackgroundTasks):
         "Code de vérification - Homopongistus",
         html
     )
-    return {"success": True}
+
 @router.post("/send-code")
 async def send_code(data: dict, background_tasks: BackgroundTasks):
 
