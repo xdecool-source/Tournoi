@@ -50,7 +50,7 @@ def build_data(rows):
         r = dict(row)
 
         data_by_table[r["tableau"]].append({
-            "Dossard": r["id"],
+            "Dossard": r["dossard"],
             "Licence": r["Licence"],
             "Nom": r["Nom Prénom"],
             "Classement": r["Classement"],
@@ -59,7 +59,7 @@ def build_data(rows):
             "Statut": r["statut"]
         })
 
-        joueur = data_joueurs[r["id"]]
+        joueur = data_joueurs[r["dossard"]]
         joueur["Licence"] = r["Licence"]
         joueur["Nom"] = r["Nom Prénom"]
         joueur["Classement"] = r["Classement"]

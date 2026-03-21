@@ -16,12 +16,14 @@ from export.generate_inscription import generate
 from services.mail_inscription import send_email, send_confirmation_email
 from services.mail_code import store_verification_code, verify_code
 from tasks.excel_tournoi import main as ex_tournoi
+from dotenv import load_dotenv
 
 import xml.etree.ElementTree as ET
 import time
 import hashlib
 import json
 import bcrypt
+import os
 
 from services.db import (
     save_inscription,
@@ -39,7 +41,7 @@ from services.db import (
 
 places_cache = None
 places_cache_time = 0
-CACHE_TTL = 5
+CACHE_TTL = 3
 
 # --------- Backend 
 
@@ -77,8 +79,9 @@ async def get_licence(licence: str):
         raise HTTPException(400, "Licence numérique obligatoire")
     already = await licence_exists(licence)
     tableaux_inscrits = []
-    # mail = "xavier.decool@outlook.com"   #  FIX
+    # mail = "xavier.decool@outlook.com"  
     mail = ""
+    
     if already:
         tableaux_inscrits = await get_tableaux_by_licence(licence)
         async with get_conn() as conn:
@@ -86,7 +89,6 @@ async def get_licence(licence: str):
                 "SELECT mail FROM inscriptions WHERE licence=$1",
                 licence
             ) or ""
-    #  MODE MOCK → joueur fictif mais VALIDE
     
     xml_data = await appel_fftt("xml_joueur.php", {"licence": licence})
     root = ET.fromstring(xml_data)

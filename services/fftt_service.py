@@ -14,6 +14,8 @@ import string
 from datetime import datetime
 from core.config import BASE_URL, APP_ID, MOT_DE_PASSE, MOCK_FFTT
 
+# ce numéro est calculé une seule fois au démarrage de l'APP
+
 def generer_serie():
     chars = string.ascii_uppercase + string.digits
     return "".join(random.choice(chars) for _ in range(15))
@@ -36,7 +38,7 @@ async def appel_fftt(endpoint, params_metier):
         licence = params_metier.get("licence", "000000")
 
         joueurs = {
-            "111": ("Decool", "Xavier", "TT Thuirinois", 1100),
+            "111": ("Decool", "Xavier", "TT Thuirinois", 850),
             "222": ("Durand", "Paul", "Montpellier TT", 1450)
         }
 

@@ -17,7 +17,7 @@ if os.getenv("ENV") != "production":
 
 QUERY = """
 SELECT 
-    i.id,
+    i.dossard,
     i.nom || ' ' || i.prenom AS "Nom Prénom",
     i.club AS "Club",
     i.points AS "Classement",
@@ -28,7 +28,7 @@ SELECT
 FROM inscriptions i
 JOIN inscription_tableaux it 
     ON i.licence = it.licence
-ORDER BY i.id, it.tableau;
+ORDER BY i.dossard, it.tableau;
 """
 
 def fetch_inscriptions():

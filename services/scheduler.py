@@ -1,6 +1,7 @@
 # EXPORT_HOUR=20 l'export demarre à 20h00
 # si a 20h00 le container tombe pas d'export sauf le lendemain 
 # voila la limite !!!!
+# railway run python mon script
 
 import asyncio
 import os
