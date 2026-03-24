@@ -9,7 +9,7 @@ box-sizing:border-box;
 body{
 font-family:Arial, sans-serif;
 margin:0;
-background:linear-gradient(180deg,#f6f8fb,#eef1f6);
+background:#031d38;
 }
 
 .licence-btn{
@@ -59,6 +59,8 @@ border-radius:8px;
 cursor:pointer;
 background:#007bff;
 color:#fff;
+position:relative;
+overflow:hidden;
 }
 
 button:disabled{
@@ -153,10 +155,10 @@ gap:3px;
 padding:10px;
 min-height:65px;
 border-radius:12px;
-border:1px solid #e5e5e5;
 background:white;
 box-shadow:0 2px 6px rgba(0,0,0,0.05);
-transition:all 0.2s;
+transition:transform 0.2s, box-shadow 0.2s, filter 0.2s;
+border:none;
 cursor:pointer;
 width:100%;
 }
@@ -204,24 +206,7 @@ top:50%;
 transform:translate(-50%,-55%);
 }
 
-.tableau-row:hover {
-    transform: scale(1.04) translateY(-2px);
-}
 
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.6);
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(46, 204, 113, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
-    }
-}
-.tableau-row.green {
-    animation: pulse 2s infinite;
-}
 .tableau-row.green:hover {
     animation: none;
 }
@@ -287,33 +272,104 @@ font-size:12px;
     margin-left: 6px;
 }
 
-.tableau-row.locked {
-    opacity: 0.65;
+/* Couleur Airzone 
+
+/* =========================
+TABLEAUX STYLE MODERNE
+========================= */
+
+/* BASE */
+.tableau-row{
+background:#2a2f35;
+color:#fff;
+border:none;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,0.25);
+transition:all 0.2s ease;
 }
 
-.tableau-row.green {
-    border-left: 5px solid #2ecc71;
+/* HOVER */
+.tableau-row:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 20px rgba(0,0,0,0.35);
+filter:brightness(1.05);
 }
 
-.tableau-row.orange {
-    border-left: 5px solid #f39c12;
+/* =========================
+VERT (OK)
+========================= */
+.tableau-row.green{
+background:linear-gradient(135deg, #0f766e, #065f46);
+color:#e6fffa;
 }
 
-.tableau-row.red {
-    border-left: 5px solid #e74c3c;
+/* =========================
+ROUGE (ALERTE)
+========================= */
+.tableau-row.red{
+background:linear-gradient(135deg, #ff0000, #cc0000);
+color:#fff;}
+
+/* =========================
+ORANGE (ATTENTE)
+========================= */
+.tableau-row.orange{
+background:linear-gradient(135deg, #ffb300, #ff7a00);
+color:#fff7ed;
 }
 
-.tableau-row.grey {
-    border-left: 5px solid #7f8c8d;
+/* =========================
+GRIS (DESACTIVE)
+========================= */
+.tableau-row.grey{
+background:linear-gradient(135deg, #6b7280, #4b5563);
+color:#e5e7eb;
 }
 
+/* =========================
+LOCKED
+========================= */
+.tableau-row.locked{
+opacity:0.6;
+pointer-events:none;
+}
+
+/* =========================
+INTERDIT
+========================= */
+.tableau-interdit{
+opacity:0.5;
+filter:grayscale(0.4);
+}
+
+/* =========================
+Difference Attente et Inscrit
+========================= */
+
+.stat-inscrit{
+color:#ffffff;
+font-weight:600;
+}
+
+.stat-attente{
+color:rgba(255,255,255,0.75);
+}
 
 #btnValider{
-display:none;
+display:block;
+margin:25px auto 0;
 }
 
-#btnValider{
-margin-top:15px;
+/* un petit effet */
+
+.tableau-row.green{
+box-shadow:0 4px 12px rgba(16,185,129,0.3);
+}
+.tableau-row.orange{
+box-shadow:0 4px 12px rgba(255,140,0,0.3);
+}
+.tableau-row.red{
+box-shadow:0 4px 12px rgba(255,0,0,0.3);
 }
 
 /* desktop  xx */
@@ -333,12 +389,6 @@ display:inline-block;
 }
 /* fin desktop  xx */
 
-/* couleurs statut */
-
-.green{color:green;font-weight:bold;}
-.orange{color:orange;font-weight:bold;}
-.red{color:red;font-weight:bold;}
-.grey{color:grey;font-weight:bold;}
 
 
 /* TITRES */
@@ -363,7 +413,8 @@ margin-bottom:10px;
 }
 
 #licence{
-width:90px;
+width:150px;
+max-width:200px;;
 font-size:15px;
 text-align:center;
 font-weight:700;
@@ -404,6 +455,8 @@ width:60px;
 /* MOBILE */ 
 
 @media screen and (max-width:600px){
+
+
 
 button[onclick="loginAdmin()"],
 #logoutBtn{
@@ -543,6 +596,7 @@ width:45px;
     margin-top:6px;
 }
 
+
 .code-row button{
 margin-left:auto;
 }
@@ -551,27 +605,8 @@ margin-left:auto;
 
 /* Fin Mobile */
 
-/* COULEUR FOND TABLEAUX */
+/* CURSOR  */
 
-.tableau-row.green{
-background:#73e5a4;
-border-left:4px solid #036b1de5;
-}
-
-.tableau-row.orange{
-background:#fff6e5;
-border-left:4px solid #d88a14;
-}
-
-.tableau-row.red{
-background:#f69aa5;
-border-left:4px solid #e53935;
-}
-
-.tableau-row.grey{
-background:#f1f1f1;
-border-left:4px solid #9e9e9e;
-}
 
 .tableau-row.red,
 .tableau-row.grey{
@@ -604,22 +639,7 @@ flex:1;
 margin-left:auto;
 }
 
-/* MOBILE */
 
-@media screen and (max-width:600px){
-
-.email-row,
-.code-row{
-flex-direction:column;
-align-items:stretch;
-}
-
-.email-row button,
-.code-row button{
-width:100%;
-margin-left:0;
-}
-}
 
 /* CODE VERIFICATION */
  
@@ -642,4 +662,18 @@ letter-spacing:12px;
 font-size:11px;
 color:#999;
 letter-spacing:1px;
+}
+/* =========================
+FLASH BOUTON (SAFE)
+========================= */
+
+/* bouton qui clignote */
+@keyframes blinkSoft {
+0% { opacity:1; }
+50% { opacity:0.6; }
+100% { opacity:1; }
+}
+
+.blink{
+animation:blinkSoft 1.5s infinite;
 }

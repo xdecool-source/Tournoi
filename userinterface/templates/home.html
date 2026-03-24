@@ -22,7 +22,7 @@
 
 <body>
 
-<img src="/static/Logo_Thuir.png" alt="Logo du club" class="logo">
+<img src="/static/Logo.png" alt="Logo du club" class="logo">
 <div class="page">
 <div class="container">
 <div id="inscriptionRow">
@@ -32,12 +32,12 @@
 ========================= -->
 
 <div id="licenceCard" class="card">
-<h2>🏓 Homopongistus</h2>     
-<h2> Saisir sa Licence</h2>
+<h2>🏓 Inscription à l'Homopongistus du 05/04/2026</h2>     
+<!-- <h2> Numéro de licence</h2> -->
 <div class="licence-input">
 
 <input id="licence"
-placeholder="Licence"
+placeholder="N° licence"
 inputmode="numeric"
 oninput="this.value=this.value.replace(/[^0-9]/g,'')">
 
@@ -62,9 +62,8 @@ Si vous souhaitez modifier votre inscription, merci d'envoyer un mail.
 <h2>👍🏻Selection des Tableaux</h2>
 
 <div class="email-row">
-    <input id="email" type="email" placeholder="Ton mail">
-    <button class="btn-code" onclick="sendCode()">Envoie le code</button>
-</div>
+     <input id="email" type="email" placeholder="Ton mail">
+     <button class="btn-code blink" onclick="sendCode()">Envoie le code</button></div>
 <div id="emailError" class="error"></div>
 
 <div class="code-row">
@@ -128,7 +127,7 @@ Redirection automatique...
 ...
 </div>
 
-<div style="position:fixed; bottom:5px; right:10px; font-size:11px; opacity:0.5;">
+<div style="position:fixed; bottom:5px; right:10px; font-size:11px; opacity:0.5; color: white;">
 TT Thuir XDC Version: v2.0
 </div>
 

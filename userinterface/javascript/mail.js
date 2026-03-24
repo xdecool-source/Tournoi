@@ -3,6 +3,7 @@
 
 import { setEmailVerified } from "./state.js";
 
+
 export async function sendCode(){
     console.log("SEND CODE CLICK");   // test
     const email = document.getElementById("email").value.trim();
