@@ -26,7 +26,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(router)
-templates = Jinja2Templates(directory="userinterface/templates")
 app.mount("/static", StaticFiles(directory="userinterface"), name="static")
 
 @app.get("/ping")
