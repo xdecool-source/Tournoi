@@ -601,12 +601,31 @@ width:45px;
 margin-left:auto;
 }
 
+/* Bouton valider code dessous zone de saisie du code */
+
+/* FORCER affichage vertical du code */
+.code-row{
+    display:flex;
+    flex-direction:column !important;
+    align-items:stretch;
+    width:100%;
+}
+
+.code-row input{
+    width:100% !important;
+}
+
+.code-row button{
+    width:100% !important;
+    margin-top:8px;
+    margin-left:0 !important;
+}
+
 }
 
 /* Fin Mobile */
 
 /* CURSOR  */
-
 
 .tableau-row.red,
 .tableau-row.grey{
@@ -638,8 +657,6 @@ flex:1;
 .code-row button{
 margin-left:auto;
 }
-
-
 
 /* CODE VERIFICATION */
  
@@ -677,3 +694,4 @@ FLASH BOUTON (SAFE)
 .blink{
 animation:blinkSoft 1.5s infinite;
 }
+
