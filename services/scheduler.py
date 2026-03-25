@@ -15,8 +15,13 @@ load_dotenv(".env", override=False)
 
 EXPORT_HOUR = int(os.getenv("EXPORT_HOUR", 20))
 EXPORT_MINUTE = int(os.getenv("EXPORT_MINUTE", 0))
+EXPORT_ENABLED = os.getenv("EXPORT_ENABLED", "true").lower() == "true"
 
 async def export_scheduler():
+    
+    if not EXPORT_ENABLED:
+        print(" Scheduler désactivé via ENV")
+        return
 
     tz = ZoneInfo("Europe/Paris")
     while True:
