@@ -14,7 +14,7 @@ load_dotenv()    # si existe .env et pas de variable globale alors .env
 @asynccontextmanager
 
 async def lifespan(app: FastAPI):
-
+    print("ICI C'EST LE BON DOSSIER")
     print(" Application démarrage")
     print(" MOCK_FFTT raw =", os.getenv("MOCK_FFTT"))
 
