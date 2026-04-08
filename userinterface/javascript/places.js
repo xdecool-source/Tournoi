@@ -3,7 +3,8 @@
 // ETAG = identifiant de version d’une ressource côté serveur
 // evite le renvoi de données
 
-// ---------- LOAD PLACES ----------
+//  Load Places   
+
 import { places } from "./state.js";
 
 let placesEtag = null;

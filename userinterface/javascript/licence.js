@@ -1,7 +1,7 @@
 // Appelle le serveur pour valider une licence 
 // Renvoie les infos du joueur ou une erreur si elle n’existe pas.
 
-// ---------- CHECK LICENCE ----------
+//  Vérif Licence  
 export async function checkLicence(lic){
 
     const r = await fetch("/licence/" + lic);

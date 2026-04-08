@@ -6,7 +6,6 @@
 # attention derniere journée pas d'envoi de mail donc pas de fichier jour
 # il faut lancer le batch !!!!!
 
-#from pathlib import Path
 from openpyxl import Workbook
 from export.db import fetch_inscriptions
 from export.excel_builder import (
@@ -34,11 +33,13 @@ def generate():
     create_tableaux_sheet(wb, data_by_table)
     create_price_sheet(wb, data_joueurs,root_dir)
 
-# --------- génération en mémoire
+#  génération en mémoire
     stream = BytesIO()
     wb.save(stream)
     stream.seek(0)
-    # ------ libere memoire 
+    
+#  libere memoire
+    
     wb.close()  
     print("✅ Excel généré en mémoire")
     return stream

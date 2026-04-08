@@ -9,7 +9,7 @@
 from fastapi import APIRouter, HTTPException, Request, Response, BackgroundTasks
 from fastapi.responses import HTMLResponse
 from fastapi.responses import StreamingResponse
-from core.config import TABLEAUX, ADMIN_PASSWORD_HASH, MOCK_FFTT
+from core.config import TABLEAUX, PRIX, ADMIN_PASSWORD_HASH, MOCK_FFTT
 from services.fftt_service import appel_fftt
 from userinterface.screens import home_screen
 from export.generate_inscription import generate 
@@ -37,17 +37,17 @@ from services.db import (
     promote_attente
 )
 
-# ---------- CACHE PLACES 
+#  cache places 
 
 places_cache = None
 places_cache_time = 0
 CACHE_TTL = 3
 
-# --------- Backend 
+#  Backend 
 
 router = APIRouter()
 
-# ---------- HOME ----------
+#  Début 
 
 @router.get("/", response_class=HTMLResponse)
 async def home(request: Request):
@@ -55,9 +55,18 @@ async def home(request: Request):
 
 @router.get("/tableaux")
 async def get_tableaux():
-    return TABLEAUX
+    result = {}
 
-# ---------- LICENCE FFTT ----------
+    for key, conf in TABLEAUX.items():
+        result[key] = {
+            **conf,
+            "prix": PRIX.get(key, 0)
+        }
+
+    return result
+
+
+#  licence fftt 
 
 
 async def check_fftt_player(licence: str):
@@ -70,7 +79,7 @@ async def check_fftt_player(licence: str):
     except Exception:
         return None
     
-# ---------- LICENCE FFTT ----------
+#  licence fftt 
 
 @router.get("/licence/{licence}")
 
@@ -113,7 +122,7 @@ async def get_licence(licence: str):
             "fftt": True
         }
         
-# -------- MODE FFTT RÉEL
+#  Mode fftt réel
 
     joueur = await check_fftt_player(licence)
 
@@ -136,7 +145,7 @@ async def get_licence(licence: str):
             "mail": mail,
             "fftt": True
         }
-#  ------- Inconnu FFTT
+#   Inconnu FFTT
     return {
         "licence": licence,
         "nom": "Inconnu FFTT",
@@ -151,7 +160,7 @@ async def get_licence(licence: str):
         "fftt": False
     }
 
-# ---------- INSCRIPTIONS ----------
+#  inscriptions 
 
 @router.get("/inscriptions")
 
@@ -193,7 +202,7 @@ async def get_places(request: Request, response: Response):
     response.headers["ETag"] = etag
     return res
 
-# ---------- UPDATE INSCRIPTION ----------
+#  update inscription 
 
 @router.put("/inscription/{licence}")
 
@@ -237,7 +246,6 @@ async def update_inscription(licence: str, data: dict, request: Request, backgro
             data,
             "modification"
         )
-        #  FIN TRANSACTION
 
     # 5 promotion après suppression
     
@@ -248,7 +256,7 @@ async def update_inscription(licence: str, data: dict, request: Request, backgro
     places_cache = None
     return {"success": True}
 
-# ---------- INSCRIPTION ( BLOQUAGE FFTT) ----------
+#  inscription ( Gestion erreur fftt ) 
 
 @router.post("/inscription")
 
@@ -266,7 +274,7 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
         await save_inscription(data)
         print("INSCRIPTION OK - lancement mail")
         
-        # SEND MAIL JOUEUR
+        # Send mail joueur
         background_tasks.add_task(
             send_confirmation_email,
             data["mail"],
@@ -279,7 +287,7 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
     except ValueError as e:
         return {"success": False, "error": str(e)}
 
-# ---------- EXPORT EXCEL ----------
+#  export excel 
 
 @router.get("/export-excel")
 
@@ -299,7 +307,7 @@ async def export_excel(request: Request):
         }
     )
 
-# ---------- ADMIN ----------
+#  Admin 
 
 @router.post("/login-admin")
 
@@ -319,7 +327,7 @@ def logout_admin(response: Response):
     response.delete_cookie("admin")
     return {"success": True}
 
-# ---------- export excel avec token  ----------
+#  export excel avec token  
 
 @router.get("/admin/{ADMIN_PATH}/export")
 
@@ -327,7 +335,7 @@ async def export():
     await ex_tournoi()
     return {"status": "excel envoyé"}
 
-# ---------- Verification Mail  ----------
+#  Verification Mail  
 
 @router.post("/send-code")
 
@@ -352,28 +360,8 @@ async def send_code(data: dict, background_tasks: BackgroundTasks):
         "Code de vérification - Homopongistus",
         html
     )
-
-@router.post("/send-code")
-async def send_code(data: dict, background_tasks: BackgroundTasks):
-
-    email = data["email"].strip().lower()
-
-    code = store_verification_code(email)
-
-    html = f"""
-    <h2>Code de vérification</h2>
-    <h1>{code}</h1>
-    """
-
-    background_tasks.add_task(
-        send_email,
-        email,
-        "Code de vérification",
-        html
-    )
-
-    return {"success": True}
-
+       
+    return {"success": True}  # 🔥 AJOUT ICI
 
 @router.post("/verify-code")
 

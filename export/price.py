@@ -1,7 +1,6 @@
 # Prix dans confi.py
 # Calcul des prix pour la feuille 
 
-
 from openpyxl.styles import PatternFill, Font, Alignment
 from openpyxl.drawing.image import Image
 from core.config import PRIX
@@ -11,7 +10,7 @@ def create_price_sheet(wb, data_joueurs, root_dir):
 
     ws = wb.create_sheet("Prix")
     
-# -------- LOGO TOURNOI --------
+#  Logo Tournoi   
 
     image_path = root_dir / "ressources" / "Tournoi.jpg"
     if image_path.exists():
@@ -25,7 +24,7 @@ def create_price_sheet(wb, data_joueurs, root_dir):
     total_attente_general = 0
     lignes_prix = []
 
-# -------- CALCUL DES MONTANTS --------
+#  Calcul des montants 
 
     for dossard, infos in sorted(data_joueurs.items()):
         montant_valide = 0
@@ -47,7 +46,7 @@ def create_price_sheet(wb, data_joueurs, root_dir):
             montant_attente
         ])
 
-# -------- TOTAUX --------
+#  Totaux 
 
     ws[f"A{start_row}"] = "Montants par joueur"
     ws[f"A{start_row}"].font = Font(bold=True, size=14)
@@ -62,7 +61,7 @@ def create_price_sheet(wb, data_joueurs, root_dir):
     ws[f"A{start_row+1}"].font = Font(bold=True)
     ws[f"A{start_row+2}"].font = Font(bold=True)
 
-# -------- TABLEAU DÉTAILLÉ --------
+#  Tableau Détaillé 
 
     header_row = start_row + 4
     headers = [
@@ -95,7 +94,7 @@ def create_price_sheet(wb, data_joueurs, root_dir):
         data_row += 1
     ws.freeze_panes = f"A{header_row+1}"
 
-# -------- AUTO WIDTH --------
+#  Auto largeur 
 
     for col in ws.columns:
         max_length = 0

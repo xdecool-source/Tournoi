@@ -30,7 +30,7 @@ export async function loginAdmin(){
         if(adminBtn) adminBtn.style.display="none";
         if(logoutBtn) logoutBtn.style.display="block";
         if(currentPlayer){
-            await window.check();   // ✔ correction
+            await window.check(); 
         }
     }else{
         openModal("Mot de passe incorrect");

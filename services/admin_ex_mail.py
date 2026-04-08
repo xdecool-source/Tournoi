@@ -17,28 +17,28 @@ import httpx
 import os
 import base64
 
-# ------------ Chargement environnement
+#  Chargement environnement
 
 load_dotenv(".env", override=False)
 ENV = os.getenv("ENV", "dev")
 
-# ------------ SMTP (DEV / LOCAL)
+#  Smtp (Dev / Local)
 
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
 SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASS = os.getenv("SMTP_PASS")
 
-# ------------ BREVO (PRODUCTION)
+#  Brevo (Production)
 
 BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 
-# ------------ COMMUN
+#  Commun
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 
-# ------------ SMTP DEV
+#  Smtp  Dev
 
 async def send_smtp_email(excel_stream):
 
@@ -65,7 +65,7 @@ async def send_smtp_email(excel_stream):
     )
     print("✅ MAIL SMTP ENVOYÉ")
 
-# ------------ BREVO PROD
+#  Brevo Prod
 
 async def send_brevo_email(excel_stream):
 
@@ -104,7 +104,7 @@ async def send_brevo_email(excel_stream):
         response.raise_for_status()
     print("✅ MAIL BREVO ENVOYÉ")
 
-# ------------ EXPORT ADMIN
+#  export admin
 
 async def process_admin_export():
 
@@ -126,7 +126,7 @@ async def process_admin_export():
             return
         print("✅ Excel généré")
         
-# ------------ Choix Mode Envoi
+#  Choix Mode Envoi
 
         if ENV == "production":
             await send_brevo_email(excel_stream)

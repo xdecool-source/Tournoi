@@ -35,11 +35,13 @@ async function init(){
     renderTableaux(tableauxGlobal, places, null)
 
      // focus automatique licence
+
     setTimeout(()=>{
         document.getElementById("licence")?.focus();
     },200);
 
     // déclenche check quand on appuie sur Entrée
+
     document.getElementById("licence").addEventListener("keydown", e=>{
         if(e.key === "Enter"){
             check();
@@ -48,9 +50,11 @@ async function init(){
 
     const licenceInput = document.getElementById("licence");
     licenceInput.addEventListener("click", () => {
-        resetInterface();          // remet l'interface à zéro
-        //licenceInput.value = "";   // vide la licence
-        //licenceInput.focus();      // remet le curseur
+        
+        // remet l'interface à zéro
+        resetInterface();          
+        // licenceInput.value = "";   // vide la licence
+        // licenceInput.focus();      // remet le curseur
         licenceInput.select();   // sélectionne tout le texte
     });
 }
@@ -58,8 +62,10 @@ async function init(){
 let checkTimer = null;
 async function check(){
 
-    console.log("CHECK START");
-    resetInterface();   // ← remet toute l'interface à zéro
+    // console.log("CHECK START");
+    // remet toute l'interface à zéro
+
+    resetInterface();   
     const input = document.getElementById("licence");
     if(!input) return;
     const lic = input.value.trim();
@@ -99,25 +105,32 @@ async function check(){
             }
             setCurrentPlayer(data);
             const errBox = document.getElementById("licenceError");
+
             // cacher message si licence valide
+
             if(errBox){
                 errBox.classList.add("hidden");
             }
             if(!data.fftt){
+
                 // message inline
+
                 if(errBox){
                     errBox.innerText = "Licence inconnue FFTT";
                     errBox.classList.remove("hidden");
                 }
                 // masquer tableaux
+
                 document.getElementById("tableauxContainer").innerHTML="";
+
                 // masquer inscription
+
                 const card = document.getElementById("inscriptionCard");
                 if(card){
                     card.style.display="none";
                     card.classList.add("hidden");
                 }
-                return; // STOP ici
+                return; 
             }
             setJoueurPoints(data.points ? Number(data.points) : 9999);
             const res = document.getElementById("result");
@@ -135,7 +148,9 @@ async function check(){
             const mailInput = document.getElementById("email");
             if(mailInput){
                 mailInput.value = data.mail || "";
+
                 // focus automatique email
+
                 setTimeout(()=>{
                     mailInput.focus();
                 },120);
@@ -151,12 +166,16 @@ async function check(){
             );
 
             if(data.already_inscrit){
+
                 // cacher verification email
+
                 const emailRow = document.querySelector(".email-row");
                 const codeRow = document.querySelector(".code-row");
                 if(emailRow) emailRow.style.display = "none";
                 if(codeRow) codeRow.style.display = "none";
+
                 // afficher tableaux
+
                 document
                 .getElementById("tableauxContainer")
                 .classList.remove("hidden");

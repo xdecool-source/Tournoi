@@ -9,36 +9,34 @@ import aiosmtplib
 from dotenv import load_dotenv
 from email.message import EmailMessage
 
-# -------- ENV
+#  Env
 
 load_dotenv(".env", override=False)
 ENV = os.getenv("ENV", "dev")
 
-# -------- SMTP (DEV)
+#  Smtp (Dev)
 
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
 SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASS = os.getenv("SMTP_PASS")
 
-# -------- BREVO
+#  Brevo
 
 BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 
-# -------- COMMUN
+#  Commun
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 print("ENV VALUE =", ENV)
 print("SMTP_HOST =", SMTP_HOST)
 print("FROM_EMAIL =", FROM_EMAIL)
 
-# -------- STOCKAGE CODES
+#  Stockages Codes
 
 verification_codes = {}
 
-# -----------------------------------
-# GENERATION CODE
-# -----------------------------------
+# Génération code
 
 def generate_code():
     return str(random.randint(100000, 999999))
@@ -71,9 +69,7 @@ def verify_code(email, code):
         return True
     return False
 
-# -----------------------------------
-# SMTP DEV
-# -----------------------------------
+# Smtp Dev
 
 async def send_smtp_email(to_email, subject, html):
 
@@ -94,9 +90,8 @@ async def send_smtp_email(to_email, subject, html):
     )
     print("MAIL SMTP ENVOYÉ")
 
-# -----------------------------------
-# BREVO PROD
-# -----------------------------------
+
+# Brevo prod
 
 async def send_brevo_email(to_email, subject, html):
 
@@ -120,9 +115,7 @@ async def send_brevo_email(to_email, subject, html):
         )
         print("BREVO STATUS", r.status_code)
 
-# -----------------------------------
-# ROUTEUR MAIL
-# -----------------------------------
+# Routeur Mail 
 
 async def send_email(to_email, subject, html):
 

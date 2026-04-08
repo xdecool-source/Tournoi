@@ -5,17 +5,36 @@ import { setEmailVerified } from "./state.js";
 
 
 export async function sendCode(){
-    console.log("SEND CODE CLICK");   // test
+    console.log("SEND CODE CLICK");
+
     const email = document.getElementById("email").value.trim();
+
     const res = await fetch("/send-code",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({email})
     });
-    const data = await res.json();
+
+    let data = null;
+
+    try{
+        data = await res.json();
+    }catch(e){
+        console.error("Erreur parsing JSON");
+    }
+
     console.log(data);
+
+    if(!data){
+    alert("Erreur serveur");
+    return;
+    }
+
     if(!data.success){
-        alert(data.error);
+
+        //  cas normal : code déjà envoyé
+
+        alert(data.error || "Code déjà envoyé, vérifiez votre mail");
         return;
     }
     // alert("Code envoyé");
@@ -33,20 +52,29 @@ export async function verifyCode(){
     });
     const data = await res.json();
     if(data.success){
+
         // alert("Email vérifié");
+
         console.log("VERIFY SUCCESS", data);
         setEmailVerified(true);
+
         // verrouiller email
+
         document.getElementById("email").disabled = true;
+
         // masquer champs email + code
+
         const emailRow = document.querySelector(".email-row");
         const codeRow = document.querySelector(".code-row");
         if(emailRow) emailRow.style.display="none";
         if(codeRow) codeRow.style.display="none";
-            // afficher tableaux
+
+        // afficher tableaux
+
         document
       .getElementById("tableauxContainer")
       .classList.remove("hidden");
+      
         // afficher bouton valider
         const btnValider = document.getElementById("btnValider");
         if(btnValider) btnValider.style.display="block";

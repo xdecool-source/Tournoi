@@ -21,7 +21,6 @@
 </head>
 
 <body>
-
 <img src="/static/Logo.png" alt="Logo du club" class="logo">
 <div class="page">
 <div class="container">
@@ -40,7 +39,6 @@
 placeholder="N° licence"
 inputmode="numeric"
 oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-
 <button class="licence-btn" onclick="check()">OK</button>
 <span class="licence-icon"></span>
 
@@ -58,14 +56,12 @@ Si vous souhaitez modifier votre inscription, merci d'envoyer un mail.
 ========================= -->
 
 <div id="inscriptionCard" class="card hidden">
-
 <h2>👍🏻Selection des Tableaux</h2>
-
 <div class="email-row">
      <input id="email" type="email" placeholder="Ton mail">
-     <button class="btn-code blink" onclick="sendCode()">Envoie le code</button></div>
+     <button class="btn-code blink" onclick="sendCode()">Envoie le code</button>
+</div>
 <div id="emailError" class="error"></div>
-
 <div class="code-row">
     <input id="verificationCode" placeholder="Saisir votre Code reçu par Mail">
     <button class="btn-code" onclick="verifyCode()">Vérifie le code</button>
@@ -74,17 +70,19 @@ Si vous souhaitez modifier votre inscription, merci d'envoyer un mail.
 <button id="btnValider" onclick="sendInscription()" style="display:none;">
 Valider
 </button>
-</div>
+<div id="totalPrix" class="hidden"></div>
+
+</div> <!--  FERMETURE ICI -->
 
 <!-- =========================
-     RECAP
+     Recap
 ========================= -->
 
 <div id="recapCard" class="hidden">
-<div class="card" style="max-width:400px;margin:auto">
-<h2>✅Récapitulatif Inscription</h2>
-<div id="recapContent"></div>
-</div>
+    <div class="card" style="max-width:400px;margin:auto">
+        <h2>✅Récapitulatif Inscription</h2>
+        <div id="recapContent"></div>
+    </div>
 </div>
 
 <!-- =========================
@@ -122,13 +120,14 @@ Logout admin
 <p>
 Merci pour votre inscription.<br>
 Redirection automatique...
+
 </p>
 </div>
 ...
 </div>
 
 <div style="position:fixed; bottom:5px; right:10px; font-size:11px; opacity:0.5; color: white;">
-TT Thuir XDC Version: v2.1
+Tennis de Table Thuirinois XDC Version: v2.5 Prix
 </div>
 
 </body>

@@ -3,7 +3,7 @@
 // gère les erreurs/tableaux pleins
 // puis affiche un récapitulatif.
 
-// ---------- SEND INSCRIPTION ----------
+//  Send  Inscription 
 
 import { currentPlayer, emailVerified, places, isAdmin } from "./state.js";
 import { showRecap } from "./recap.js"
@@ -38,13 +38,20 @@ export async function sendInscription(){
         return;
     }    
     // blocage tableau plein
+
     for(const t of selection){
         const p = places[t];
+
         // xxxx const p = places[t].capacite
+
         if(!p) continue;
+
         // FULL uniquement si capacite + attente saturées
+
         if(p.ok>= p.capacite && p.attente >= p.attente_max){
+
         // info visuelle mais on laisse backend décider
+
             console.log("FULL FRONT", t);
         }
     // sinon attente autorisée
@@ -62,7 +69,9 @@ export async function sendInscription(){
     const url = currentPlayer.already_inscrit
         ? `/inscription/${currentPlayer.licence}`
         : "/inscription";
+
     //  anti double clic bouton
+
     const btn = document.querySelector("button[onclick='sendInscription()']");
     if(btn){
         btn.disabled = true;
@@ -73,9 +82,13 @@ export async function sendInscription(){
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify(payload)
     });
+
     // récupérer la réponse backend
+
     const data = await res.json();
+
     // réactivation bouton
+
     if(btn){
         btn.disabled = false;
         btn.innerText = currentPlayer.already_inscrit
@@ -83,11 +96,13 @@ export async function sendInscription(){
             : "Valider";
     }
     // gestion erreur backend
+
     if(data.success === false){
         openModal(data.error || "Erreur");
         return;
     }
     // ICI → tableaux refusés
+
     if(data.refused && data.refused.length){
         openModal(
             "Inscription validée mais tableaux pleins : " +
@@ -95,7 +110,9 @@ export async function sendInscription(){
         );
     }
     closeModal();
+
     //  filtrer tableaux refusés backend
+    
     const validSelection = data.refused?.length
         ? selection.filter(t => !data.refused.includes(t))
         : selection;

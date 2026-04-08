@@ -7,7 +7,6 @@
 # API Brevo en production
 # Envoie le mail au joueur et avec copie à l’admin
 
-
 import os
 import httpx
 import aiosmtplib
@@ -15,34 +14,34 @@ import aiosmtplib
 from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
 from email.message import EmailMessage
-from core.config import TABLEAUX
+from core.config import TABLEAUX, PRIX
 from services.db import get_conn
 
-# ------------- Chargement environnement
+#  Chargement environnement
 
 load_dotenv(".env", override=False)
 ENV = os.getenv("ENV", "dev")
 
-# ------------ SMTP (DEV / LOCAL)
+#  Smtp (DEV / LOCAL)
 
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
 SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASS = os.getenv("SMTP_PASS")
 
-# ------------ BREVO (PRODUCTION)
+#  Brevo (Production)
 
 BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 
-# ------------ IDENTIQUE
+#  Identique
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 SITE_URL = os.getenv("SITE_URL")
 
 env = Environment(loader=FileSystemLoader("templates"))
 
-# ------------ Construction HTML email
+#  Construction HTML email
 
 async def build_email_html(data: dict, type_mail: str):
 
@@ -52,13 +51,20 @@ async def build_email_html(data: dict, type_mail: str):
         else "email_modification.html"
     )
 
-    # ----------- print("STEP 1 - chargement template")
+    #  print(" 1 - chargement template")
+    
     template = env.get_template(template_name)
-    # ----------- print("STEP 2 - construction tableaux")
+    
+    #  print(" 2 - construction tableaux")
+    
     tableaux_details = []
+    total = 0 
+    
     async with get_conn() as conn:
         for t in data["tableaux"]:
             conf = TABLEAUX.get(t, {})
+            prix = PRIX.get(t, 0)  # 🔥 prix
+            total += prix          # 🔥 cumul
             min_pts = conf.get("min")
             max_pts = conf.get("max")
             statut = await conn.fetchval(
@@ -82,10 +88,13 @@ async def build_email_html(data: dict, type_mail: str):
             else:
                 min_aff = min_pts if min_pts is not None else "x"
                 max_aff = max_pts if max_pts is not None else "x"
-                ligne = f"{t} ({min_aff}-{max_aff} pts) — {statut_txt}"
+                ligne = f"{t} ({min_aff}-{max_aff} pts) — {prix}€ {statut_txt}"
             tableaux_details.append(ligne)
+            
     tableaux_str = "<br>".join(tableaux_details)
-    # ----------- print("STEP 3 - render HTML")
+    total_html = f"<br><br><b>💰 Total : {total}€</b>"
+    
+    #  print(" 3 - render HTML")
     
     html_content = template.render(
         prenom=data["prenom"],
@@ -93,16 +102,17 @@ async def build_email_html(data: dict, type_mail: str):
         licence=data["licence"],
         club=data.get("club", ""),
         points=data.get("points", ""),
-        tableaux=tableaux_str,
+        tableaux=tableaux_str + total_html,  # 🔥 ici
         site_url=SITE_URL
     )
     return html_content
 
-# ------------ Envoi SMTP (DEV)
+#  Envoi SMTP (Dev)
 
 async def send_smtp_email(to_email: str, subject: str, html_content: str):
     
-    # ----------- print("STEP 4 - envoi SMTP")
+    #  print(" 4 - envoi SMTP")
+    
     message = EmailMessage()
     message["From"] = FROM_EMAIL
     message["To"] = to_email
@@ -123,11 +133,12 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
     except Exception as e:
         print("❌ ERREUR SMTP :", e)
 
-# ------------ Envoi BREVO (PROD)
+#  Envoi Brevo (PROProductionD)
 
 async def send_brevo_email(to_email: str, subject: str, html_content: str):
 
-    # ----------- print("STEP 4 - envoi BREVO")
+    #  print(" 4 - envoi BREVO")
+    
     payload = {
         "sender": {"email": FROM_EMAIL},
         "to": [{"email": to_email}],
@@ -152,7 +163,7 @@ async def send_brevo_email(to_email: str, subject: str, html_content: str):
         print("Brevo response:", response.text)
         response.raise_for_status()
 
-# ------------ Fonction principale
+#  Fonction principale
 
 async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
 
@@ -175,7 +186,7 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
             html_content
         )
         
-# ------- FONCTION GENERIQUE ENVOI MAIL
+#  Fonction générique envoi de mail
 
 async def send_email(to_email: str, subject: str, html_content: str):
 

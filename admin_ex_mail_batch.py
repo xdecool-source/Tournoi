@@ -12,44 +12,34 @@ from dotenv import load_dotenv
 from services.db import init_db_pool, init_db
 from export.generate_inscription import generate
 
-# --------------------------------------------------
 # Chargement environnement
-# --------------------------------------------------
 
 load_dotenv(".env", override=False)
 ENV = os.getenv("ENV", "dev")
 print("MAIL MODE =", ENV)
 
-# --------------------------------------------------
-# SMTP (DEV / LOCAL)
-# --------------------------------------------------
+# Smtp (Dev / Local)
 
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
 SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASS = os.getenv("SMTP_PASS")
 
-# --------------------------------------------------
-# BREVO (PRODUCTION)
-# --------------------------------------------------
+# Brevo (Production)
 
 BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 
-# --------------------------------------------------
-# COMMUN
-# --------------------------------------------------
+# Commun
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 SITE_URL = os.getenv("SITE_URL")
 
-# --------------------------------------------------
-# ENVOI SMTP
-# --------------------------------------------------
+# Envoi  Smtp
 
 async def send_smtp_email(msg):
 
-    # ----------- print("STEP 4 - envoi SMTP")
+    #  print("envoi SMTP")
     await aiosmtplib.send(
         msg,
         hostname=SMTP_HOST,
@@ -58,15 +48,13 @@ async def send_smtp_email(msg):
         password=SMTP_PASS,
         start_tls=True
     )
-    # ----------- print("SMTP mail envoyé")
+    #  print("SMTP mail envoyé")
 
-# --------------------------------------------------
-# ENVOI BREVO
-# --------------------------------------------------
+# Envoi Brevo 
 
 async def send_brevo_email(to_email, subject, html_content, excel_stream):
 
-    # ----------- print("STEP 4 - envoi BREVO")
+    #  print(" envoi BREVO")
     attachment = base64.b64encode(excel_stream.read()).decode()
     payload = {
         "sender": {"email": FROM_EMAIL},
@@ -98,9 +86,8 @@ async def send_brevo_email(to_email, subject, html_content, excel_stream):
         response.raise_for_status()
 
 
-# --------------------------------------------------
-# ROUTEUR MAIL
-# --------------------------------------------------
+
+# Routeur Mail 
 
 async def send_email(excel_stream):
 
@@ -130,9 +117,7 @@ async def send_email(excel_stream):
         await send_smtp_email(msg)
 
 
-# --------------------------------------------------
-# MAIN
-# --------------------------------------------------
+# Main 
 
 async def main():
 
@@ -140,6 +125,7 @@ async def main():
     await init_db()
 
     # génération Excel
+    
     excel_stream = generate()
     if not excel_stream:
         print("Aucun fichier généré")
@@ -148,8 +134,6 @@ async def main():
     await send_email(excel_stream)
     print("Mail envoyé")
 
-# --------------------------------------------------
-# EXECUTION
-# --------------------------------------------------
+# Run
 
 asyncio.run(main())

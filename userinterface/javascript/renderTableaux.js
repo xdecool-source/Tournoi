@@ -1,7 +1,7 @@
 // Génère l’interface des tableaux
 //  (avec règles, états, sélection limitée et visuel dynamique).
 
-// ------------ RENDER TABLEAUX ---------------------
+//  Render Tableaux 
 
 export function renderTableaux(
     TABLEAUX,
@@ -27,7 +27,7 @@ export function renderTableaux(
         const max = conf.max != null ? Number(conf.max) : null;
         const isChecked = tableauxInscrits.includes(key);
 
-        // ----------- règles métier -----------
+        //  règles métier 
 
         let interdit = false;
         if(!isNaN(points)){
@@ -39,7 +39,7 @@ export function renderTableaux(
         let disabled = false;
         let attenteLabel = `${att}/${attMax}`;
 
-        // ----------- états tableau -----------
+        //  états tableau 
 
         if(interdit){
             color = "grey";
@@ -55,7 +55,7 @@ export function renderTableaux(
             color = "orange";
         }
 
-        // ----------- blocage si déjà inscrit -----------
+        //  blocage si déjà inscrit 
 
         if(alreadyInscrit && !isAdmin){
             disabled = true;
@@ -65,6 +65,7 @@ export function renderTableaux(
         }
 
         // admin override
+
         if(isAdmin){
             disabled = false;
         }
@@ -72,10 +73,14 @@ export function renderTableaux(
         <div class="tableau-row ${color} ${isChecked ? "selected" : ""} ${interdit ? "tableau-interdit" : ""} ${alreadyInscrit && !isAdmin ? "locked" : ""}">  
             <input type="checkbox"
                 value="${key}"
+                data-prix="${conf.prix ?? 0}"
                 ${disabled ? "disabled" : ""}
                 ${isChecked ? "checked" : ""}
                 onchange="limitSelection.call(this)">  
-            <span class="col-tableau">${key}</span>
+
+            <span class="col-tableau">
+                ${key} - 💰 ${conf.prix ?? 0}€
+            </span>
             <span class="col-tranche ${interdit ? "tranche-ko" : "tranche-ok"}">
                 ${conf.label ?? (min !== null && max !== null ? `${min}-${max}` : "")}
             </span>
@@ -108,12 +113,21 @@ window.limitSelection = limitSelection;
 // gestion visuelle sélection
 
 document.addEventListener("change", function(e){
-    if(e.target.matches('#tableauxContainer input[type="checkbox"]')){
-        const card = e.target.closest(".tableau-row");
-        if(e.target.checked){
-            card.classList.add("selected");
-        }else{
-            card.classList.remove("selected");
-        }
+
+    if(!e.target.matches('#tableauxContainer input[type="checkbox"]')){
+        return;
     }
+
+    let total = 0;
+    document.querySelectorAll(
+        "#tableauxContainer input:checked"
+    ).forEach(cb => {
+        const prix = parseInt(cb.dataset.prix || "0", 10);
+        total += isNaN(prix) ? 0 : prix;
+    });
+    const el = document.getElementById("totalPrix");
+    if(el){
+        el.innerText = "Total : " + total + "€";
+    }
+    console.log("TOTAL =", total); 
 });

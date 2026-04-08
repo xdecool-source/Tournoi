@@ -11,29 +11,29 @@ from dotenv import load_dotenv
 from services.db import init_db_pool, init_db
 from export.generate_inscription import generate
 
-# ---------- Chargement environnement
+#  Chargement environnement
 
 load_dotenv(".env", override=False)
 ENV = os.getenv("ENV", "dev")
 
- # ---------- SMTP (DEV / LOCAL)
+ #  Smtp (Dev / Local)
 
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
 SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASS = os.getenv("SMTP_PASS")
 
-# ---------- BREVO (PRODUCTION)
+#  Brevo (Production)
 
 BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 
-# ---------- COMMUN
+#  Commun
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 SITE_URL = os.getenv("SITE_URL")
 
-# ---------- ENVOI SMTP
+#  Envoi Smtp
 
 async def send_smtp_email(msg):
 
@@ -48,7 +48,7 @@ async def send_smtp_email(msg):
     )
     print("SMTP mail envoyé")
 
-# ---------- ENVOI BREVO
+#  Envoi Brevo 
 
 async def send_brevo_email(to_email, subject, html_content, excel_stream):
 
@@ -83,7 +83,7 @@ async def send_brevo_email(to_email, subject, html_content, excel_stream):
         print("Brevo response:", response.text)
         response.raise_for_status()
 
-# ---------- ROUTEUR MAIL
+#  Routeur Mail
 
 async def send_email(excel_stream):
 
@@ -111,7 +111,7 @@ async def send_email(excel_stream):
         )
         await send_smtp_email(msg)
 
-# ---------- MAIN
+#  Main
 
 async def main():
 

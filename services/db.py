@@ -24,7 +24,7 @@ if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     
 pool = None
 
-# ----------- init pool
+#  init pool
 
 async def init_db_pool():
     global pool
@@ -46,7 +46,7 @@ async def init_db_pool():
         )
 print("Creation tables si besoin")
 
-# ----------- init DB
+#  init DB
 
 async def init_db():
     async with pool.acquire() as conn:
@@ -91,7 +91,7 @@ async def init_db():
         ON CONFLICT (id) DO NOTHING
         """)
 
-# ----------- licence déjà inscrite
+#  licence déjà inscrite
 
 async def licence_exists(licence):
     async with pool.acquire() as conn:
@@ -101,7 +101,7 @@ async def licence_exists(licence):
         )
         return r is not None
 
-# ----------- toutes inscriptions
+#  toutes inscriptions
 
 async def get_all():
     async with pool.acquire() as conn:
@@ -115,7 +115,7 @@ async def get_all():
         """)
         return [dict(r) for r in rows]
 
-# ----------- classement par tableau
+#  classement par tableau
 
 async def get_classement_par_tableau():
     async with pool.acquire() as conn:
@@ -130,7 +130,7 @@ async def get_classement_par_tableau():
             classement.setdefault(r["tableau"], []).append(dict(r))
         return classement
 
-# ----------- comptage
+#  comptage
 
 async def count_tableau(t, statut=None):
     async with pool.acquire() as conn:
@@ -144,7 +144,7 @@ async def count_tableau(t, statut=None):
             WHERE tableau=$1
         """, t)
 
-# ----------- comptage en attente
+#  comptage en attente
 
 async def count_tableau_attente(t):
     async with pool.acquire() as conn:
@@ -153,7 +153,7 @@ async def count_tableau_attente(t):
             WHERE tableau=$1 AND statut='ATTENTE'
         """, t)
 
-# ----------- statut tableau
+#  statut tableau
 
 async def tableau_status(t):
     conf = TABLEAUX[t]
@@ -166,7 +166,7 @@ async def tableau_status(t):
     return "FULL"
 
 
-# ----------- sauvegarde inscription
+#  sauvegarde inscription
 
 async def save_inscription(data):
     if await licence_exists(data["licence"]):
@@ -181,6 +181,7 @@ async def save_inscription(data):
             """)
 
             # 1 insertion joueur
+            
             await conn.execute("""
             INSERT INTO inscriptions
             (dossard, nom, prenom, club, points, date_inscription, licence, mail)
@@ -195,6 +196,7 @@ async def save_inscription(data):
             data["licence"],
             data["mail"]
             )
+
 
             # 2 insertion tableaux avec verrouillage
             for t in data["tableaux"]:
@@ -230,7 +232,7 @@ async def save_inscription(data):
                 status
                 )      
 
-# ----------- promotion attente
+#  promotion attente
 
 async def promote_attente(t):
     async with pool.acquire() as conn:
@@ -252,7 +254,7 @@ async def promote_attente(t):
             WHERE licence=$1 AND tableau=$2
             """, row["licence"], t)
 
-# ----------- Tableau par licencie 
+#  Tableau par licencie 
 
 async def get_tableaux_by_licence(licence):
     
@@ -264,7 +266,7 @@ async def get_tableaux_by_licence(licence):
         """, licence)
         return [r["tableau"] for r in rows]
 
-# ----------- connexion transaction
+#  connexion transaction
 
 @asynccontextmanager
 async def get_conn():
@@ -275,7 +277,7 @@ async def get_conn():
         await pool.release(conn)
 
 
-# ----------- Check Envoi 
+#  Check Envoi 
 
 async def should_send_admin_mail(conn, current_count):
 
@@ -293,7 +295,7 @@ async def should_send_admin_mail(conn, current_count):
         return True
     return False
 	
-# ----------- Mise a Jour  
+#  Mise a Jour  
 
 async def update_admin_mail_status(conn, current_count):
 

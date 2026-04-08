@@ -250,6 +250,12 @@ font-weight:700;
 font-size:12px;
 }
 
+.col-prix{
+    width: 70px;
+    font-weight: bold;
+    color: #f39c12;
+}
+
 /*  STATS TABLEAU */
 .tableau-stats {
     display: flex;
@@ -569,6 +575,11 @@ font-size:12px;
 
 .stat-attente{
 font-size:11px;
+}
+.col-prix{
+    width: 70px;
+    font-weight: bold;
+    color: #f39c12;
 }
 
 #tableauxContainer input[type="checkbox"]{

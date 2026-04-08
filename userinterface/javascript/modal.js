@@ -1,7 +1,7 @@
 // Affiche ou masque une fenêtre pop-up 
 // avec un message d’erreur ou d’information.
+//  Modal 
 
-// ---------- MODAL ----------
 export function openModal(msg){
 
     document.getElementById("modalMsg").innerText = msg;
