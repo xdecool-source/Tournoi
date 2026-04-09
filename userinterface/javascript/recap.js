@@ -15,8 +15,6 @@ export async function showRecap(player, email, tableauxSel){
     document.getElementById("licenceCard")?.classList.add("hidden");
     document.getElementById("inscriptionCard")?.classList.add("hidden");
 
-    // FIX LAYOUT 
-
     const row = document.getElementById("inscriptionRow");
     if(row){
         row.style.display = "block";
@@ -28,7 +26,7 @@ export async function showRecap(player, email, tableauxSel){
     const placesNow = await fetch("/places").then(r=>r.json());
 
     let tableauxHTML = "";
-    let total = 0; //  FIX CRITIQUE
+    let total = 0; 
 
     tableauxSel.forEach(t=>{
         const c = conf[t];
@@ -80,52 +78,91 @@ export async function showRecap(player, email, tableauxSel){
 
     if(recapContent){
         recapContent.classList.remove("hidden");
-        recapContent.style.display = "block"; // 🔥 FIX
+        recapContent.style.display = "block"; 
 
-        recapContent.innerHTML = `
-            <b>${player.prenom} ${player.nom}</b><br>
-            N° de Licence: <b>${player.licence}</b><br>
-            Licencié au Club: ${player.club}<br>
-            Ayant ${player.points} Points en Phase 2<br>
-            Votre Adresse Mail: ${email}<br><br>
+        // console.log("TOTAL TOTAL =", total, typeof total);
 
-            ✌️Liste des tableaux validés<br>
-            ${tableauxHTML}
+        if(total === 0){
 
-            <br>
-            <b style="font-size:18px; color:#28a745;">
-                💰 Total : ${total}€
-            </b>
-            <br><br>
-            <div style="text-align:center">
-                <div style="color:orange; font-size:14px; margin-bottom:10px;">
-                    ⚠️ Merci de payer exactement ${total}€
+            recapContent.innerHTML = `
+                <b style="color:red; font-size:20px;">
+                    ❌ Annulation Inscription
+                </b>
+                <br><br>
+
+                <b>${player.prenom} ${player.nom}</b><br>
+                N° de Licence: <b>${player.licence}</b><br>
+                Licencié au Club: ${player.club}<br>
+                Ayant ${player.points} Points en Phase 2<br>
+                Votre Adresse Mail: ${email}<br><br>
+
+                Plus aucun tableau sélectionné
+                <br><br>
+
+                <b style="font-size:18px;">
+                    Merci de nous envoyer votre RIB ou votre adresse pour le remboursement.
+                    Les frais de timbre sont à votre charge. 
+                </b>
+                <br><br>
+
+                <b style="color:#007bff;">
+                    Un mail va suivre afin de confirmer votre annulation
+                </b>
+            `;
+
+        }else{
+
+            recapContent.innerHTML = `
+                <b>${player.prenom} ${player.nom}</b><br>
+                N° de Licence: <b>${player.licence}</b><br>
+                Licencié au Club: ${player.club}<br>
+                Ayant ${player.points} Points en Phase 2<br>
+                Votre Adresse Mail: ${email}<br><br>
+
+                Liste des tableaux validés<br>
+                ${tableauxHTML}
+
+                <b style="font-size:18px; color:#28a745;">
+                    Total : ${total}€
+                </b>
+                <br><br>
+
+                <div style="text-align:center">
+                    <div style="color:orange; font-size:14px; margin-bottom:10px;">
+                        ⚠️ Merci de payer exactement ${total}€
+                    </div>
+
+                    <a href="https://www.helloasso.com/associations/tennis-de-table-thuirinois/evenements/tournoi-l-homopongistus"
+                    target="_blank"
+                    style="
+                        display:inline-block;
+                        padding:12px 25px;
+                        background:#ffcc00;
+                        color:black;
+                        font-weight:bold;
+                        border-radius:8px;
+                        text-decoration:none;
+                        margin-bottom:15px;
+                    ">
+                    💳 Payer maintenant
+                    </a>
                 </div>
-                <a href="https://www.helloasso.com/associations/tennis-de-table-thuirinois/evenements/tournoi-l-homopongistus"
-                 target="_blank"
-                style="
-                    display:inline-block;
-                    padding:12px 25px;
-                    background:#ffcc00;
-                    color:black;
-                    font-weight:bold;
-                    border-radius:8px;
-                    text-decoration:none;
-                    margin-bottom:15px;
-                ">
-                💳 Payer maintenant
-                </a>
 
                 <br>
-            </div>
-            <br><br>
-            <b style="color:#007bff;">
-            Paiement obligatoire pour valider définitivement votre inscription
-            la contribution HelloAsso est facultative et peut être modifiée.
-            </b>
-                        <br><br>
-        `;
-    }
+
+                <b style="color:#007bff;">
+                Paiement obligatoire pour valider définitivement votre inscription
+                la contribution HelloAsso est facultative et peut être modifiée.
+                </b>
+
+                <br><br>
+
+                <b style="color:#007bff;">
+                Un mail va suivre afin de confirmer vos Tableaux et Tarifs avec le lien de paiement
+                </b>
+            `;
+        }
+   }
 
     // 4 afficher recap (FIX COMPLET)
     
@@ -141,5 +178,5 @@ export async function showRecap(player, email, tableauxSel){
         recapCard.scrollIntoView({ behavior: "smooth" }); // 🔥 UX
     }
 
-    console.log("RECAP OK", total);
+    // console.log("RECAP OK", total);
 }

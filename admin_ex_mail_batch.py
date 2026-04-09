@@ -55,6 +55,7 @@ async def send_smtp_email(msg):
 async def send_brevo_email(to_email, subject, html_content, excel_stream):
 
     #  print(" envoi BREVO")
+    
     attachment = base64.b64encode(excel_stream.read()).decode()
     payload = {
         "sender": {"email": FROM_EMAIL},

@@ -35,6 +35,7 @@ if(recapContent) recapContent.innerHTML = "";
     if(mail){
         mail.value = "";
         mail.disabled = false;   
+        
         // réactive le champ email
     }
 

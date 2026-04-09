@@ -119,6 +119,7 @@ async def main():
     await init_db()
 
     # génération Excel
+    
     excel_stream = generate()
     if not excel_stream:
         print("Aucun fichier généré")

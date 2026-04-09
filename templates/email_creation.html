@@ -4,31 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin:0; padding:0; background:#f2f4f8; font-family:Arial, sans-serif;">
 
+<body style="margin:0; padding:0; background:#f2f4f8; font-family:Arial, sans-serif;">
 <table width="100%" cellpadding="0" cellspacing="0" style="padding:30px 0;">
 <tr>
 <td align="center">
-
 <table width="600" cellpadding="0" cellspacing="0" style="background:white; border-radius:10px; overflow:hidden; box-shadow:0 5px 20px rgba(0,0,0,0.1);">
 
+<!-- En tete -->
 <tr>
 <td style="background:#007bff; padding:20px; text-align:center; color:white;">
-<h2 style="margin:0;">🏓 Tournoi de Tennis de Table L'Homopongistus</h2>
+<h2 style="margin:0;">🏓 Tournoi de Tennis de Table L'Homopongistus 🏓</h2>
 </td>
 </tr>
 
+<!-- Message -->
 <tr>
 <td style="padding:30px;">
-
-<h3 style="margin-top:0;">Confirmation d'inscription Homopongistus </h3>
-
+<h3 style="margin-top:0;">Confirmation d'inscription Homopongistus</h3>
 <p>Bonjour Mr. ou Mme. <b>{{ prenom }} {{ nom }}</b>,</p>
-
-Votre inscription a bien été enregistrée et nous vous en remercions<br>
-Si vous êtes en liste d'attente sur un ou plusieurs tableaux<br>
+<p>
+Votre inscription a bien été enregistrée et nous vous en remercions.<br>
+Si vous êtes en liste d'attente sur un ou plusieurs tableaux,<br>
 un mail de confirmation d'inscription vous sera envoyé<br>
-au fur et à mesure de l'évolution des tableaux<br>
+au fur et à mesure de l'évolution des tableaux.
+</p>
 
 <table width="100%" cellpadding="8" style="background:#f9f9f9; border-radius:6px;">
 <tr><td><b>Licence :</b></td><td>{{ licence }}</td></tr>
@@ -40,24 +40,29 @@ au fur et à mesure de l'évolution des tableaux<br>
 </tr>
 </table>
 
-<p style="margin-top:25px;">
-<a href="{{ site_url }}" 
-style="display:inline-block; padding:12px 20px; background:#ff9800; color:white; text-decoration:none; border-radius:6px; font-weight:bold; font-size:12px; opacity:0.9;">
-Pas d'information sur les tableaux signifie que vous n'êtes pas inscrit
-</a>
-</p>
 
-<p style="margin-top:25px;">
-<a href="{{ site_url }}" 
-style="display:inline-block; padding:12px 20px; background:#007bff; color:white; text-decoration:none; border-radius:6px; font-weight:bold;">
-Voir les tableaux en ligne
+<!-- Bouton Paiement   -->
+<p style="margin-top:15px;">
+<a href="https://www.helloasso.com/associations/tennis-de-table-thuirinois/evenements/tournoi-l-homopongistus"
+target="_blank"
+style="
+display:inline-block;
+padding:12px 25px;
+background:#ffcc00;
+color:black;
+font-weight:bold;
+border-radius:8px;
+text-decoration:none;
+">
+💳 Payer maintenant si cela n'a pas déjà été réalisé 
 </a>
 </p>
 
 </td>
 </tr>
 
-<<tr>
+<!-- Pied -->
+<tr>
 <td style="background:#f2f2f2; padding:15px; text-align:center; font-size:12px; color:#666;">
 Bon tournoi à vous : Le bureau du TT Thuirinois : 
 <a href="mailto:thuirtt66@gmail.com" style="color:#007bff; text-decoration:none;">
@@ -65,6 +70,7 @@ thuirtt66@gmail.com
 </a>
 </td>
 </tr>
+
 </table>
 
 </td>

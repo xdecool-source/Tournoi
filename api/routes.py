@@ -7,16 +7,15 @@
 # gère login admin
 
 from fastapi import APIRouter, HTTPException, Request, Response, BackgroundTasks
-from fastapi.responses import HTMLResponse
-from fastapi.responses import StreamingResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 from core.config import TABLEAUX, PRIX, ADMIN_PASSWORD_HASH, MOCK_FFTT
 from services.fftt_service import appel_fftt
-from userinterface.screens import home_screen
-from export.generate_inscription import generate 
 from services.mail_inscription import send_email, send_confirmation_email
 from services.mail_code import store_verification_code, verify_code
 from tasks.excel_tournoi import main as ex_tournoi
 from dotenv import load_dotenv
+from userinterface.screens import home_screen
+from export.generate_inscription import generate 
 
 import xml.etree.ElementTree as ET
 import time
@@ -194,7 +193,9 @@ async def get_places(request: Request, response: Response):
             }
         places_cache = res
         places_cache_time = time.time()
+        
     #  ETag (compatible cache navigateur)
+    
     etag = hashlib.md5(json.dumps(res, sort_keys=True).encode()).hexdigest()
     if request.headers.get("if-none-match") == etag:
         response.status_code = 304
@@ -210,26 +211,35 @@ async def update_inscription(licence: str, data: dict, request: Request, backgro
 
     if request.cookies.get("admin") != "1":
         raise HTTPException(403, "Admin only")
+    
     async with get_conn() as conn:
-        async with conn.transaction():  #  sécurise tout
+        async with conn.transaction(): 
+            
             # 1 récupérer anciens tableaux
+            
             old_rows = await conn.fetch("""
                 SELECT tableau FROM inscription_tableaux
                 WHERE licence=$1
             """, licence)
             old_tableaux = {r["tableau"] for r in old_rows}
             new_tableaux = set(data["tableaux"])
+            
             # 2 update mail
+            
             await conn.execute(
                 "UPDATE inscriptions SET mail=$1 WHERE licence=$2",
                 data["mail"], licence
             )
+            
             # 3 supprimer anciens tableaux
+            
             await conn.execute(
                 "DELETE FROM inscription_tableaux WHERE licence=$1",
                 licence
             )
+            
             # 4 réinsérer nouveaux tableaux
+            
             for t in new_tableaux:
                 status = await tableau_status(t)
                 if status == "FULL":
@@ -240,11 +250,14 @@ async def update_inscription(licence: str, data: dict, request: Request, backgro
                     VALUES ($1,$2,$3)
                 """, licence, t, status)
 
+        total = sum(PRIX.get(t, 0) for t in data["tableaux"])
+        email_type = "suppression" if total == 0 else "modification"
+        
         background_tasks.add_task(
             send_confirmation_email,
             data["mail"],
             data,
-            "modification"
+            email_type
         )
 
     # 5 promotion après suppression
@@ -265,7 +278,8 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
     licence = str(data.get("licence", ""))
     if not licence.isdigit():
         return {"success": False, "error": "Licence numérique obligatoire"}
-    #  BLOQUAGE FFTT
+    #  Bloquage fftt
+    
     if not MOCK_FFTT:
         joueur = await check_fftt_player(licence)
         if joueur is None:

@@ -45,15 +45,30 @@ env = Environment(loader=FileSystemLoader("templates"))
 
 async def build_email_html(data: dict, type_mail: str):
 
-    template_name = (
-        "email_creation.html"
-        if type_mail == "creation"
-        else "email_modification.html"
-    )
+    template_map = {
+        "creation": "email_creation.html",
+        "modification": "email_modification.html",
+        "suppression": "email_suppression.html"
+    }
 
+    template_name = template_map.get(type_mail, "email_creation.html")
+    
     #  print(" 1 - chargement template")
     
     template = env.get_template(template_name)
+    
+    if type_mail == "suppression":
+        html_content = template.render(
+            prenom=data["prenom"],
+            nom=data["nom"],
+            licence=data["licence"],
+            club=data.get("club", ""),
+            points=data.get("points", ""),
+            tableaux="Aucun tableau sélectionné",
+            site_url=SITE_URL
+        )
+        return html_content
+
     
     #  print(" 2 - construction tableaux")
     
@@ -168,11 +183,16 @@ async def send_brevo_email(to_email: str, subject: str, html_content: str):
 async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
 
     html_content = await build_email_html(data, type_mail)
-    subject = (
-        "Confirmation d'inscription - Tournoi Homopongistus"
-        if type_mail == "creation"
-        else "Modification d'inscription - Tournoi Homopongistus"
-    )
+    
+    if type_mail == "creation":
+        subject = "Confirmation d'inscription - Tournoi Homopongistus"
+    elif type_mail == "modification":
+        subject = "Modification d'inscription - Tournoi Homopongistus"
+    elif type_mail == "suppression":
+        subject = "Annulation d'inscription - Tournoi Homopongistus"
+    else:
+        subject = "Tournoi Homopongistus"
+        
     if ENV == "production":
         await send_brevo_email(
             to_email,

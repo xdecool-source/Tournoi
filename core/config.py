@@ -20,7 +20,8 @@ TABLEAUX = {
     "T4": {"min": 700, "max": 1599, "capacite": 8, "attente": 2},
     "T5": {"min": 800, "max": 1999, "capacite": 8, "attente": 2},
     "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 8, "attente": 2},
-    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 8, "attente": 2}
+    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 8, "attente": 2},
+    "T6": {"min": 800, "max": 1999, "capacite": 8, "attente": 2}
 }
 
 PRIX = {
@@ -30,6 +31,7 @@ PRIX = {
     "T4": 8,
     "T5": 9,
     "TS": 10,
-    "TH": 9
+    "TH": 9,
+    "T6": 10
 }
 

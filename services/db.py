@@ -38,6 +38,7 @@ async def init_db_pool():
         )
     else:
         # Production (Raiway → SSL obligatoire)
+        
         pool = await asyncpg.create_pool(
             DATABASE_URL,
             min_size=1,
@@ -199,8 +200,11 @@ async def save_inscription(data):
 
 
             # 2 insertion tableaux avec verrouillage
+            
             for t in data["tableaux"]:
+                
                 # verrouille les lignes de ce tableau merci chatgpt
+                
                 await conn.execute(
                 "SELECT pg_advisory_xact_lock(hashtext($1))",
                 t
@@ -287,10 +291,13 @@ async def should_send_admin_mail(conn, current_count):
         WHERE id=1
     """)
     # premier envoi si la ligne n'existe pas
+    
     if not row:
         return True
     last_count = row["last_count"]
+    
     # envoyer seulement si le nombre d'inscriptions a changé
+    
     if current_count != last_count:
         return True
     return False

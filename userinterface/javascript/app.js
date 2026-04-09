@@ -1,8 +1,6 @@
 // Vérifie une licence, récupère les infos d’un joueur
 // Affiche et gère son inscription à un tournoi (avec gestion admin, email, tableaux, etc.).
 
-console.log("APP TOURNOI CHARGEE");
-
 import { loginAdmin, logoutAdmin } from "./admin.js"
 import { sendInscription } from "./inscription.js"
 import { loadPlaces } from "./places.js"
@@ -52,10 +50,13 @@ async function init(){
     licenceInput.addEventListener("click", () => {
         
         // remet l'interface à zéro
-        resetInterface();          
+
+        resetInterface();       
+
         // licenceInput.value = "";   // vide la licence
         // licenceInput.focus();      // remet le curseur
-        licenceInput.select();   // sélectionne tout le texte
+
+        licenceInput.select(); 
     });
 }
 

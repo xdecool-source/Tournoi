@@ -34,6 +34,7 @@ async def export_scheduler():
         )
 
         # si l'heure est déjà passée aujourd'hui
+        
         if next_run <= now:
             next_run += timedelta(days=1)
         sleep_seconds = (next_run - now).total_seconds()
