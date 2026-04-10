@@ -34,6 +34,7 @@ def generate():
     create_price_sheet(wb, data_joueurs,root_dir)
 
 #  génération en mémoire
+
     stream = BytesIO()
     wb.save(stream)
     stream.seek(0)
@@ -41,5 +42,5 @@ def generate():
 #  libere memoire
     
     wb.close()  
-    print("✅ Excel généré en mémoire")
+    print(" Excel généré en mémoire")
     return stream

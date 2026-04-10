@@ -5,7 +5,7 @@ import { setEmailVerified } from "./state.js";
 
 
 export async function sendCode(){
-    console.log("SEND CODE CLICK");
+    // console.log("SEND CODE CLICK");
 
     const email = document.getElementById("email").value.trim();
 
@@ -23,7 +23,7 @@ export async function sendCode(){
         console.error("Erreur parsing JSON");
     }
 
-    console.log(data);
+    // console.log(data);
 
     if(!data){
     alert("Erreur serveur");
@@ -42,7 +42,7 @@ export async function sendCode(){
 
 export async function verifyCode(){
 
-    console.log("VERIFY CLICK");
+    // console.log("VERIFY CLICK");
     const email = document.getElementById("email").value;
     const code = document.getElementById("verificationCode").value;
     const res = await fetch("/verify-code",{
@@ -55,7 +55,7 @@ export async function verifyCode(){
 
         // alert("Email vérifié");
 
-        console.log("VERIFY SUCCESS", data);
+        // console.log("VERIFY SUCCESS", data);
         setEmailVerified(true);
 
         // verrouiller email

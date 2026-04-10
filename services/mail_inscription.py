@@ -78,8 +78,8 @@ async def build_email_html(data: dict, type_mail: str):
     async with get_conn() as conn:
         for t in data["tableaux"]:
             conf = TABLEAUX.get(t, {})
-            prix = PRIX.get(t, 0)  # 🔥 prix
-            total += prix          # 🔥 cumul
+            prix = PRIX.get(t, 0)  # prix
+            total += prix          # cumul
             min_pts = conf.get("min")
             max_pts = conf.get("max")
             statut = await conn.fetchval(
@@ -117,7 +117,7 @@ async def build_email_html(data: dict, type_mail: str):
         licence=data["licence"],
         club=data.get("club", ""),
         points=data.get("points", ""),
-        tableaux=tableaux_str + total_html,  # 🔥 ici
+        tableaux=tableaux_str + total_html, 
         site_url=SITE_URL
     )
     return html_content
@@ -144,15 +144,15 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
             password=SMTP_PASS,
             start_tls=True,
         )
-        print("✅ MAIL SMTP ENVOYÉ")
+        print(" Mail Smtp Envoyé")
     except Exception as e:
-        print("❌ ERREUR SMTP :", e)
+        print(" Erreur Smtp :", e)
 
-#  Envoi Brevo (PROProductionD)
+#  Envoi Brevo (Production)
 
 async def send_brevo_email(to_email: str, subject: str, html_content: str):
 
-    #  print(" 4 - envoi BREVO")
+    #  print(" 4 - envoi Brevo")
     
     payload = {
         "sender": {"email": FROM_EMAIL},
@@ -161,8 +161,8 @@ async def send_brevo_email(to_email: str, subject: str, html_content: str):
         "subject": subject,
         "htmlContent": html_content,
     }
-    print("BREVO_API_KEY =", BREVO_API_KEY)
-    print("FROM_EMAIL =", FROM_EMAIL)
+    print("Brevo Api key =", BREVO_API_KEY)
+    print("From Email =", FROM_EMAIL)
     async with httpx.AsyncClient(timeout=20) as client:
 
         response = await client.post(

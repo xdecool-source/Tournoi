@@ -9,10 +9,9 @@ from fastapi.staticfiles import StaticFiles
 import asyncio
 import os
 
-
 from dotenv import load_dotenv
-
-load_dotenv()    # si existe .env et pas de variable globale alors .env
+load_dotenv()    
+# si existe .env et pas de variable globale alors .env
 
 @asynccontextmanager
 
@@ -31,7 +30,6 @@ async def lifespan(app: FastAPI):
     # arrêt propre
     task.cancel()
     print(" Application arrêt")
-
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(router)

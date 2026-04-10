@@ -40,5 +40,5 @@ async def export_scheduler():
         sleep_seconds = (next_run - now).total_seconds()
         print(f"Prochain export prévu à {next_run}")
         await asyncio.sleep(sleep_seconds)
-        print("⏰ Lancement export admin")
+        print(" Lancement export admin")
         await process_admin_export()

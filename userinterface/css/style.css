@@ -1,5 +1,5 @@
 /* =========================
-GLOBAL
+Globale
 ========================= */
 
 *{
@@ -31,7 +31,7 @@ margin-top:20px;
 width:100%;
 }
 
-/* INPUTS */
+/* Entrées  */
 
 input[type="text"],
 input[type="number"]{
@@ -50,7 +50,7 @@ border-radius:8px;
 border:1px solid #ddd;
 }
 
-/* BUTTON  */
+/* Bouton  */
 
 button{
 padding:10px 15px;
@@ -67,7 +67,7 @@ button:disabled{
 opacity:0.5;
 }
 
-/* MODAL */
+/* Modal */
 
 .modal{
 position:fixed;
@@ -99,7 +99,7 @@ max-width:400px;
 }
 
 /* =========================
-UTILITIES
+Utilitaire 
 ========================= */
 
 .hidden{
@@ -107,7 +107,7 @@ display:none !important;
 }
 
 /* =========================
-LAYOUT
+Mise en Page
 ========================= */
 
 #inscriptionRow{
@@ -124,7 +124,7 @@ min-width:280px;
 }
 
 /* =========================
-INFO BOX
+Info Box
 ========================= */
 
 .infoBox{
@@ -137,7 +137,7 @@ font-size:14px;
 }
 
 /* =========================
-TABLEAUX
+Tableaux
 ========================= */
 
 #tableauxContainer{
@@ -175,7 +175,7 @@ background:#f4f8ff;
 }
 
 /* =========================
-CHECKBOX
+Vérif Box
 ========================= */
 
 #tableauxContainer input[type="checkbox"]{
@@ -218,7 +218,7 @@ transform:translate(-50%,-55%);
 }
 
 /* =========================
-TABLEAU INTERDIT
+Tableau Interdit
 ========================= */
 
 .tableau-interdit{
@@ -239,7 +239,9 @@ top:50%;
 transform:translate(-50%,-50%);
 }
 
-/* INFOS TABLEAU */ 
+/* =========================
+INFOS TABLEAU 
+========================= */
 
 .col-tableau{
 font-size:18px;
@@ -281,10 +283,10 @@ font-size:12px;
 /* Couleur Airzone 
 
 /* =========================
-TABLEAUX STYLE MODERNE
+Tableaux style moderne
 ========================= */
 
-/* BASE */
+/* Base */
 .tableau-row{
 background:#2a2f35;
 color:#fff;
@@ -294,7 +296,7 @@ box-shadow:0 4px 12px rgba(0,0,0,0.25);
 transition:all 0.2s ease;
 }
 
-/* HOVER */
+/* Flotter */
 .tableau-row:hover{
 transform:translateY(-2px);
 box-shadow:0 8px 20px rgba(0,0,0,0.35);
@@ -302,7 +304,7 @@ filter:brightness(1.05);
 }
 
 /* =========================
-VERT (OK)
+Vert (Ok)
 ========================= */
 .tableau-row.green{
 background:linear-gradient(135deg, #0f766e, #065f46);
@@ -310,14 +312,14 @@ color:#e6fffa;
 }
 
 /* =========================
-ROUGE (ALERTE)
+Rouge (Alerte)
 ========================= */
 .tableau-row.red{
 background:linear-gradient(135deg, #ff0000, #cc0000);
 color:#fff;}
 
 /* =========================
-ORANGE (ATTENTE)
+Orange (Attente)
 ========================= */
 .tableau-row.orange{
 background:linear-gradient(135deg, #ffb300, #ff7a00);
@@ -325,7 +327,7 @@ color:#fff7ed;
 }
 
 /* =========================
-GRIS (DESACTIVE)
+Gris (Desactivé)
 ========================= */
 .tableau-row.grey{
 background:linear-gradient(135deg, #6b7280, #4b5563);
@@ -333,7 +335,7 @@ color:#e5e7eb;
 }
 
 /* =========================
-LOCKED
+Fermer
 ========================= */
 .tableau-row.locked{
 opacity:0.6;
@@ -341,7 +343,7 @@ pointer-events:none;
 }
 
 /* =========================
-INTERDIT
+Interdit
 ========================= */
 .tableau-interdit{
 opacity:0.5;
@@ -395,15 +397,13 @@ display:inline-block;
 }
 /* fin desktop  xx */
 
-
-
-/* TITRES */
+/* Titres */
 
 h2{
 font-size:1.1rem;
 }
 
-/* LICENCE */
+/* Licence */
 
 #licenceCard{
 max-width:340px;
@@ -439,7 +439,7 @@ box-shadow:0 4px 12px rgba(0,123,255,0.25);
 background:white;
 }
 
-/* RESULTAT JOUEUR  */
+/* Résultat Joueur  */
 
 #result{
 margin-top:20px;
@@ -449,7 +449,7 @@ font-size:14px;
 line-height:1.6;
 }
 
-/* LOGO */
+/* Logo */
 
 .logo{
 position:fixed;
@@ -458,7 +458,7 @@ right:40px;
 width:60px;
 }
 
-/* MOBILE */ 
+/* Mobile */ 
 
 @media screen and (max-width:600px){
 
@@ -603,7 +603,7 @@ margin-bottom:10px;
 width:45px;
 }
 
-/* EMAIL + CODE VERIFICATION */
+/* Email  avec Code de vérifiction */
 
 .email-row{
     flex-direction: column;
@@ -624,8 +624,8 @@ margin-left:auto;
 }
 
 /* Bouton valider code dessous zone de saisie du code */
+/* Force affichage vertical du code */
 
-/* FORCER affichage vertical du code */
 .code-row{
     display:flex;
     flex-direction:column !important;
@@ -647,7 +647,7 @@ margin-left:auto;
 
 /* Fin Mobile */
 
-/* CURSOR  */
+/* Curseur  */
 
 .tableau-row.red,
 .tableau-row.grey{
@@ -659,7 +659,7 @@ margin-left:auto;
     pointer-events: none;
 }
 
-/* EMAIL + CODE VERIFICATION */
+/* Email code de vérification */
 
 .email-row,
 .code-row{
@@ -680,7 +680,7 @@ flex:1;
 margin-left:auto;
 }
 
-/* CODE VERIFICATION */
+/* Code vérification */
  
 #verificationCode{
 width:240px;
@@ -695,7 +695,7 @@ font-weight:700;
 letter-spacing:12px;
 }
 
-/* PLACEHOLDER CODE */
+/* Emplacement Code */
 
 #verificationCode::placeholder{
 font-size:11px;
@@ -703,7 +703,7 @@ color:#999;
 letter-spacing:1px;
 }
 /* =========================
-FLASH BOUTON (SAFE)
+Bouton flash  
 ========================= */
 
 /* bouton qui clignote */

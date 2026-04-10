@@ -1,4 +1,4 @@
-# Génere fichier excel inscription et l'envoie par mail
+# Génere fichier excel des inscriptions et l'envoie par mail
 # Mode batch en local sur Pc
 
 import asyncio
@@ -116,7 +116,6 @@ async def send_email(excel_stream):
             filename="Inscriptions.xlsx"
         )
         await send_smtp_email(msg)
-
 
 # Main 
 

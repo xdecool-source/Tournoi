@@ -26,7 +26,7 @@ window.renderTableaux = renderTableaux
 let tableauxGlobal = null;
 
 async function init(){
-    console.log("INIT RUN");
+    // console.log("INIT RUN");
     updateAdminButtons();
     tableauxGlobal  = await loadTableaux()
     await loadPlaces()
@@ -216,7 +216,7 @@ async function check(){
             }
    
         }catch(e){
-            console.error("check error", e);
+            // console.error("check error", e);
             openModal("Erreur serveur licence");
         }
     }, 250);
@@ -225,7 +225,7 @@ window.check = check;
 
 function updateAdminButtons(){
 
-    console.log("APP UPDATE ADMIN BUTTONS");
+    // console.log("APP UPDATE ADMIN BUTTONS");
     const isAdmin = document.cookie.includes("admin=1");
     const adminBtn  = document.querySelector("button[onclick='loginAdmin()']");
     const logoutBtn = document.getElementById("logoutBtn");

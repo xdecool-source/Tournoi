@@ -42,7 +42,7 @@ FROM_EMAIL = os.getenv("FROM_EMAIL")
 
 async def send_smtp_email(excel_stream):
 
-    print("STEP 4 - envoi SMTP")
+    print("envoi SMTP")
     msg = EmailMessage()
     msg["From"] = FROM_EMAIL
     msg["To"] = ADMIN_EMAIL
@@ -63,13 +63,13 @@ async def send_smtp_email(excel_stream):
         password=SMTP_PASS,
         start_tls=True,
     )
-    print("✅ MAIL SMTP ENVOYÉ")
+    print(" MAIL SMTP ENVOYÉ")
 
 #  Brevo Prod
 
 async def send_brevo_email(excel_stream):
 
-    print("STEP 4 - envoi BREVO")
+    print(" envoi BREVO")
     excel_stream.seek(0)
     encoded_file = base64.b64encode(
         excel_stream.read()
@@ -102,7 +102,7 @@ async def send_brevo_email(excel_stream):
         print("Brevo status:", response.status_code)
         print("Brevo response:", response.text)
         response.raise_for_status()
-    print("✅ MAIL BREVO ENVOYÉ")
+    print(" MAIL BREVO ENVOYÉ")
 
 #  export admin
 
@@ -124,7 +124,7 @@ async def process_admin_export():
         if not excel_stream:
             print("Erreur génération Excel")
             return
-        print("✅ Excel généré")
+        print(" Excel généré")
         
 #  Choix Mode Envoi
 

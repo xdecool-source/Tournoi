@@ -64,9 +64,7 @@ async def get_tableaux():
 
     return result
 
-
 #  licence fftt 
-
 
 async def check_fftt_player(licence: str):
     try:
@@ -286,7 +284,7 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
             return {"success": False, "error": "Licence inconnue FFTT"}
     try:
         await save_inscription(data)
-        print("INSCRIPTION OK - lancement mail")
+        print("Inscription Ok - lancement mail")
         
         # Send mail joueur
         background_tasks.add_task(
@@ -364,18 +362,18 @@ async def send_code(data: dict, background_tasks: BackgroundTasks):
             "error": str(e)
         }
     html = f"""
-    <h2>Code de vérification de l'Homopongistus</h2>
+    <h2>Code de vérification de votre mail</h2>
     <p>Votre code est :</p>
     <h1>{code}</h1>
     """
     background_tasks.add_task(
         send_email,
         email,
-        "Code de vérification - Homopongistus",
+        "Code de vérification de votre mail ",
         html
     )
        
-    return {"success": True}  # 🔥 AJOUT ICI
+    return {"success": True}  
 
 @router.post("/verify-code")
 
@@ -383,6 +381,8 @@ async def verify_code_api(data: dict):
 
     email = data["email"].strip().lower()
     code = data["code"]
-    print("VERIFY CALL:", email, code)
+    
+    # print("Vérification du Call:", email, code)
+    
     valid = verify_code(email, code)
     return {"success": valid}

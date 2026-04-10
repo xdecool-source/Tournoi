@@ -28,9 +28,9 @@ BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 #  Commun
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
-print("ENV VALUE =", ENV)
-print("SMTP_HOST =", SMTP_HOST)
-print("FROM_EMAIL =", FROM_EMAIL)
+print("Env Valeur =", ENV)
+print("Smtp host =", SMTP_HOST)
+print("From Email =", FROM_EMAIL)
 
 #  Stockages Codes
 
@@ -73,7 +73,7 @@ def verify_code(email, code):
 
 async def send_smtp_email(to_email, subject, html):
 
-    print("STEP SMTP")
+    print(" Smtp ")
     msg = EmailMessage()
     msg["From"] = FROM_EMAIL
     msg["To"] = to_email
@@ -88,14 +88,14 @@ async def send_smtp_email(to_email, subject, html):
         password=SMTP_PASS,
         start_tls=True
     )
-    print("MAIL SMTP ENVOYÉ")
+    print("Mail Smtp Envoyé")
 
 
 # Brevo prod
 
 async def send_brevo_email(to_email, subject, html):
 
-    print("STEP BREVO")
+    print("Brevo")
     payload = {
         "sender": {"email": FROM_EMAIL},
         "to": [{"email": to_email}],
@@ -113,13 +113,13 @@ async def send_brevo_email(to_email, subject, html):
             },
             json=payload
         )
-        print("BREVO STATUS", r.status_code)
+        print("Brevo Status", r.status_code)
 
 # Routeur Mail 
 
 async def send_email(to_email, subject, html):
 
-    print("MODE MAIL =", "SMTP" if ENV == "dev" else "BREVO")
+    print("Mode Mail =", "Smtp" if ENV == "dev" else "Brevo")
     if ENV == "dev":
         await send_smtp_email(to_email, subject, html)
     else:

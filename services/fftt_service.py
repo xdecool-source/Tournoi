@@ -38,7 +38,7 @@ async def appel_fftt(endpoint, params_metier):
         licence = params_metier.get("licence", "000000")
 
         joueurs = {
-            "111": ("Decool", "Xavier", "TT Thuirinois", 850),
+            "111": ("Dupond", "Xavier", "Perpignan TT", 850),
             "222": ("Durand", "Paul", "Montpellier TT", 1450)
         }
 

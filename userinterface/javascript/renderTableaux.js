@@ -129,5 +129,5 @@ document.addEventListener("change", function(e){
     if(el){
         el.innerText = "Total : " + total + "€";
     }
-    console.log("TOTAL =", total); 
+    // console.log("TOTAL =", total); 
 });
