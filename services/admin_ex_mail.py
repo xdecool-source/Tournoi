@@ -89,8 +89,8 @@ async def send_brevo_email(excel_stream):
             json=payload,
         )
 
-        print("Brevo status:", response.status_code)
-        print("Brevo response:", response.text)
+        # print("Brevo status:", response.status_code)
+        # print("Brevo response:", response.text)
 
         response.raise_for_status()
 

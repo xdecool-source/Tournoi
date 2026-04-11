@@ -364,7 +364,7 @@ async def send_code(data: dict, background_tasks: BackgroundTasks):
             "error": str(e)
         }
     html = f"""
-    <h2>Voic votre Code de vérification de votre Mail </h2>
+    <h2>Voici votre Code de vérification pour votre Mail </h2>
     <p>Votre code est :</p>
     <h1>{code}</h1>
     """
@@ -384,7 +384,7 @@ async def verify_code_api(data: dict):
 
     email = data["email"].strip().lower()
     code = data["code"]
-    print("VERIFY CALL:", email, code)
+    # print("VERIFY CALL:", email, code)
     valid = verify_code(email, code)
     return {"success": valid}
 

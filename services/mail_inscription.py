@@ -174,8 +174,8 @@ async def send_brevo_email(to_email: str, subject: str, html_content: str):
             },
             json=payload,
         )
-        print("Brevo status:", response.status_code)
-        print("Brevo response:", response.text)
+        # print("Brevo status:", response.status_code)
+        # print("Brevo response:", response.text)
         response.raise_for_status()
 
 #  Fonction principale

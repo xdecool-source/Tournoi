@@ -53,7 +53,7 @@ def store_verification_code(email):
         "code": code,
         "expire": now + 300
     }
-    print("Code généré pour", email, ":", code)
+    # print("Code généré pour", email, ":", code)
     return code
 
 def verify_code(email, code):
