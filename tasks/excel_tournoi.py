@@ -37,7 +37,7 @@ SITE_URL = os.getenv("SITE_URL")
 
 async def send_smtp_email(msg):
 
-    print("STEP 4 - envoi SMTP")
+    print(" 4 - envoi SMTP")
     await aiosmtplib.send(
         msg,
         hostname=SMTP_HOST,
@@ -52,12 +52,12 @@ async def send_smtp_email(msg):
 
 async def send_brevo_email(to_email, subject, html_content, excel_stream):
 
-    print("STEP 4 - envoi BREVO")
+    print(" 4 - envoi BREVO")
     attachment = base64.b64encode(excel_stream.read()).decode()
     payload = {
         "sender": {"email": FROM_EMAIL},
         "to": [{"email": to_email}],
-        "cc": [{"email": ADMIN_EMAIL}] if ADMIN_EMAIL else [],
+        # "cc": [{"email": ADMIN_EMAIL}] if ADMIN_EMAIL else [],
         "subject": subject,
         "htmlContent": html_content,
         "attachment": [
