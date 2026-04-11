@@ -6,7 +6,7 @@
 # fournit les exports admin
 # gère login admin
 
-from fastapi import APIRouter, HTTPException, Request, Response, BackgroundTasks
+from fastapi import APIRouter, HTTPException, Request, Response, BackgroundTasks, Header
 from fastapi.responses import HTMLResponse, StreamingResponse
 from core.config import TABLEAUX, PRIX, ADMIN_PASSWORD_HASH, MOCK_FFTT
 from services.fftt_service import appel_fftt
@@ -16,6 +16,8 @@ from tasks.excel_tournoi import main as ex_tournoi
 from dotenv import load_dotenv
 from userinterface.screens import home_screen
 from export.generate_inscription import generate 
+from services.admin_ex_mail import process_admin_export
+from datetime import datetime
 
 import xml.etree.ElementTree as ET
 import time
@@ -362,18 +364,19 @@ async def send_code(data: dict, background_tasks: BackgroundTasks):
             "error": str(e)
         }
     html = f"""
-    <h2>Code de vérification de votre mail</h2>
+    <h2>Voic votre Code de vérification de votre Mail </h2>
     <p>Votre code est :</p>
     <h1>{code}</h1>
     """
     background_tasks.add_task(
         send_email,
         email,
-        "Code de vérification de votre mail ",
+        "Code de vérification - Homopongistus",
         html
     )
-       
-    return {"success": True}  
+    
+     
+    return {"success": True}  # 🔥 AJOUT ICI
 
 @router.post("/verify-code")
 
@@ -381,8 +384,40 @@ async def verify_code_api(data: dict):
 
     email = data["email"].strip().lower()
     code = data["code"]
-    
-    # print("Vérification du Call:", email, code)
-    
+    print("VERIFY CALL:", email, code)
     valid = verify_code(email, code)
     return {"success": valid}
+
+
+# appel pour export excel
+
+ADMIN_API_KEY = os.getenv("ADMIN_API_KEY")
+
+
+def check_admin(api_key: str):
+    if api_key != ADMIN_API_KEY:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+
+@router.post("/admin/export")
+async def download_excel(x_api_key: str = Header(...)):
+
+    check_admin(x_api_key)
+
+    excel_stream = generate()
+
+    if not excel_stream:
+        raise HTTPException(status_code=500, detail="Erreur génération Excel")
+
+    excel_stream.seek(0)
+
+    #  nom dynamique
+    filename = datetime.now().strftime("Inscriptions_%d-%m-%Y_%Hh%M.xlsx")
+
+    return StreamingResponse(
+        excel_stream,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}"
+        }
+    )

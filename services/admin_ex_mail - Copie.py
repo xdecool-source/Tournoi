@@ -1,3 +1,12 @@
+# Récupère le nombre d’inscrits
+# Décide s’il faut envoyer un mail grâce à
+# should_send_admin_mail() (évite d’envoyer si rien n’a changé)
+# Génère un fichier Excel avec les inscriptions
+# Envoie l’Excel par email à l’admin
+# en DEV  via SMTP
+# en PROD via Brevo API
+# Evite de renvoyer le meme export 
+
 from export.generate_inscription import generate
 from services.db import should_send_admin_mail, update_admin_mail_status, get_conn
 from email.message import EmailMessage
@@ -8,24 +17,29 @@ import httpx
 import os
 import base64
 
-# Chargement environnement
+#  Chargement environnement
+
 load_dotenv(".env", override=False)
 ENV = os.getenv("ENV", "dev")
 
-# SMTP (Dev / Local)
+#  Smtp (Dev / Local)
+
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
 SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASS = os.getenv("SMTP_PASS")
 
-# Brevo (Production)
+#  Brevo (Production)
+
 BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 
-# Commun
+#  Commun
+
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 
-# SMTP Dev
+#  Smtp  Dev
+
 async def send_smtp_email(excel_stream):
 
     print("envoi SMTP")
@@ -34,7 +48,6 @@ async def send_smtp_email(excel_stream):
     msg["To"] = ADMIN_EMAIL
     msg["Subject"] = "Export inscriptions tournoi"
     msg.set_content("Fichier Excel en pièce jointe")
-
     msg.add_attachment(
         excel_stream.getvalue(),
         maintype="application",
@@ -50,15 +63,13 @@ async def send_smtp_email(excel_stream):
         password=SMTP_PASS,
         start_tls=True,
     )
+    print(" MAIL SMTP ENVOYÉ")
 
-    print("MAIL SMTP ENVOYÉ")
+#  Brevo Prod
 
-
-# Brevo Prod
 async def send_brevo_email(excel_stream):
 
-    print("envoi BREVO")
-
+    print(" envoi BREVO")
     excel_stream.seek(0)
     encoded_file = base64.b64encode(
         excel_stream.read()
@@ -88,20 +99,31 @@ async def send_brevo_email(excel_stream):
             },
             json=payload,
         )
-
         print("Brevo status:", response.status_code)
         print("Brevo response:", response.text)
-
         response.raise_for_status()
+    print(" MAIL BREVO ENVOYÉ")
 
-    print("MAIL BREVO ENVOYÉ")
+#  export admin
 
-
-# Export admin
-
-async def process_admin_export():
+async def process_admin_export(force=False):
 
     async with get_conn() as conn:
+
+        current_count = await conn.fetchval(
+            "SELECT COUNT(*) FROM inscriptions"
+        )
+
+        # 🔥 uniquement si pas forcé
+        if not force:
+            send_mail = await should_send_admin_mail(
+                conn,
+                current_count
+            )
+
+            if not send_mail:
+                print("Pas d'export aujourd'hui")
+                return
 
         print("Génération Excel")
 
@@ -113,10 +135,15 @@ async def process_admin_export():
 
         print("Excel généré")
 
-        # envoi
+        # Choix Mode Envoi
         if ENV == "production":
             await send_brevo_email(excel_stream)
         else:
             await send_smtp_email(excel_stream)
 
+        # update seulement si pas forcé
+        if not force:
+            await update_admin_mail_status(conn, current_count)
+
         print("Export admin terminé")
+        

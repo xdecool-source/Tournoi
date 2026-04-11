@@ -3,8 +3,10 @@ from fastapi.templating import Jinja2Templates
 from api.routes import router
 from contextlib import asynccontextmanager
 from services.db import init_db_pool, init_db
-from services.scheduler import export_scheduler
+# from services.scheduler import export_scheduler
 from fastapi.staticfiles import StaticFiles
+
+# from admin_routes import router as admin_router
 
 import asyncio
 import os
@@ -23,17 +25,19 @@ async def lifespan(app: FastAPI):
     await init_db_pool()
     await init_db()
     # lancement du scheduler
-    task = asyncio.create_task(export_scheduler())
-    print(" Scheduler démarré")
+    #task = asyncio.create_task(export_scheduler())
+    # print(" Scheduler démarré")
     yield
     
     # arrêt propre
-    task.cancel()
+    # task.cancel()
     print(" Application arrêt")
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(router)
 app.mount("/static", StaticFiles(directory="userinterface"), name="static")
+
+# app.include_router(admin_router)
 
 @app.get("/ping")
 
