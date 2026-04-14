@@ -25,12 +25,14 @@ window.renderTableaux = renderTableaux
 
 let tableauxGlobal = null;
 
+window.updateAdminButtons = updateAdminButtons;
+
 async function init(){
     // console.log("INIT RUN");
     updateAdminButtons();
     tableauxGlobal  = await loadTableaux()
     await loadPlaces()
-    renderTableaux(tableauxGlobal, places, null)
+    renderTableaux(tableauxGlobal, places, null, false, [], false)
 
      // focus automatique licence
 
@@ -67,13 +69,21 @@ async function check(){
     // remet toute l'interface à zéro
 
     resetInterface();   
+    // const isAdmin = localStorage.getItem("isAdmin") === "1";
     const input = document.getElementById("licence");
     if(!input) return;
     const lic = input.value.trim();
     if(!lic) return;
     clearTimeout(checkTimer);
     checkTimer = setTimeout(async ()=>{
-        const isAdmin = document.cookie.includes("admin=1");
+        const resAdmin = await fetch("/me", {
+            credentials: "include"
+        });
+
+        const dataAdmin = await resAdmin.json();
+        // console.log("ADMIN BACK:", dataAdmin);
+        const isAdmin = dataAdmin.admin;
+
         if(isNaN(Number(lic))){
             openModal("Licence numérique obligatoire");
             return;
@@ -163,8 +173,14 @@ async function check(){
                 places,
                 Number(data.points),
                 data.already_inscrit,
-                data.tableaux_inscrits || []
+                data.tableaux_inscrits || [],
+                isAdmin   // 🔥 IMPORTANT
             );
+            if(isAdmin){
+                document.querySelectorAll("#tableauxContainer input").forEach(cb => {
+                    cb.disabled = false;
+                });
+            }
 
             if(data.already_inscrit){
 
@@ -223,12 +239,18 @@ async function check(){
 }
 window.check = check;
 
-function updateAdminButtons(){
+async function updateAdminButtons(){
 
-    // console.log("APP UPDATE ADMIN BUTTONS");
-    const isAdmin = document.cookie.includes("admin=1");
+    const res = await fetch("/me", {
+        credentials: "include"   
+    });
+
+    const data = await res.json();
+    const isAdmin = data.admin;
+
     const adminBtn  = document.querySelector("button[onclick='loginAdmin()']");
     const logoutBtn = document.getElementById("logoutBtn");
+
     if(isAdmin){
         if(adminBtn) adminBtn.style.display = "none";
         if(logoutBtn) logoutBtn.style.display = "block";
@@ -237,5 +259,7 @@ function updateAdminButtons(){
         if(logoutBtn) logoutBtn.style.display = "none";
     }
 }
+
+
 
 window.addEventListener("load", init)

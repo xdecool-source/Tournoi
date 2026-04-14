@@ -79,14 +79,25 @@ export async function sendInscription(){
     }
     const res = await fetch(url,{
         method,
+        credentials: "include",   // cookies
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify(payload)
     });
 
+    if(res.status === 401){
+        openModal("Session admin expirée");
+        return;
+    }
+
+    let data;
+    try{
+        data = await res.json();
+    }catch{
+        openModal("Erreur serveur");
+        return;
+    }
     // récupérer la réponse backend
-
-    const data = await res.json();
-
+    // const data = await res.json();
     // réactivation bouton
 
     if(btn){

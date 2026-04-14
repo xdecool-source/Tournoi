@@ -6,18 +6,22 @@
 # fournit les exports admin
 # gère login admin
 
-from fastapi import APIRouter, HTTPException, Request, Response, BackgroundTasks, Header
+from fastapi import APIRouter, HTTPException, Request, Response, BackgroundTasks, Header, Depends
 from fastapi.responses import HTMLResponse, StreamingResponse
 from core.config import TABLEAUX, PRIX, ADMIN_PASSWORD_HASH, MOCK_FFTT
 from services.fftt_service import appel_fftt
 from services.mail_inscription import send_email, send_confirmation_email
 from services.mail_code import store_verification_code, verify_code
-from tasks.excel_tournoi import main as ex_tournoi
+# from tasks.excel_tournoi import main as ex_tournoi
 from dotenv import load_dotenv
 from userinterface.screens import home_screen
 from export.generate_inscription import generate 
 from services.admin_ex_mail import process_admin_export
 from datetime import datetime
+# from auth import create_access_token
+
+from datetime import datetime, timedelta
+from jose import jwt, JWTError
 
 import xml.etree.ElementTree as ET
 import time
@@ -48,7 +52,69 @@ CACHE_TTL = 3
 
 router = APIRouter()
 
-#  Début 
+#  Début token
+
+
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 1  # 1h
+# ACCESS_TOKEN_EXPIRE_MINUTES = 1 # 1 mn
+
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    
+    to_encode.update({
+        "exp": expire,
+        "type": "access"
+    })
+    
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+from jose import jwt, JWTError, ExpiredSignatureError
+from fastapi import HTTPException
+
+def verify_token(token: str):
+    try:
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM],
+            options={"verify_exp": True}  # 🔥 IMPORTANT
+        )
+
+        # print("PAYLOAD:", payload)
+
+        if payload.get("type") != "access":
+            raise HTTPException(401, "Invalid token type")
+
+        return payload
+
+    except ExpiredSignatureError:
+        
+        # print("TOKEN EXPIRE")
+        raise HTTPException(401, "Token expiré")
+
+    except JWTError as e:
+        
+        # print("JWT ERROR:", e)
+        raise HTTPException(401, "Token invalide")
+
+def get_current_admin(request: Request):
+    token = request.cookies.get("access_token")
+    
+    # print("TOKEN:", token) 
+    if not token:
+        raise HTTPException(status_code=401, detail="Non authentifié")
+
+    payload = verify_token(token) 
+
+    if payload.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
+
+    return payload
 
 @router.get("/", response_class=HTMLResponse)
 async def home(request: Request):
@@ -205,12 +271,17 @@ async def get_places(request: Request, response: Response):
 
 #  update inscription 
 
+from fastapi import Depends
+
 @router.put("/inscription/{licence}")
-
-async def update_inscription(licence: str, data: dict, request: Request, background_tasks: BackgroundTasks):
-
-    if request.cookies.get("admin") != "1":
-        raise HTTPException(403, "Admin only")
+async def update_inscription(
+    licence: str,
+    data: dict,
+    background_tasks: BackgroundTasks,
+    admin=Depends(get_current_admin)   
+):
+    # print("ROUTE UPDATE APPELEE")  # 
+    # raise HTTPException(403, "Admin only")
     
     async with get_conn() as conn:
         async with conn.transaction(): 
@@ -303,13 +374,10 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
 
 #  export excel 
 
+
+
 @router.get("/export-excel")
-
-async def export_excel(request: Request):
-
-    # sécurité admin
-    if request.cookies.get("admin") != "1":
-        raise HTTPException(403, "Admin only")
+async def export_excel(admin=Depends(get_current_admin)):
     stream = generate()
     if not stream:
         raise HTTPException(404, "Aucune donnée")
@@ -323,22 +391,49 @@ async def export_excel(request: Request):
 
 #  Admin 
 
+@router.get("/me")
+def me(request: Request):
+    token = request.cookies.get("access_token")
+
+    if not token:
+        return {"admin": False}
+
+    try:
+        payload = verify_token(token)
+        return {"admin": payload.get("role") == "admin"}
+    except:
+        return {"admin": False}
+    
+    
+
 @router.post("/login-admin")
 
-def login_admin(data: dict, response: Response):
-    
+def login_admin(data: dict, response: Response): 
+    # print("LOGIN -> NEW TOKEN ")
     if bcrypt.checkpw(
         data.get("pwd", "").encode(),
         ADMIN_PASSWORD_HASH.encode()
-        ):
-        response.set_cookie("admin", "1")
+    ):
+        token = create_access_token({"role": "admin"})
+        
+        IS_PROD = os.getenv("ENV") == "prod"
+
+        response.set_cookie(
+            key="access_token",
+            value=token,
+            httponly=True,
+            secure=IS_PROD,
+            samesite="none" if IS_PROD else "lax",
+            path="/"
+        )
+        
         return {"success": True}
+    
     return {"success": False}
 
 @router.post("/logout-admin")
-
 def logout_admin(response: Response):
-    response.delete_cookie("admin")
+    response.delete_cookie("access_token")
     return {"success": True}
 
 #  export excel avec token  
@@ -346,7 +441,7 @@ def logout_admin(response: Response):
 @router.get("/admin/{ADMIN_PATH}/export")
 
 async def export():
-    await ex_tournoi()
+    # await ex_tournoi()
     return {"status": "excel envoyé"}
 
 #  Verification Mail  
@@ -375,8 +470,7 @@ async def send_code(data: dict, background_tasks: BackgroundTasks):
         html
     )
     
-     
-    return {"success": True}  # 🔥 AJOUT ICI
+    return {"success": True} 
 
 @router.post("/verify-code")
 
@@ -400,9 +494,9 @@ def check_admin(api_key: str):
 
 
 @router.post("/admin/export")
-async def download_excel(x_api_key: str = Header(...)):
-
-    check_admin(x_api_key)
+async def download_excel(admin=Depends(get_current_admin)):
+    
+    # check_admin(x_api_key)
 
     excel_stream = generate()
 

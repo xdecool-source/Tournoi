@@ -8,11 +8,13 @@ export function renderTableaux(
     places,
     joueurPoints,
     alreadyInscrit = false,
-    tableauxInscrits = []
+    tableauxInscrits = [],
+    isAdmin = false  
 ){
 
-    const isAdmin = document.cookie.includes("admin=1");
+    // const isAdmin = document.cookie.includes("admin=1");
     const box = document.getElementById("tableauxContainer");
+    // console.log("IS ADMIN RENDER:", isAdmin);
     if(!box || !TABLEAUX) return;
 
     const points = Number(joueurPoints);
