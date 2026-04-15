@@ -156,7 +156,7 @@ async def send_brevo_email(to_email: str, subject: str, html_content: str):
     payload = {
         "sender": {"email": FROM_EMAIL},
         "to": [{"email": to_email}],
-        "cc": [{"email": ADMIN_EMAIL}] if ADMIN_EMAIL else [],
+        # "cc": [{"email": ADMIN_EMAIL}] if ADMIN_EMAIL else [],
         "subject": subject,
         "htmlContent": html_content,
     }
