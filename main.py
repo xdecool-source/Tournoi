@@ -3,10 +3,7 @@ from fastapi.templating import Jinja2Templates
 from api.routes import router
 from contextlib import asynccontextmanager
 from services.db import init_db_pool, init_db
-# from services.scheduler import export_scheduler
 from fastapi.staticfiles import StaticFiles
-
-# from admin_routes import router as admin_router
 
 import asyncio
 import os
@@ -20,24 +17,18 @@ load_dotenv()
 async def lifespan(app: FastAPI):
     
     print(" Application démarrage")
-    print(" MOCK_FFTT raw =", os.getenv("MOCK_FFTT"))
+    print(" Imitation FFTT : MOCK_FFTT raw =", os.getenv("MOCK_FFTT"))
 
     await init_db_pool()
     await init_db()
-    # lancement du scheduler
-    #task = asyncio.create_task(export_scheduler())
-    # print(" Scheduler démarré")
     yield
     
     # arrêt propre
-    # task.cancel()
     print(" Application arrêt")
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(router)
 app.mount("/static", StaticFiles(directory="userinterface"), name="static")
-
-# app.include_router(admin_router)
 
 @app.get("/ping")
 

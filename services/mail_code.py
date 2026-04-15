@@ -90,7 +90,6 @@ async def send_smtp_email(to_email, subject, html):
     )
     print("Mail Smtp Envoyé")
 
-
 # Brevo prod
 
 async def send_brevo_email(to_email, subject, html):

@@ -174,7 +174,7 @@ async function check(){
                 Number(data.points),
                 data.already_inscrit,
                 data.tableaux_inscrits || [],
-                isAdmin   // 🔥 IMPORTANT
+                isAdmin   //  important 
             );
             if(isAdmin){
                 document.querySelectorAll("#tableauxContainer input").forEach(cb => {

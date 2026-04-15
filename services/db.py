@@ -51,11 +51,16 @@ print("Creation tables si besoin")
 
 async def init_db():
     async with pool.acquire() as conn:
+        
+        # créer la séquence
+        await conn.execute("""
+        CREATE SEQUENCE IF NOT EXISTS dossard_seq START 1;
+        """)
 
         await conn.execute("""
         CREATE TABLE IF NOT EXISTS inscriptions (
             id SERIAL PRIMARY KEY,
-            dossard INTEGER,
+            dossard INTEGER DEFAULT nextval('dossard_seq'),
             licence TEXT UNIQUE,
             nom TEXT,
             prenom TEXT,
@@ -173,22 +178,15 @@ async def save_inscription(data):
     if await licence_exists(data["licence"]):
         raise ValueError("Licence déjà inscrite")
     async with pool.acquire() as conn:
-        async with conn.transaction():   # ⭐ transaction globale
+        async with conn.transaction():   # transaction globale
             
-            # Gestion Dossard
-            
-            dossard = await conn.fetchval("""
-            SELECT COALESCE(MAX(dossard), 0) + 1 FROM inscriptions
-            """)
-
             # 1 insertion joueur
             
             await conn.execute("""
             INSERT INTO inscriptions
-            (dossard, nom, prenom, club, points, date_inscription, licence, mail)
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+            (nom, prenom, club, points, date_inscription, licence, mail)
+            VALUES ($1,$2,$3,$4,$5,$6,$7)
             """,
-            dossard,
             data["nom"],
             data["prenom"],
             data["club"],

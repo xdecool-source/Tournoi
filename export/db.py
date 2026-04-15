@@ -1,4 +1,4 @@
-#  chercher toutes les inscriptions par exemple pour générer l’Excel des inscrits
+#  cherche toutes les inscriptions par exemple pour générer l’Excel des inscrits
 
 import os
 import psycopg2

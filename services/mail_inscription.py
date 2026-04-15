@@ -68,7 +68,6 @@ async def build_email_html(data: dict, type_mail: str):
             site_url=SITE_URL
         )
         return html_content
-
     
     #  print(" 2 - construction tableaux")
     
@@ -161,8 +160,8 @@ async def send_brevo_email(to_email: str, subject: str, html_content: str):
         "subject": subject,
         "htmlContent": html_content,
     }
-    print("Brevo Api key =", BREVO_API_KEY)
-    print("From Email =", FROM_EMAIL)
+    # print("Brevo Api key =", BREVO_API_KEY)
+    # print("From Email =", FROM_EMAIL)
     async with httpx.AsyncClient(timeout=20) as client:
 
         response = await client.post(
