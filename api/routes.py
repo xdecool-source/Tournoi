@@ -358,11 +358,14 @@ async def export_excel(admin=Depends(get_current_admin)):
     stream = generate()
     if not stream:
         raise HTTPException(404, "Aucune donnée")
+
+    now = datetime.now().strftime("%d-%m-%Y_%Hh%M")
+
     return StreamingResponse(
         stream,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={
-            "Content-Disposition": "attachment; filename=Inscriptions.xlsx"
+            "Content-Disposition": f'attachment; filename="Inscriptions_Tournoi_{now}.xlsx"'
         }
     )
 
