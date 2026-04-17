@@ -8,6 +8,7 @@
 
 from fastapi import APIRouter, HTTPException, Request, Response, BackgroundTasks, Header, Depends
 from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.templating import Jinja2Templates
 from core.config import TABLEAUX, PRIX, ADMIN_PASSWORD_HASH, MOCK_FFTT
 from services.fftt_service import appel_fftt
 from services.mail_inscription import send_email, send_confirmation_email
@@ -16,9 +17,8 @@ from dotenv import load_dotenv
 from userinterface.screens import home_screen
 from export.generate_inscription import generate 
 from services.admin_ex_mail import process_admin_export
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from jose import jwt, JWTError, ExpiredSignatureError
-
 
 import xml.etree.ElementTree as ET
 import time
@@ -47,7 +47,15 @@ CACHE_TTL = 3
 
 #  Backend 
 
+
 router = APIRouter()
+
+# Date 
+    
+@router.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    return home_screen(request)
+
 
 #  Début token
 
@@ -97,9 +105,6 @@ def get_current_admin(request: Request):
         raise HTTPException(status_code=403, detail="Admin only")
     return payload
 
-@router.get("/", response_class=HTMLResponse)
-async def home(request: Request):
-    return home_screen(request)
 
 @router.get("/tableaux")
 async def get_tableaux():
@@ -428,14 +433,14 @@ async def send_code(data: dict, background_tasks: BackgroundTasks):
             "error": str(e)
         }
     html = f"""
-    <h2>Voici votre Code de vérification pour votre Mail </h2>
+    <h2>Voici votre Code de vérification de votre Mail </h2>
     <p>Votre code est :</p>
     <h1>{code}</h1>
     """
     background_tasks.add_task(
         send_email,
         email,
-        "Code de vérification - Homopongistus",
+        "Code de vérification du Tournoi",
         html
     )
     

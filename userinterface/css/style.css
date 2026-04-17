@@ -702,6 +702,23 @@ font-size:11px;
 color:#999;
 letter-spacing:1px;
 }
+
+
+/* xx */
+
+#sendCodeBtn {
+  background-color: #007bff;
+  color: white;
+}
+
+#sendCodeBtn:disabled {
+  background-color: #13752a;
+}
+
+
+/* xx */
+
+
 /* =========================
 Bouton flash  
 ========================= */

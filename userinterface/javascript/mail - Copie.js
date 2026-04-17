@@ -3,80 +3,42 @@
 
 import { setEmailVerified } from "./state.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("sendCodeBtn");
-
-    if(btn){
-        // reset état bouton
-        btn.disabled = false;
-        btn.innerText = "Envoyer le code";
-
-        // ajout du click
-        btn.addEventListener("click", sendCode);
-    }
-});
-
 
 export async function sendCode(){
+    // console.log("SEND CODE CLICK");
 
-    const btn = document.getElementById("sendCodeBtn");
-    if(!btn){
-        console.error("Bouton introuvable");
-        return;
-    }
     const email = document.getElementById("email").value.trim();
 
-    // état envoi
-
-    btn.innerText = "Envoi...";
-    btn.disabled = true;
-    let res;
-    try {
-        res = await fetch("/send-code",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({email})
-        });
-    } catch(e){
-        alert("Erreur réseau");
-        btn.innerText = "Envoyer le code";
-        btn.disabled = false;
-        return;
-    }
+    const res = await fetch("/send-code",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({email})
+    });
 
     let data = null;
+
     try{
         data = await res.json();
     }catch(e){
         console.error("Erreur parsing JSON");
     }
 
+    // console.log(data);
+
     if(!data){
-        alert("Erreur serveur");
-        btn.innerText = "Envoyer le code";
-        btn.disabled = false;
-        return;
+    alert("Erreur serveur");
+    return;
     }
 
     if(!data.success){
-        alert(data.error || "Code déjà envoyé");
-        btn.innerText = "Envoyer le code";
-        btn.disabled = false;
+
+        //  cas normal : code déjà envoyé
+
+        alert(data.error || "Code déjà envoyé, vérifiez votre mail");
         return;
     }
-
-    // succès
-
-    btn.innerText = "Code envoyé ✅";
-
-    //  reset automatique après 10s
-
-    setTimeout(() => {
-        btn.innerText = "Envoyer le code";
-        btn.disabled = false;
-    }, 10000);
+    // alert("Code envoyé");
 }
-
 
 export async function verifyCode(){
 

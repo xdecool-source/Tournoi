@@ -14,7 +14,7 @@ import aiosmtplib
 from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
 from email.message import EmailMessage
-from core.config import TABLEAUX, PRIX
+from core.config import TABLEAUX, PRIX, NOM_TOURNOI
 from services.db import get_conn
 
 #  Chargement environnement
@@ -39,7 +39,7 @@ ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 SITE_URL = os.getenv("SITE_URL")
 
-env = Environment(loader=FileSystemLoader("templates"))
+env = Environment(loader=FileSystemLoader("userinterface/templates"))
 
 #  Construction HTML email
 
@@ -65,7 +65,8 @@ async def build_email_html(data: dict, type_mail: str):
             club=data.get("club", ""),
             points=data.get("points", ""),
             tableaux="Aucun tableau sélectionné",
-            site_url=SITE_URL
+            site_url=SITE_URL,
+            NOM_TOURNOI=NOM_TOURNOI
         )
         return html_content
     
@@ -117,7 +118,8 @@ async def build_email_html(data: dict, type_mail: str):
         club=data.get("club", ""),
         points=data.get("points", ""),
         tableaux=tableaux_str + total_html, 
-        site_url=SITE_URL
+        site_url=SITE_URL,
+        NOM_TOURNOI=NOM_TOURNOI
     )
     return html_content
 
@@ -184,13 +186,13 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
     html_content = await build_email_html(data, type_mail)
     
     if type_mail == "creation":
-        subject = "Confirmation d'inscription - Tournoi Homopongistus"
+        subject = f"Confirmation d'inscription - Tournoi {NOM_TOURNOI}"
     elif type_mail == "modification":
-        subject = "Modification d'inscription - Tournoi Homopongistus"
+        subject = f"Modification d'inscription - Tournoi {NOM_TOURNOI}"
     elif type_mail == "suppression":
-        subject = "Annulation d'inscription - Tournoi Homopongistus"
+        subject = f"Annulation d'inscription - Tournoi {NOM_TOURNOI}"
     else:
-        subject = "Tournoi Homopongistus"
+        subject = f"Tournoi {NOM_TOURNOI}"
         
     if ENV == "production":
         await send_brevo_email(

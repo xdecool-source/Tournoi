@@ -93,7 +93,7 @@ export async function showRecap(player, email, tableauxSel){
                 <b>${player.prenom} ${player.nom}</b><br>
                 N° de Licence: <b>${player.licence}</b><br>
                 Licencié au Club: ${player.club}<br>
-                Ayant ${player.points} Points en Phase 2<br>
+                Ayant ${player.points} Points dans cette Phase<br>
                 Votre Adresse Mail: ${email}<br><br>
 
                 Plus aucun tableau sélectionné
@@ -116,7 +116,7 @@ export async function showRecap(player, email, tableauxSel){
                 <b>${player.prenom} ${player.nom}</b><br>
                 N° de Licence: <b>${player.licence}</b><br>
                 Licencié au Club: ${player.club}<br>
-                Ayant ${player.points} Points en Phase 2<br>
+                Ayant ${player.points} Points dans cette Phase<br>
                 Votre Adresse Mail: ${email}<br><br>
 
                 Liste des tableaux validés<br>

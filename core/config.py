@@ -12,6 +12,8 @@ APP_ID = os.getenv("APP_ID", "")
 MOT_DE_PASSE = os.getenv("MOT_DE_PASSE", "")
 ADMIN_PASSWORD_HASH = os.getenv("ADMIN_PASSWORD_HASH")
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATE_TOURNOI = "28/03/2027"
+NOM_TOURNOI = "Homopongistus"
 
 TABLEAUX = {
     "T1": {"min": 500, "max": 799, "capacite": 8, "attente": 2},

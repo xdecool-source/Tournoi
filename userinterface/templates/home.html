@@ -27,13 +27,13 @@
 <div class="container">
 <div id="inscriptionRow">
 
-<!-- =========================
-     Licence 
-========================= -->
+<!-- Licence  -->
 
 <div id="licenceCard" class="card">
-<h2> Inscription à l'Homopongistus du 05/04/2026</h2>     
-<!-- <h2> Numéro de licence</h2> -->
+<h2>Inscription Tournoi {{ NOM_TOURNOI }}</h2>
+<p>Du <span style="color: #2e7d32; font-weight: bold;">{{ DATE_TOURNOI }}</span></p>
+
+<!-- Numéro de licence -->
 <div class="licence-input">
 
 <input id="licence"
@@ -52,21 +52,23 @@ Si vous souhaitez modifier votre inscription, merci d'envoyer un mail.
 </div>
 </div>
 
-<!-- =========================
-     Inscription
-========================= -->
+<!-- Inscription -->
 
 <div id="inscriptionCard" class="card hidden">
 <h2>🏓Selection des Tableaux 🏓</h2>
 <div class="email-row">
-     <input id="email" type="email" placeholder="Ton mail">
-     <button class="btn-code blink" onclick="sendCode()">Envoie le code</button>
+     <input id="email" type="email" placeholder="Renseigne ton adresse mail">
+     <button id="sendCodeBtn" class="btn-code blink">
+          Envoie le code
+     </button>
+<!--     <button class="btn-code blink" onclick="sendCode()">Envoie le code</button> -->
 </div>
 <div id="emailError" class="error"></div>
 <div class="code-row">
-    <input id="verificationCode" placeholder="Saisir votre Code reçu par Mail">
+    <input id="verificationCode" placeholder="Saisir le Code reçu par mail">
     <button class="btn-code" onclick="verifyCode()">Vérifie le code</button>
 </div>
+
 <div id="tableauxContainer" class="hidden"></div>
 <button id="btnValider" onclick="sendInscription()" style="display:none;">
 Valider
@@ -75,9 +77,7 @@ Valider
 
 </div> <!--  fin ici -->
 
-<!-- =========================
-     Recap
-========================= -->
+<!-- Recap -->
 
 <div id="recapCard" class="hidden">
     <div class="card" style="max-width:400px;margin:auto">
@@ -86,9 +86,7 @@ Valider
     </div>
 </div>
 
-<!-- =========================
-     Modal
-========================= -->
+<!-- Modal -->
 
 <div id="errorModal" class="modal hidden">
 <div class="modal-box">
@@ -98,9 +96,7 @@ Valider
 </div>
 </div>
 
-<!-- =========================
-     Admin
-========================= -->
+<!-- Admin -->
 
 <button class="admin-btn" onclick="loginAdmin()" style="position:fixed; top:10px; right:35px;">
 Admin
@@ -112,9 +108,7 @@ style="position:fixed; top:50px; right:10px;">
 Logout admin
 </button>
 
-<!-- =========================
-     Success
-========================= -->
+<!-- Success -->
 
 <div id="successCard" class="hidden card">
 <h2 style="color:green">✅ Inscription enregistrée</h2>
