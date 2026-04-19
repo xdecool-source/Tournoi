@@ -14,7 +14,7 @@ import aiosmtplib
 from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
 from email.message import EmailMessage
-from core.config import TABLEAUX, PRIX, NOM_TOURNOI
+from core.config import TABLEAUX, NOM_TOURNOI
 from services.db import get_conn
 
 #  Chargement environnement
@@ -44,7 +44,8 @@ env = Environment(loader=FileSystemLoader("userinterface/templates"))
 #  Construction HTML email
 
 async def build_email_html(data: dict, type_mail: str):
-
+    print("DATA TABLEAUX:", data["tableaux"])
+    reste_inscriptions = None
     template_map = {
         "creation": "email_creation.html",
         "modification": "email_modification.html",
@@ -66,30 +67,54 @@ async def build_email_html(data: dict, type_mail: str):
             points=data.get("points", ""),
             tableaux="Aucun tableau sélectionné",
             site_url=SITE_URL,
-            NOM_TOURNOI=NOM_TOURNOI
+            NOM_TOURNOI=NOM_TOURNOI,
+            reste_inscriptions=reste_inscriptions
         )
         return html_content
     
     #  print(" 2 - construction tableaux")
     
     tableaux_details = []
-    total = 0 
+    tableaux_str = ""   # 🔥 AJOUT ICI
+    total_html = ""     # 🔥 AJOUT ICI
     
     async with get_conn() as conn:
+
+        # 🔥 TOTAL GLOBAL (tous les jours)
+        rows = await conn.fetch("""
+            SELECT tableau
+            FROM inscription_tableaux
+            WHERE licence=$1
+        """, data["licence"])
+        
+        reste_inscriptions = len(rows) > 0
+        total = sum(
+            TABLEAUX.get(r["tableau"], {}).get("prix", 0)
+            for r in rows
+        )
+
+        # 🔁 détails du jour
+        event_id = data.get("event_id", 1)
+
         for t in data["tableaux"]:
+            print("BOUCLE T:", t) 
+            print("CONF:", TABLEAUX.get(t))
+            
             conf = TABLEAUX.get(t, {})
-            prix = PRIX.get(t, 0)  # prix
-            total += prix          # cumul
+            prix = conf.get("prix", 0)
+
             min_pts = conf.get("min")
             max_pts = conf.get("max")
+
             statut = await conn.fetchval(
                 """
                 SELECT statut
                 FROM inscription_tableaux
-                WHERE licence=$1 AND tableau=$2
+                WHERE licence=$1 AND tableau=$2 AND event_id=$3
                 """,
                 data["licence"],
-                t
+                t,
+                event_id
             )
 
             if statut == "OK":
@@ -98,18 +123,27 @@ async def build_email_html(data: dict, type_mail: str):
                 statut_txt = "⏳ Liste d'attente"
             else:
                 statut_txt = "🔒 Non validé"
-            if min_pts is None and max_pts is None:
-                ligne = f"{t} {statut_txt}"
-            else:
-                min_aff = min_pts if min_pts is not None else "x"
-                max_aff = max_pts if max_pts is not None else "x"
-                ligne = f"{t} ({min_aff}-{max_aff} pts) — {prix}€ {statut_txt}"
-            tableaux_details.append(ligne)
+
+            nom = conf.get("label", t)
+            prix = conf.get("prix", 0)
+            jour = conf.get("jour", {}).get("label", "")
             
-    tableaux_str = "<br>".join(tableaux_details)
-    total_html = f"<br><br><b>💰 Total : {total}€</b>"
+            if min_pts is None and max_pts is None:
+                ligne = f"{nom} ({jour}) — {prix}€ {statut_txt}"
+            else:
+                ligne = f"{nom} ({min_pts}-{max_pts} pts, {jour}) — {prix}€ {statut_txt}"
+
+            print("LIGNE:", ligne)
+
+            tableaux_details.append(ligne)  # 🔥 TOUJOURS exécuté
+
+            tableaux_str = "<br>".join(tableaux_details)
+            total_html = f"<br><br>💰 Total : {total}€"
+                
     
     #  print(" 3 - render HTML")
+    
+    jour = "Samedi" if event_id == 1 else "Dimanche"
     
     html_content = template.render(
         prenom=data["prenom"],
@@ -119,7 +153,9 @@ async def build_email_html(data: dict, type_mail: str):
         points=data.get("points", ""),
         tableaux=tableaux_str + total_html, 
         site_url=SITE_URL,
-        NOM_TOURNOI=NOM_TOURNOI
+        jour=jour,
+        NOM_TOURNOI=NOM_TOURNOI,
+        reste_inscriptions=reste_inscriptions
     )
     return html_content
 

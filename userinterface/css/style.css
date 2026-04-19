@@ -243,13 +243,28 @@ transform:translate(-50%,-50%);
 INFOS TABLEAU 
 ========================= */
 
-.col-tableau{
-font-size:18px;
-font-weight:700;
+/*.col-tableau{
+font-size:16px;
+font-weight:600;
+}*/
+
+.jour {
+    color:#211e1c;
+    font-weight:600;
+    font-size:18px;
+    font-family: 'Roboto', sans-serif;
 }
 
+.tableau-ligne {
+    font-size:14px;
+    color: #2ecc71;
+}
+
+
 .col-tranche{
-font-size:12px;
+    font-size:14px;
+    color: #0b0c0c;
+    font-weight: bold;
 }
 
 .col-prix{
@@ -258,27 +273,31 @@ font-size:12px;
     color: #f39c12;
 }
 
-/*  STATS TABLEAU */
-.tableau-stats {
+/*  STATS TABLEAU en globale puis pas libelle */
+
+/* .tableau-stats {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    font-size: 14px;
-}
+} */
 
 .stat-inscrit {
-    font-weight: 600;
+    color: #2ecc71;
+    font-size:14px;
 }
 
 .stat-attente {
-    color: #555;
+    color: #2ecc71;
+    font-size:14px;
 }
 
-.badge-inscrit {
+/*.badge-inscrit {
     color: #2ecc71;
-    font-weight: bold;
     margin-left: 6px;
-}
+    font-size:13px;
+} */
+
+
 
 /* Couleur Airzone 
 
@@ -353,15 +372,6 @@ filter:grayscale(0.4);
 /* =========================
 Difference Attente et Inscrit
 ========================= */
-
-.stat-inscrit{
-color:#ffffff;
-font-weight:600;
-}
-
-.stat-attente{
-color:rgba(255,255,255,0.75);
-}
 
 #btnValider{
 display:block;

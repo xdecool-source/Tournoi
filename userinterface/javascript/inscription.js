@@ -10,14 +10,14 @@ import { showRecap } from "./recap.js"
 
 window.sendInscription = sendInscription;
 export async function sendInscription(){
-
+    // alert("CLICK DETECTED"); // on regarde si on rentre dans cette fonction
     if(!currentPlayer){
         alert("Licence non chargée");
         return;
     }
     if(!currentPlayer || !currentPlayer.fftt){
         return;
-        }   
+        }
     if(!emailVerified && !isAdmin){
         alert("Veuillez vérifier votre email avant de continuer");
         return;
@@ -127,5 +127,8 @@ export async function sendInscription(){
     const validSelection = data.refused?.length
         ? selection.filter(t => !data.refused.includes(t))
         : selection;
+    console.log("SELECTION:", selection);
+    console.log("REFUSED:", data.refused);
+    console.log("VALID:", validSelection);
 await showRecap(currentPlayer, email, validSelection);
 }

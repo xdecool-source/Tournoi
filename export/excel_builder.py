@@ -3,8 +3,7 @@
 
 from collections import defaultdict
 from openpyxl.styles import PatternFill, Font, Border, Side, Alignment
-from core.config import PRIX
-from core.config import TABLEAUX, PRIX
+from core.config import TABLEAUX
 
 #  Styles  
 
@@ -150,7 +149,7 @@ def create_tableaux_sheet(wb, data_by_table):
 #  On parcourt tous les tableaux définis dans config
     for index, (tableau, config) in enumerate(sorted(TABLEAUX.items())):
         joueurs = data_by_table.get(tableau, [])
-        prix = PRIX.get(tableau, 0)
+        prix = TABLEAUX.get(tableau, {}).get("prix", 0)
         nb_inscrits = len(joueurs)
         nb_valides = sum(1 for j in joueurs if j["Statut"].upper() == "OK")
         nb_attente = sum(1 for j in joueurs if j["Statut"].upper() == "ATTENTE")

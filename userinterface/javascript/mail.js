@@ -80,6 +80,30 @@ export async function sendCode(){
 
 export async function verifyCode(){
 
+    //  BYPASS DEV (ICI)
+    if (
+        window.location.hostname === "127.0.0.1" ||
+        window.location.hostname === "localhost"
+    ) {
+        console.log(" MODE DEV : code bypassé");
+
+        setEmailVerified(true);
+
+        document.getElementById("email").disabled = true;
+
+        const emailRow = document.querySelector(".email-row");
+        const codeRow = document.querySelector(".code-row");
+        if(emailRow) emailRow.style.display="none";
+        if(codeRow) codeRow.style.display="none";
+
+        document.getElementById("tableauxContainer").classList.remove("hidden");
+
+        const btnValider = document.getElementById("btnValider");
+        if(btnValider) btnValider.style.display="block";
+
+        return; //  on stoppe la fonction 
+    }
+
     // console.log("VERIFY CLICK");
     const email = document.getElementById("email").value;
     const code = document.getElementById("verificationCode").value;

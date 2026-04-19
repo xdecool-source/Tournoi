@@ -16,24 +16,41 @@ DATE_TOURNOI = "28/03/2027"
 NOM_TOURNOI = "Homopongistus"
 
 TABLEAUX = {
-    "T1": {"min": 500, "max": 799, "capacite": 8, "attente": 2},
-    "T2": {"min": 500, "max": 999, "capacite": 8, "attente": 2},
-    "T3": {"min": 500, "max": 1299, "capacite": 8, "attente": 2},
-    "T4": {"min": 700, "max": 1599, "capacite": 8, "attente": 2},
-    "T5": {"min": 800, "max": 1999, "capacite": 8, "attente": 2},
-    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 8, "attente": 2},
-    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 8, "attente": 2},
-    "T6": {"min": 800, "max": 1999, "capacite": 8, "attente": 2}
-}
-
-PRIX = {
-    "T1": 8,
-    "T2": 8,
-    "T3": 8,
-    "T4": 8,
-    "T5": 9,
-    "TS": 10,
-    "TH": 9,
-    "T6": 10
+    "T1": {"min": 500, "max": 799, "capacite": 8, "attente": 2, "prix": 8, "jour": {
+        "id": 1,
+        "label": "Dimanche"
+    }},
+    "T2": {"min": 500, "max": 999, "capacite": 8, "attente": 2, "prix": 8, "jour": {
+        "id": 1,
+        "label": "Dimanche"
+    }},
+    "T3": {"min": 500, "max": 1299, "capacite": 8, "attente": 2, "prix": 8, "jour": {
+        "id": 1,
+        "label": "Dimanche"
+    }},
+    "T4": {"min": 700, "max": 1599, "capacite": 8, "attente": 2, "prix": 8, "jour": {
+        "id": 1,
+        "label": "Dimanche"
+    }},
+    "T5": {"min": 800, "max": 1999, "capacite": 8, "attente": 2, "prix": 9, "jour": {
+        "id": 1,
+        "label": "Dimanche"
+    }},
+    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 18, "attente": 2, "prix": 10, "jour": {
+        "id": 1,
+        "label": "Dimanche"
+    }},
+    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 18, "attente": 2, "prix": 9, "jour": {
+        "id": 1,
+        "label": "Dimanche"
+    }},
+    "T6": {"min": 800, "max": 1999, "capacite": 8, "attente": 2, "prix": 8, "jour": {
+        "id": 1,
+        "label": "Dimanche"
+    }},
+    "T7": {"min": 500, "max": 1999, "capacite": 8, "attente": 2, "prix": 8, "jour": {
+        "id": 2,
+        "label": "Lundi"
+    }},
 }
 

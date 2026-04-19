@@ -1,12 +1,13 @@
 // Construit et affiche un résumé final de l’inscription 
 // (joueur, email, tableaux, places restantes).
 
+
 export async function showRecap(player, email, tableauxSel){
 
     //  0 sécurité
 
     if(!player){
-        console.error("PLAYER UNDEFINED");
+        // console.error("PLAYER UNDEFINED");
         return;
     }
 
@@ -30,17 +31,20 @@ export async function showRecap(player, email, tableauxSel){
 
     tableauxSel.forEach(t=>{
         const c = conf[t];
-        const p = placesNow[t];
+        const p = placesNow[t] || {};
+        // xx const jourTxt = c.jour === 1 ? "Samedi" : "Dimanche"; 
+        const jourTxt = c.jour?.label || "Jour inconnu";
 
-        if(!c || !p){
-            console.warn("MANQUANT", t);
+        if(!c){
+            // console.warn("MANQUANT", t);
             return;
         }
 
-        const prix = Number(c.prix || 0);
+        // xx const prix = Number(c.prix || 0);
+        const prix = Number(c.prix ?? 0);
         total += prix;
 
-        const restantes = Math.max(0, p.capacite - p.ok);
+        const restantes = Math.max(0, (p.capacite || 0) - (p.ok || 0));
 
         const range = (c.min != null && c.max != null)
             ? ` (${c.min}-${c.max} pts)`
@@ -63,8 +67,8 @@ export async function showRecap(player, email, tableauxSel){
 
         tableauxHTML += `
             <div style="margin:6px 0">
-                <b>${t}</b>${range} - 💰 ${prix}€
-                <br>
+                ${t} ${range} ${jourTxt} - 💰 ${prix}€
+                
                 <span style="color:${color}">
                     ${txt}
                 </span>
@@ -149,14 +153,11 @@ export async function showRecap(player, email, tableauxSel){
                 </div>
 
                 <br>
-
                 <b style="color:#007bff;">
                 Paiement obligatoire pour valider définitivement votre inscription
                 la contribution HelloAsso est facultative et peut être modifiée.
                 </b>
-
                 <br><br>
-
                 <b style="color:#007bff;">
                 Un mail va suivre afin de confirmer vos Tableaux et Tarifs avec le lien de paiement
                 </b>
@@ -174,8 +175,7 @@ export async function showRecap(player, email, tableauxSel){
         recapCard.style.width = "100%";
         recapCard.style.height = "auto";
         recapCard.style.overflow = "visible";
-
-        recapCard.scrollIntoView({ behavior: "smooth" }); // 🔥 UX
+        recapCard.scrollIntoView({ behavior: "smooth" }); 
     }
 
     // console.log("RECAP OK", total);

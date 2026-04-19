@@ -11,7 +11,7 @@ export function renderTableaux(
     tableauxInscrits = [],
     isAdmin = false  
 ){
-
+    window.TABLEAUX_GLOBAL = TABLEAUX; 
     // const isAdmin = document.cookie.includes("admin=1");
     const box = document.getElementById("tableauxContainer");
     // console.log("IS ADMIN RENDER:", isAdmin);
@@ -21,6 +21,7 @@ export function renderTableaux(
     box.innerHTML = Object.keys(TABLEAUX).map(key => {
         const conf = TABLEAUX[key];
         if(!conf) return "";
+        const jourTxt = conf.jour?.label || "Jour inconnu";
         const used   = places?.[key]?.ok ?? 0;
         const cap    = places?.[key]?.capacite ?? conf.capacite ?? 0;
         const att    = places?.[key]?.attente ?? 0;
@@ -80,9 +81,13 @@ export function renderTableaux(
                 ${isChecked ? "checked" : ""}
                 onchange="limitSelection.call(this)">  
 
-            <span class="col-tableau">
-                ${key} - 💰 ${conf.prix ?? 0}€
-            </span>
+            <div class="col-tableau">
+                <div class="jour">${jourTxt}</div>
+                <div class="tableau-ligne">
+                    ${key} - 💰 ${conf.prix ?? 0}€
+                </div>
+            </div>
+            
             <span class="col-tranche ${interdit ? "tranche-ko" : "tranche-ok"}">
                 ${conf.label ?? (min !== null && max !== null ? `${min}-${max}` : "")}
             </span>
@@ -100,13 +105,30 @@ export function renderTableaux(
 }
 
 export function limitSelection(){
-
-    const checked = document.querySelectorAll(
-        "#tableauxContainer input:checked"
+    
+    const checked = Array.from(
+        document.querySelectorAll("#tableauxContainer input:checked")
     );
-    if(checked.length > 4){
-        this.checked = false;
-        openModal("Maximum 4 tableaux");
+
+    // récupérer config
+    const counts = {};
+
+    checked.forEach(cb => {
+        console.log("CHECK:", cb.value, window.TABLEAUX_GLOBAL[cb.value]); // ✅ ICI
+        const c = window.TABLEAUX_GLOBAL[cb.value];
+        const jour = c.jour?.label;
+
+        if(!jour) return;
+
+        counts[jour] = (counts[jour] || 0) + 1;
+    });
+
+    for(const jour in counts){
+        if(counts[jour] > 4){
+            this.checked = false;
+            openModal(`Maximum 4 tableaux le ${jour}`);
+            return;
+        }
     }
 }
 

@@ -9,7 +9,7 @@
 from fastapi import APIRouter, HTTPException, Request, Response, BackgroundTasks, Header, Depends
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
-from core.config import TABLEAUX, PRIX, ADMIN_PASSWORD_HASH, MOCK_FFTT
+from core.config import TABLEAUX, ADMIN_PASSWORD_HASH, MOCK_FFTT
 from services.fftt_service import appel_fftt
 from services.mail_inscription import send_email, send_confirmation_email
 from services.mail_code import store_verification_code, verify_code
@@ -49,6 +49,7 @@ CACHE_TTL = 3
 
 
 router = APIRouter()
+ENV = os.getenv("ENV", "dev")
 
 # Date 
     
@@ -113,7 +114,7 @@ async def get_tableaux():
     for key, conf in TABLEAUX.items():
         result[key] = {
             **conf,
-            "prix": PRIX.get(key, 0)
+            "prix": conf.get("prix", 0)
         }
     return result
 
@@ -305,7 +306,7 @@ async def update_inscription(
                     VALUES ($1,$2,$3)
                 """, licence, t, status)
 
-        total = sum(PRIX.get(t, 0) for t in data["tableaux"])
+        total = sum(TABLEAUX.get(t, {}).get("prix", 0) for t in data["tableaux"])
         email_type = "suppression" if total == 0 else "modification"
         
         background_tasks.add_task(
@@ -449,7 +450,9 @@ async def send_code(data: dict, background_tasks: BackgroundTasks):
 @router.post("/verify-code")
 
 async def verify_code_api(data: dict):
-
+    # bypass en dev
+    if ENV == "dev":
+        return {"success": True}
     email = data["email"].strip().lower()
     code = data["code"]
     # print("VERIFY CALL:", email, code)

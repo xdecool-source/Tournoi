@@ -1,5 +1,5 @@
 # connexion PostgreSQL
-# création des tables
+# création des tables multi-jour
 # gestion des inscriptions
 # gestion des tableaux et listes d’attente
 # déclenchement des exports / mails admin
@@ -61,13 +61,14 @@ async def init_db():
         CREATE TABLE IF NOT EXISTS inscriptions (
             id SERIAL PRIMARY KEY,
             dossard INTEGER DEFAULT nextval('dossard_seq'),
-            licence TEXT UNIQUE,
+            licence TEXT,
             nom TEXT,
             prenom TEXT,
             club TEXT,
             points INTEGER,
             mail TEXT,
-            date_inscription TIMESTAMP
+            date_inscription TIMESTAMP,
+            event_id INT DEFAULT 1
         )
         """)
 
@@ -77,8 +78,14 @@ async def init_db():
             licence TEXT,
             tableau TEXT,
             statut TEXT,
-            UNIQUE(licence, tableau)
+            event_id INT DEFAULT 1,
+            UNIQUE(licence, tableau, event_id)
         )
+        """)
+        
+        await conn.execute("""
+        CREATE INDEX IF NOT EXISTS idx_tableau_event 
+        ON inscription_tableaux (tableau, event_id);
         """)
         
         await conn.execute("""

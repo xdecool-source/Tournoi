@@ -3,7 +3,7 @@
 
 from openpyxl.styles import PatternFill, Font, Alignment
 from openpyxl.drawing.image import Image
-from core.config import PRIX
+from core.config import TABLEAUX
 from pathlib import Path
 
 def create_price_sheet(wb, data_joueurs, root_dir):
@@ -30,7 +30,7 @@ def create_price_sheet(wb, data_joueurs, root_dir):
         montant_valide = 0
         montant_attente = 0
         for tableau, statut in infos["Inscriptions"]:
-            prix = PRIX.get(tableau, 0)
+            prix = TABLEAUX.get(tableau, {}).get("prix", 0)
             if statut.upper() == "OK":
                 montant_valide += prix
             elif statut.upper() == "ATTENTE":

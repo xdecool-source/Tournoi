@@ -147,7 +147,7 @@ async function check(){
             const res = document.getElementById("result");
             if(res){
                 res.innerHTML = `
-                    <b>${data.prenom||""} ${data.nom||""}</b><br>
+                    ${data.prenom||""} ${data.nom||""}<br>
                     Club: ${data.club||""}<br>
                     Points: ${data.points||""}`;
             }
