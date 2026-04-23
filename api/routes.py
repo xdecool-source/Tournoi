@@ -16,7 +16,7 @@ from services.mail_code import store_verification_code, verify_code
 from dotenv import load_dotenv
 from userinterface.screens import home_screen
 from export.generate_inscription import generate 
-from services.admin_ex_mail import process_admin_export
+# from services.admin_ex_mail import process_admin_export
 from datetime import datetime, timedelta, date
 from jose import jwt, JWTError, ExpiredSignatureError
 
