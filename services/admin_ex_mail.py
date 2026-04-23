@@ -38,7 +38,7 @@ FROM_EMAIL = os.getenv("FROM_EMAIL")
 # SMTP Dev
 async def send_smtp_email(excel_stream):
 
-    print("envoi SMTP")
+    # print("envoi SMTP")
     msg = EmailMessage()
     msg["From"] = FROM_EMAIL
     msg["To"] = ADMIN_EMAIL
@@ -60,12 +60,12 @@ async def send_smtp_email(excel_stream):
         password=SMTP_PASS,
         start_tls=True,
     )
-    print("MAIL SMTP ENVOYÉ")
+    # print("MAIL SMTP ENVOYÉ")
 
 # Brevo Prod
 async def send_brevo_email(excel_stream):
 
-    print("envoi BREVO")
+    # print("envoi BREVO")
     excel_stream.seek(0)
     encoded_file = base64.b64encode(
         excel_stream.read()
@@ -98,7 +98,7 @@ async def send_brevo_email(excel_stream):
         # print("Brevo status:", response.status_code)
         # print("Brevo response:", response.text)
         response.raise_for_status()
-    print("MAIL BREVO ENVOYÉ")
+    # print("MAIL BREVO ENVOYÉ")
 
 # Export admin
 
@@ -106,7 +106,7 @@ async def process_admin_export():
     async with get_conn() as conn:
 
         try:
-            print("Génération Excel")
+            # print("Génération Excel")
             excel_stream = generate()
             if not excel_stream:
                 print("Erreur génération Excel")

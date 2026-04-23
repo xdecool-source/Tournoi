@@ -181,4 +181,52 @@ def create_tableaux_sheet(wb, data_by_table):
                 max_length = max(max_length, len(str(cell.value)))
         ws.column_dimensions[col_letter].width = max_length + 2
         
-        
+
+def create_deleted_sheet(wb, deleted_rows):
+    
+    ws = wb.create_sheet("Suppression")
+
+    # Titre
+    ws["A1"] = f"Total suppressions : {len(deleted_rows)}"
+    ws["A1"].font = Font(bold=True)
+
+    ws.append([])
+
+    headers = [
+        "Dossard",
+        "Licence",
+        "Nom",
+        "Prénom",
+        "Club",
+        "Points",
+        "Mail",
+        "Date inscription",
+        "Date suppression"
+    ]
+
+    ws.append(headers)
+
+    # Style header
+    for col in ws[3]:
+        col.fill = header_fill
+        col.font = header_font
+
+    # Données
+    for row in deleted_rows:
+        r = dict(row)
+
+        ws.append([
+            r.get("dossard"),
+            r.get("licence"),
+            r.get("nom"),
+            r.get("prenom"),
+            r.get("club"),
+            r.get("points"),
+            r.get("mail"),
+            str(r.get("date_inscription")),
+            str(r.get("date_suppression"))
+        ])
+
+    format_sheet(ws)
+    
+    

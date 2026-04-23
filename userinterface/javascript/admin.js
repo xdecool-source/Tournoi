@@ -14,7 +14,9 @@ import { currentPlayer } from "./state.js";
 
 export async function loginAdmin(){
     // console.log("LOGIN FRONT CALLED "); 
+
     const pwd = prompt("Mot de passe admin");
+    
     if(!pwd) return;
     const res = await fetch("/login-admin",{
         method:"POST",

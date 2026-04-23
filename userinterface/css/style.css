@@ -1,6 +1,4 @@
-/* =========================
-Globale
-========================= */
+/* Globale */
 
 *{
 box-sizing:border-box;
@@ -22,6 +20,8 @@ margin:auto;
 padding:16px;
 }
 
+/* card de le licence */
+
 .card{
 background:#fff;
 padding:15px;
@@ -29,18 +29,9 @@ border-radius:12px;
 box-shadow:0 4px 14px rgba(0,0,0,0.08);
 margin-top:20px;
 width:100%;
-}
+} 
 
 /* Entrées  */
-
-input[type="text"],
-input[type="number"]{
-width:100%;
-padding:10px;
-margin-top:10px;
-border-radius:8px;
-border:1px solid #ddd;
-}
 
 input[type="email"]{
 width:200px;
@@ -50,7 +41,7 @@ border-radius:8px;
 border:1px solid #ddd;
 }
 
-/* Bouton  */
+/* Bouton */
 
 button{
 padding:10px 15px;
@@ -61,7 +52,7 @@ background:#007bff;
 color:#fff;
 position:relative;
 overflow:hidden;
-}
+} 
 
 button:disabled{
 opacity:0.5;
@@ -81,7 +72,7 @@ align-items:center;
 justify-content:center;
 z-index:999;
 pointer-events:none;
-}
+} 
 
 .modal:not(.hidden){
 pointer-events:auto;
@@ -98,17 +89,13 @@ border-radius:10px;
 max-width:400px;
 }
 
-/* =========================
-Utilitaire 
-========================= */
+/* Utilitaire  */
 
 .hidden{
 display:none !important;
 }
 
-/* =========================
-Mise en Page
-========================= */
+/* Mise en Page */
 
 #inscriptionRow{
 display:flex;
@@ -117,15 +104,14 @@ align-items:flex-start;
 flex-wrap:wrap;
 }
 
+/* mise en page de saisie du mail et du code */
 #licenceCard,
 #inscriptionCard{
 flex:1 1 350px;
 min-width:280px;
 }
 
-/* =========================
-Info Box
-========================= */
+/* Info Box */
 
 .infoBox{
 margin-top:16px;
@@ -136,9 +122,7 @@ border-radius:10px;
 font-size:14px;
 }
 
-/* =========================
-Tableaux
-========================= */
+/* Tableaux */
 
 #tableauxContainer{
 display:grid;
@@ -146,6 +130,8 @@ grid-template-columns:repeat(2,1fr);
 gap:14px;
 margin-top:15px;
 }
+
+/* defini le carré de chaque tableau */
 
 .tableau-row{
 position:relative;
@@ -163,20 +149,7 @@ cursor:pointer;
 width:100%;
 }
 
-.tableau-row:hover{
-transform:translateY(-3px);
-box-shadow:0 8px 18px rgba(0,0,0,0.12);
-border-color:#007bff;
-}
-
-.tableau-row.selected{
-border:2px solid #007bff;
-background:#f4f8ff;
-}
-
-/* =========================
-Vérif Box
-========================= */
+/* Vérif Box */
 
 #tableauxContainer input[type="checkbox"]{
 appearance:none;
@@ -206,20 +179,7 @@ top:50%;
 transform:translate(-50%,-55%);
 }
 
-
-.tableau-row.green:hover {
-    animation: none;
-}
-
-.tableau-row.locked,
-.tableau-row.red,
-.tableau-row.grey {
-    animation: none;
-}
-
-/* =========================
-Tableau Interdit
-========================= */
+/* Tableau Interdit */
 
 .tableau-interdit{
 opacity:0.55;
@@ -239,14 +199,7 @@ top:50%;
 transform:translate(-50%,-50%);
 }
 
-/* =========================
-INFOS TABLEAU 
-========================= */
-
-/*.col-tableau{
-font-size:16px;
-font-weight:600;
-}*/
+/* INFOS TABLEAU */
 
 .jour {
     color:#211e1c;
@@ -257,9 +210,8 @@ font-weight:600;
 
 .tableau-ligne {
     font-size:14px;
-    color: #2ecc71;
+    color: #102318;
 }
-
 
 .col-tranche{
     font-size:14px;
@@ -273,13 +225,7 @@ font-weight:600;
     color: #f39c12;
 }
 
-/*  STATS TABLEAU en globale puis pas libelle */
-
-/* .tableau-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-} */
+/* STATS TABLEAU en globale puis pas libelle */
 
 .stat-inscrit {
     color: #2ecc71;
@@ -291,21 +237,11 @@ font-weight:600;
     font-size:14px;
 }
 
-/*.badge-inscrit {
-    color: #2ecc71;
-    margin-left: 6px;
-    font-size:13px;
-} */
-
-
-
 /* Couleur Airzone 
-
-/* =========================
-Tableaux style moderne
-========================= */
+/* Tableaux style moderne */
 
 /* Base */
+
 .tableau-row{
 background:#2a2f35;
 color:#fff;
@@ -316,66 +252,54 @@ transition:all 0.2s ease;
 }
 
 /* Flotter */
+
 .tableau-row:hover{
 transform:translateY(-2px);
 box-shadow:0 8px 20px rgba(0,0,0,0.35);
 filter:brightness(1.05);
 }
 
-/* =========================
-Vert (Ok)
-========================= */
+/* couleur des carrés pour choix des tableaux */
+/* Vert (Ok) */
+
 .tableau-row.green{
-background:linear-gradient(135deg, #0f766e, #065f46);
+background:linear-gradient(135deg, #0f766e, #1fa982);
 color:#e6fffa;
 }
 
-/* =========================
-Rouge (Alerte)
-========================= */
+/* Rouge (Alerte) */
+
 .tableau-row.red{
 background:linear-gradient(135deg, #ff0000, #cc0000);
 color:#fff;}
 
-/* =========================
-Orange (Attente)
-========================= */
+/* Orange (Attente) */
+
 .tableau-row.orange{
 background:linear-gradient(135deg, #ffb300, #ff7a00);
 color:#fff7ed;
 }
 
-/* =========================
-Gris (Desactivé)
-========================= */
+/* Gris (Desactivé) */
+
 .tableau-row.grey{
-background:linear-gradient(135deg, #6b7280, #4b5563);
+background:linear-gradient(135deg, #babfd7, #b3bbc9);
 color:#e5e7eb;
 }
 
-/* =========================
-Fermer
-========================= */
+/* Fermer deja inscrit */
+
 .tableau-row.locked{
-opacity:0.6;
-pointer-events:none;
+    opacity:0.7;
+    filter:grayscale(0.5) brightness(0.9);
+    pointer-events:none;
 }
 
-/* =========================
-Interdit
-========================= */
+/* Interdit */
+
 .tableau-interdit{
 opacity:0.5;
 filter:grayscale(0.4);
-}
-
-/* =========================
-Difference Attente et Inscrit
-========================= */
-
-#btnValider{
-display:block;
-margin:25px auto 0;
 }
 
 /* un petit effet */
@@ -390,22 +314,12 @@ box-shadow:0 4px 12px rgba(255,140,0,0.3);
 box-shadow:0 4px 12px rgba(255,0,0,0.3);
 }
 
-/* desktop  xx */
+/* On positionne le bouton Valider */
 
-@media screen and (min-width:600px){
-
-.tableau-stats{
-display:flex;
-gap:12px;
-align-items:center;
-}
-
-.tableau-stats span{
-display:inline-block;
-}
-
-}
-/* fin desktop  xx */
+#btnValider{
+display:block;
+margin:25px auto 0;
+} 
 
 /* Titres */
 
@@ -613,7 +527,7 @@ margin-bottom:10px;
 width:45px;
 }
 
-/* Email  avec Code de vérifiction */
+/* Email  avec Code de vérification */
 
 .email-row{
     flex-direction: column;
@@ -627,7 +541,6 @@ width:45px;
     width:100%;
     margin-top:6px;
 }
-
 
 .code-row button{
 margin-left:auto;
@@ -652,22 +565,8 @@ margin-left:auto;
     margin-top:8px;
     margin-left:0 !important;
 }
-
 }
-
 /* Fin Mobile */
-
-/* Curseur  */
-
-.tableau-row.red,
-.tableau-row.grey{
-    cursor:not-allowed;
-}
-
-.tableau-row.locked {
-    opacity: 0.6;
-    pointer-events: none;
-}
 
 /* Email code de vérification */
 
@@ -713,8 +612,7 @@ color:#999;
 letter-spacing:1px;
 }
 
-
-/* xx */
+/* Gestion Code */
 
 #sendCodeBtn {
   background-color: #007bff;
@@ -725,15 +623,9 @@ letter-spacing:1px;
   background-color: #13752a;
 }
 
-
-/* xx */
-
-
-/* =========================
-Bouton flash  
-========================= */
-
+/* Bouton flash   */
 /* bouton qui clignote */
+
 @keyframes blinkSoft {
 0% { opacity:1; }
 50% { opacity:0.6; }
@@ -743,4 +635,3 @@ Bouton flash
 .blink{
 animation:blinkSoft 1.5s infinite;
 }
-

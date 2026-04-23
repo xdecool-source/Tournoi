@@ -41,3 +41,24 @@ def fetch_inscriptions():
     cursor.close()
     conn.close()
     return rows
+
+def get_deleted_inscriptions():
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url:
+        raise ValueError("DATABASE_URL manquante")
+
+    conn = psycopg2.connect(database_url)
+    cursor = conn.cursor(cursor_factory=DictCursor)
+
+    cursor.execute("""
+        SELECT *
+        FROM delete_inscrit
+        ORDER BY date_suppression DESC
+    """)
+
+    rows = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return rows

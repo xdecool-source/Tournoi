@@ -28,9 +28,9 @@ BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 #  Commun
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
-print("Env Valeur =", ENV)
-print("Smtp host =", SMTP_HOST)
-print("From Email =", FROM_EMAIL)
+# print("Env Valeur =", ENV)
+# print("Smtp host =", SMTP_HOST)
+# print("From Email =", FROM_EMAIL)
 
 #  Stockages Codes
 
@@ -73,7 +73,6 @@ def verify_code(email, code):
 
 async def send_smtp_email(to_email, subject, html):
 
-    print(" Smtp ")
     msg = EmailMessage()
     msg["From"] = FROM_EMAIL
     msg["To"] = to_email
@@ -94,7 +93,6 @@ async def send_smtp_email(to_email, subject, html):
 
 async def send_brevo_email(to_email, subject, html):
 
-    print("Brevo")
     payload = {
         "sender": {"email": FROM_EMAIL},
         "to": [{"email": to_email}],

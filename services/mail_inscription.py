@@ -44,7 +44,7 @@ env = Environment(loader=FileSystemLoader("userinterface/templates"))
 #  Construction HTML email
 
 async def build_email_html(data: dict, type_mail: str):
-    print("DATA TABLEAUX:", data["tableaux"])
+    # print("DATA TABLEAUX:", data["tableaux"])
     reste_inscriptions = None
     template_map = {
         "creation": "email_creation.html",
@@ -68,7 +68,8 @@ async def build_email_html(data: dict, type_mail: str):
             tableaux="Aucun tableau sélectionné",
             site_url=SITE_URL,
             NOM_TOURNOI=NOM_TOURNOI,
-            reste_inscriptions=reste_inscriptions
+            reste_inscriptions=reste_inscriptions,
+            FROM_EMAIL=FROM_EMAIL   
         )
         return html_content
     
@@ -97,8 +98,8 @@ async def build_email_html(data: dict, type_mail: str):
         event_id = data.get("event_id", 1)
 
         for t in data["tableaux"]:
-            print("BOUCLE T:", t) 
-            print("CONF:", TABLEAUX.get(t))
+            # print("BOUCLE T:", t) 
+            # print("CONF:", TABLEAUX.get(t))
             
             conf = TABLEAUX.get(t, {})
             prix = conf.get("prix", 0)
@@ -133,9 +134,9 @@ async def build_email_html(data: dict, type_mail: str):
             else:
                 ligne = f"{nom} ({min_pts}-{max_pts} pts, {jour}) — {prix}€ {statut_txt}"
 
-            print("LIGNE:", ligne)
+            # print("LIGNE:", ligne)
 
-            tableaux_details.append(ligne)  # 🔥 TOUJOURS exécuté
+            tableaux_details.append(ligne) 
 
             tableaux_str = "<br>".join(tableaux_details)
             total_html = f"<br><br>💰 Total : {total}€"
@@ -155,7 +156,8 @@ async def build_email_html(data: dict, type_mail: str):
         site_url=SITE_URL,
         jour=jour,
         NOM_TOURNOI=NOM_TOURNOI,
-        reste_inscriptions=reste_inscriptions
+        reste_inscriptions=reste_inscriptions,
+        FROM_EMAIL=FROM_EMAIL   
     )
     return html_content
 
@@ -181,7 +183,7 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
             password=SMTP_PASS,
             start_tls=True,
         )
-        print(" Mail Smtp Envoyé")
+        # print(" Mail Smtp Envoyé")
     except Exception as e:
         print(" Erreur Smtp :", e)
 

@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
 from api.routes import router
 from contextlib import asynccontextmanager
-from services.db import init_db_pool, init_db
+from services.db import init_db_pool, init_db, init_archive_trigger
 from fastapi.staticfiles import StaticFiles
 
 import asyncio
@@ -21,6 +21,7 @@ async def lifespan(app: FastAPI):
 
     await init_db_pool()
     await init_db()
+    await init_archive_trigger()
     yield
     
     # arrêt propre

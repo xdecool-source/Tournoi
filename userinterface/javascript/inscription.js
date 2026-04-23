@@ -10,6 +10,7 @@ import { showRecap } from "./recap.js"
 
 window.sendInscription = sendInscription;
 export async function sendInscription(){
+
     // alert("CLICK DETECTED"); // on regarde si on rentre dans cette fonction
     if(!currentPlayer){
         alert("Licence non chargée");
@@ -26,13 +27,25 @@ export async function sendInscription(){
     const error = document.getElementById("emailError");
     error.innerText = "";
 
-    if(!email.includes("@")){
-        error.innerText = "Saisie Mail invalide";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if(!emailRegex.test(email)){
+        error.innerText = "Email invalide";
         return;
     }
+
+    // je recupere la saisie des tableaux 
+
     const selection = Array.from(
         document.querySelectorAll("#tableauxContainer input:checked")
     ).map(cb => cb.value);
+
+    // console.log("isAdmin =", isAdmin);    
+    // empeche la validation sans saisie de tableau    
+    if(selection.length === 0 && !isAdmin){
+    alert("Veuillez sélectionner au moins un tableau");
+    return;
+    }
     if(!currentPlayer){
         alert("Licence non chargée");
         return;
@@ -41,17 +54,11 @@ export async function sendInscription(){
 
     for(const t of selection){
         const p = places[t];
-
         // xxxx const p = places[t].capacite
-
         if(!p) continue;
-
         // FULL uniquement si capacite + attente saturées
-
         if(p.ok>= p.capacite && p.attente >= p.attente_max){
-
         // info visuelle mais on laisse backend décider
-
             console.log("FULL FRONT", t);
         }
     // sinon attente autorisée
@@ -112,7 +119,7 @@ export async function sendInscription(){
         openModal(data.error || "Erreur");
         return;
     }
-    // ICI → tableaux refusés
+    // tableaux refusés
 
     if(data.refused && data.refused.length){
         openModal(
@@ -127,8 +134,10 @@ export async function sendInscription(){
     const validSelection = data.refused?.length
         ? selection.filter(t => !data.refused.includes(t))
         : selection;
-    console.log("SELECTION:", selection);
-    console.log("REFUSED:", data.refused);
-    console.log("VALID:", validSelection);
+
+    // console.log("SELECTION:", selection);
+    // console.log("REFUSED:", data.refused);
+    // console.log("VALID:", validSelection);
+    
 await showRecap(currentPlayer, email, validSelection);
 }

@@ -96,6 +96,21 @@ async def init_db():
         )
         """)
         
+        await conn.execute("""
+        CREATE TABLE IF NOT EXISTS delete_inscrit (
+            id SERIAL PRIMARY KEY,
+            dossard INT,
+            licence TEXT,
+            nom TEXT,
+            prenom TEXT,
+            club TEXT,
+            points INT,
+            mail TEXT,
+            date_inscription TIMESTAMP,
+            date_suppression TIMESTAMP DEFAULT NOW()
+        )
+        """)
+        
         #  Initialisation si vide
         
         await conn.execute("""
@@ -317,3 +332,64 @@ async def update_admin_mail_status(conn, current_count):
             last_count=$2
         WHERE id=1
     """, date.today(), current_count)
+    
+async def init_archive_trigger():
+    
+    async with pool.acquire() as conn:
+        await conn.execute("""
+        CREATE OR REPLACE PROCEDURE create_archive_trigger()
+        LANGUAGE plpgsql
+        AS $$
+        BEGIN
+
+            CREATE OR REPLACE FUNCTION archive_inscription()
+            RETURNS TRIGGER AS $func$
+            BEGIN
+                INSERT INTO delete_inscrit (
+                    dossard,
+                    licence,
+                    nom,
+                    prenom,
+                    club,
+                    points,
+                    mail,
+                    date_inscription,
+                    date_suppression
+                )
+                VALUES (
+                    OLD.dossard,
+                    OLD.licence,
+                    OLD.nom,
+                    OLD.prenom,
+                    OLD.club,
+                    OLD.points,
+                    OLD.mail,
+                    OLD.date_inscription,
+                    NOW()
+                );
+
+                RETURN OLD;
+            END;
+            $func$ LANGUAGE plpgsql;
+
+            IF EXISTS (
+                SELECT 1 FROM pg_trigger 
+                WHERE tgname = 'before_delete_inscription'
+            ) AND EXISTS (
+                SELECT 1 FROM information_schema.tables 
+                WHERE table_name = 'inscriptions'
+            ) THEN
+                DROP TRIGGER before_delete_inscription ON inscriptions;
+            END IF;
+
+            CREATE TRIGGER before_delete_inscription
+            BEFORE DELETE ON inscriptions
+            FOR EACH ROW
+            EXECUTE FUNCTION archive_inscription();
+
+        END;
+        $$;
+        """)
+
+        # exécuter la procédure
+        await conn.execute("CALL create_archive_trigger();")   

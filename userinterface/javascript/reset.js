@@ -21,14 +21,11 @@ export function resetInterface(){
 // vider recap
 
 const recapContent = document.getElementById("recapContent");
-if(recapContent) recapContent.innerHTML = "";
+if(recapContent) recapContent.textContent = "";
+
+const res = document.getElementById("result");
+if(res) res.textContent = "";
     
-
-    // vider affichage joueur
-
-    const res = document.getElementById("result");
-    if(res) res.innerHTML = "";
-
     // vider email
 
     const mail = document.getElementById("email");

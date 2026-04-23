@@ -50,6 +50,7 @@ CACHE_TTL = 3
 
 router = APIRouter()
 ENV = os.getenv("ENV", "dev")
+ENVCODE = os.getenv("ENVCODE", "dev")
 
 # Date 
     
@@ -258,6 +259,7 @@ async def get_places(request: Request, response: Response):
 
 from fastapi import Depends
 
+
 @router.put("/inscription/{licence}")
 async def update_inscription(
     licence: str,
@@ -265,8 +267,14 @@ async def update_inscription(
     background_tasks: BackgroundTasks,
     admin=Depends(get_current_admin)   
 ):
+    global places_cache
+
     # print("ROUTE UPDATE APPELEE")  # 
     # raise HTTPException(403, "Admin only")
+    
+    # on block en cas de non saisi de tableau sans etre admin 
+    if not data.get("tableaux") and not admin:
+        return {"success": False, "error": "Suppression réservée admin"}
     
     async with get_conn() as conn:
         async with conn.transaction(): 
@@ -279,6 +287,36 @@ async def update_inscription(
             """, licence)
             old_tableaux = {r["tableau"] for r in old_rows}
             new_tableaux = set(data["tableaux"])
+            
+            if len(data.get("tableaux", [])) == 0:
+                
+                # supprimer tableaux
+                await conn.execute(
+                    "DELETE FROM inscription_tableaux WHERE licence=$1",
+                    licence
+                )
+
+                # supprimer inscription
+                await conn.execute(
+                    "DELETE FROM inscriptions WHERE licence=$1",
+                    licence
+                )
+
+                # promotion attente
+                for t in old_tableaux:
+                    await promote_attente(t)
+
+                global places_cache
+                places_cache = None
+
+                background_tasks.add_task(
+                    send_confirmation_email,
+                    data["mail"],
+                    data,
+                    "suppression"
+                )
+
+                return {"success": True}
             
             # 2 update mail
             
@@ -307,23 +345,26 @@ async def update_inscription(
                 """, licence, t, status)
 
         total = sum(TABLEAUX.get(t, {}).get("prix", 0) for t in data["tableaux"])
-        email_type = "suppression" if total == 0 else "modification"
+        # email_type = "suppression" if total == 0 else "modification"
         
         background_tasks.add_task(
             send_confirmation_email,
             data["mail"],
             data,
-            email_type
+            "modification"
         )
 
-    # 5 promotion après suppression
-    
-    tableaux_quittes = old_tableaux - new_tableaux
-    for t in tableaux_quittes:
-        await promote_attente(t)
-    global places_cache
-    places_cache = None
-    return {"success": True}
+            # 5 promotion après suppression
+            
+        tableaux_quittes = old_tableaux - new_tableaux
+        for t in tableaux_quittes:
+            await promote_attente(t)
+            
+        places_cache = None
+        
+        return {"success": True}
+
+
 
 #  inscription ( Gestion erreur fftt ) 
 
@@ -451,7 +492,7 @@ async def send_code(data: dict, background_tasks: BackgroundTasks):
 
 async def verify_code_api(data: dict):
     # bypass en dev
-    if ENV == "dev":
+    if ENVCODE == "dev":
         return {"success": True}
     email = data["email"].strip().lower()
     code = data["code"]

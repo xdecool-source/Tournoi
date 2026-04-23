@@ -1,6 +1,14 @@
 // Construit et affiche un résumé final de l’inscription 
 // (joueur, email, tableaux, places restantes).
 
+function escapeHTML(str){
+    return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
 
 export async function showRecap(player, email, tableauxSel){
 
@@ -67,10 +75,10 @@ export async function showRecap(player, email, tableauxSel){
 
         tableauxHTML += `
             <div style="margin:6px 0">
-                ${t} ${range} ${jourTxt} - 💰 ${prix}€
+                ${escapeHTML(t)} ${escapeHTML(range)} ${escapeHTML(jourTxt)} - 💰 ${prix}€
                 
                 <span style="color:${color}">
-                    ${txt}
+                    ${escapeHTML(txt)}
                 </span>
             </div>
         `;
@@ -94,11 +102,11 @@ export async function showRecap(player, email, tableauxSel){
                 </b>
                 <br><br>
 
-                <b>${player.prenom} ${player.nom}</b><br>
-                N° de Licence: <b>${player.licence}</b><br>
-                Licencié au Club: ${player.club}<br>
-                Ayant ${player.points} Points dans cette Phase<br>
-                Votre Adresse Mail: ${email}<br><br>
+                <b>${escapeHTML(player.prenom)} ${escapeHTML(player.nom)}</b><br>
+                N° de Licence: <b>${escapeHTML(player.licence)}</b><br>
+                Licencié au Club: ${escapeHTML(player.club)}<br>
+                Ayant ${escapeHTML(player.points)} Points dans cette Phase<br>
+                Votre Adresse Mail: ${escapeHTML(email)}<br><br>
 
                 Plus aucun tableau sélectionné
                 <br><br>
@@ -117,20 +125,19 @@ export async function showRecap(player, email, tableauxSel){
         }else{
 
             recapContent.innerHTML = `
-                <b>${player.prenom} ${player.nom}</b><br>
-                N° de Licence: <b>${player.licence}</b><br>
-                Licencié au Club: ${player.club}<br>
-                Ayant ${player.points} Points dans cette Phase<br>
-                Votre Adresse Mail: ${email}<br><br>
+                <b>${escapeHTML(player.prenom)} ${escapeHTML(player.nom)}</b><br>
+                N° de Licence: <b>${escapeHTML(player.licence)}</b><br>
+                Licencié au Club: ${escapeHTML(player.club)}<br>
+                Ayant ${escapeHTML(player.points)} Points dans cette Phase<br>
+                Votre Adresse Mail: ${escapeHTML(email)}<br><br>
 
                 Liste des tableaux validés<br>
                 ${tableauxHTML}
 
+
                 <b style="font-size:18px; color:#28a745;">
                     Total : ${total}€
                 </b>
-                <br><br>
-
                 <div style="text-align:center">
                     <div style="color:orange; font-size:14px; margin-bottom:10px;">
                         ⚠️ Merci de payer exactement ${total}€

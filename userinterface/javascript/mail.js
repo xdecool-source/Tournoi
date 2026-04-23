@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if(btn){
         // reset état bouton
         btn.disabled = false;
-        btn.innerText = "Envoyer le code";
+        btn.innerText = "Valide ton mail";
 
         // ajout du click
         btn.addEventListener("click", sendCode);
@@ -39,7 +39,7 @@ export async function sendCode(){
         });
     } catch(e){
         alert("Erreur réseau");
-        btn.innerText = "Envoyer le code";
+        btn.innerText = "Valide ton mail";
         btn.disabled = false;
         return;
     }
@@ -60,7 +60,7 @@ export async function sendCode(){
 
     if(!data.success){
         alert(data.error || "Code déjà envoyé");
-        btn.innerText = "Envoyer le code";
+        btn.innerText = "Valide ton mail";
         btn.disabled = false;
         return;
     }
@@ -72,7 +72,7 @@ export async function sendCode(){
     //  reset automatique après 10s
 
     setTimeout(() => {
-        btn.innerText = "Envoyer le code";
+        btn.innerText = "Valide ton mail";
         btn.disabled = false;
     }, 10000);
 }
@@ -80,12 +80,8 @@ export async function sendCode(){
 
 export async function verifyCode(){
 
-    //  BYPASS DEV (ICI)
-    if (
-        window.location.hostname === "127.0.0.1" ||
-        window.location.hostname === "localhost"
-    ) {
-        console.log(" MODE DEV : code bypassé");
+    // Bypass pour le dev
+    if (window.ENVCODE === "dev") {
 
         setEmailVerified(true);
 
@@ -101,43 +97,35 @@ export async function verifyCode(){
         const btnValider = document.getElementById("btnValider");
         if(btnValider) btnValider.style.display="block";
 
-        return; //  on stoppe la fonction 
+        return;
     }
 
-    // console.log("VERIFY CLICK");
+    // mode normal
     const email = document.getElementById("email").value;
     const code = document.getElementById("verificationCode").value;
+
     const res = await fetch("/verify-code",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({email,code})
     });
+
     const data = await res.json();
+
     if(data.success){
-
-        // alert("Email vérifié");
-
-        // console.log("VERIFY SUCCESS", data);
         setEmailVerified(true);
 
-        // verrouiller email
-
         document.getElementById("email").disabled = true;
-
-        // masquer champs email + code
 
         const emailRow = document.querySelector(".email-row");
         const codeRow = document.querySelector(".code-row");
         if(emailRow) emailRow.style.display="none";
         if(codeRow) codeRow.style.display="none";
 
-        // afficher tableaux
-
         document
-      .getElementById("tableauxContainer")
-      .classList.remove("hidden");
-      
-        // afficher bouton valider
+          .getElementById("tableauxContainer")
+          .classList.remove("hidden");
+
         const btnValider = document.getElementById("btnValider");
         if(btnValider) btnValider.style.display="block";
 

@@ -3,12 +3,13 @@
 # Pour un envoi par mail selon l'algo suivant  
 
 from openpyxl import Workbook
-from export.db import fetch_inscriptions
+from export.db import fetch_inscriptions, get_deleted_inscriptions
 from export.excel_builder import (
     build_data,
     create_players_sheet,
     create_table_sheets,
-    create_tableaux_sheet
+    create_tableaux_sheet,
+    create_deleted_sheet
 )
 from export.price import create_price_sheet
 from io import BytesIO
@@ -16,10 +17,12 @@ from pathlib import Path
 root_dir = Path(__file__).resolve().parent.parent
 
 def generate():
-  
+    
   # si DB down on sort  
     try:
         rows = fetch_inscriptions()
+        deleted_rows =  get_deleted_inscriptions()
+        
         if not rows:
             print("Aucune donnée.")
             return None
@@ -31,6 +34,7 @@ def generate():
         create_table_sheets(wb, data_by_table)
         create_tableaux_sheet(wb, data_by_table)
         create_price_sheet(wb, data_joueurs,root_dir)
+        create_deleted_sheet(wb, deleted_rows)
 
     #  génération en mémoire
 

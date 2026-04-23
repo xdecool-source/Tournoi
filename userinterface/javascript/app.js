@@ -11,6 +11,7 @@ import { places, setCurrentPlayer, setJoueurPoints, setEmailVerified  } from "./
 import { sendCode, verifyCode } from "./mail.js"
 import { showRecap } from "./recap.js"
 import { renderTableaux, limitSelection } from "./renderTableaux.js"
+import { setIsAdmin } from "./state.js";
 
 window.loginAdmin = loginAdmin;
 window.logoutAdmin = logoutAdmin;
@@ -49,17 +50,14 @@ async function init(){
     });
 
     const licenceInput = document.getElementById("licence");
-    licenceInput.addEventListener("click", () => {
-        
-        // remet l'interface à zéro
 
-        resetInterface();       
-
-        // licenceInput.value = "";   // vide la licence
-        // licenceInput.focus();      // remet le curseur
-
-        licenceInput.select(); 
-    });
+    if(licenceInput){
+        licenceInput.addEventListener("click", () => {
+            // console.log("CLICK OK"); // test
+            resetInterface();
+            licenceInput.select();
+        });
+    }
 }
 
 let checkTimer = null;
@@ -82,7 +80,8 @@ async function check(){
 
         const dataAdmin = await resAdmin.json();
         // console.log("ADMIN BACK:", dataAdmin);
-        const isAdmin = dataAdmin.admin;
+        setIsAdmin(dataAdmin.admin);
+        const isAdmin = dataAdmin.admin; 
 
         if(isNaN(Number(lic))){
             openModal("Licence numérique obligatoire");
@@ -146,10 +145,9 @@ async function check(){
             setJoueurPoints(data.points ? Number(data.points) : 9999);
             const res = document.getElementById("result");
             if(res){
-                res.innerHTML = `
-                    ${data.prenom||""} ${data.nom||""}<br>
-                    Club: ${data.club||""}<br>
-                    Points: ${data.points||""}`;
+                res.innerText = `${data.prenom || ""} ${data.nom || ""}
+            Club: ${data.club || ""}
+            Points: ${data.points || ""}`;
             }
             const card = document.getElementById("inscriptionCard");
             if(card){
@@ -203,7 +201,8 @@ async function check(){
                     if (!isAdmin) {
                         msg.classList.remove("hidden");
                         msg.innerHTML = `
-                            Vous êtes déjà inscrit.<br>
+                            <b>Vous êtes déjà inscrit.</b><br>
+                            Vous avez la liste de vos choix sur votre droite.
                             Si vous souhaitez modifier votre inscription<br>
                             merci d'envoyer un mail à <br>
                             <a href="mailto:thuirtt66@gmail.com"
@@ -259,7 +258,5 @@ async function updateAdminButtons(){
         if(logoutBtn) logoutBtn.style.display = "none";
     }
 }
-
-
 
 window.addEventListener("load", init)
