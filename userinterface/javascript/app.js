@@ -205,9 +205,9 @@ async function check(){
                             Vous avez la liste de vos choix sur votre droite.
                             Si vous souhaitez modifier votre inscription<br>
                             merci d'envoyer un mail à <br>
-                            <a href="mailto:thuirtt66@gmail.com"
+                            <a href="${FROM_EMAIL}"
                             style="color:red;text-decoration:underline;">
-                            thuirtt66@gmail.com
+                            ${FROM_EMAIL}
                             </a>
                         `;
                     } else {

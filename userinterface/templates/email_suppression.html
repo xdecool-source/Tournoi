@@ -22,9 +22,7 @@
 <tr>
 <td style="padding:30px; color:#333; font-size:15px; line-height:1.6;">
 <p>Bonjour <b>{{prenom}} {{nom}}</b>,</p>
-<p>
-Votre inscription au tournoi <b>{{ NOM_TOURNOI }}</b> a bien été annulée.
-</p>
+<p>dont la Licence est : <b>{{ licence }}</b></p>
 
 <!-- Info Boite -->
 <div style="
@@ -34,16 +32,17 @@ Votre inscription au tournoi <b>{{ NOM_TOURNOI }}</b> a bien été annulée.
     margin:20px 0;
     border-radius:6px;
 ">
-  Vous n'êtes désormais inscrit à <b>aucun tableau</b>.
+  Nous confirmons que votre inscription au tournoi <b>{{ NOM_TOURNOI }}</b> a bien été annulée.
+Toutefois si vous changez d'avis il vous suffit de relancer votre demande d'inscription..
 </div>
 
 <p>
-Concernant vos frais d'inscription, s'ils existent, merci de nous envoyer votre RIB
+Concernant vos frais d'inscription, si ils existent, merci de nous envoyer votre RIB
  ou votre adresse pour le remboursement. Les frais de timbre seront à votre charge.
 </p>
 
 <p style="margin-top:30px;">
-Sportivement, le Bureau du TT Thuirinois<br>
+Sportivement, le Bureau : {{ NOM_TOURNOI }} <br>
 </p>
 </td>
 </tr>
@@ -51,7 +50,7 @@ Sportivement, le Bureau du TT Thuirinois<br>
 <!-- Pied de page -->
 <tr>
 <td style="background:#f1f1f1; text-align:center; padding:15px; font-size:12px; color:#777;">
-Le bureau du TT Thuirinois :
+Le bureau : {{ NOM_TOURNOI }} :
 <a href="mailto:{{ FROM_EMAIL }}" style="color:#007bff; text-decoration:none;">
 {{ FROM_EMAIL }}
 </a>

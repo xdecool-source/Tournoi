@@ -342,6 +342,7 @@ async def update_inscription(
                     INSERT INTO inscription_tableaux
                     (licence, tableau, statut)
                     VALUES ($1,$2,$3)
+                    ON CONFLICT (licence, tableau, event_id) DO NOTHING
                 """, licence, t, status)
 
         total = sum(TABLEAUX.get(t, {}).get("prix", 0) for t in data["tableaux"])
