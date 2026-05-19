@@ -2,7 +2,7 @@
 
 from fastapi.templating import Jinja2Templates
 from datetime import datetime, timedelta, date
-from core.config import NOM_TOURNOI, DATE_TOURNOI
+from core.config import NOM_TOURNOI, DATE_TOURNOI,DATE_TOURNOI_JOUR
 
 import os
 
@@ -26,6 +26,7 @@ def home_screen(request):
         "home.html",
         {
             "request": request,
+            "DATE_TOURNOI_JOUR": DATE_TOURNOI_JOUR,
             "DATE_TOURNOI": date_formatee,
             "NOM_TOURNOI": NOM_TOURNOI,
             "FROM_EMAIL": FROM_EMAIL

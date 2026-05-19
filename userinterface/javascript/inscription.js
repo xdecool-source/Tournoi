@@ -7,6 +7,7 @@
 
 import { currentPlayer, emailVerified, places, isAdmin } from "./state.js";
 import { showRecap } from "./recap.js"
+import { openModal, closeModal } from "./modal.js";
 
 window.sendInscription = sendInscription;
 export async function sendInscription(){
@@ -52,17 +53,34 @@ export async function sendInscription(){
     }    
     // blocage tableau plein
 
+    let blocked = false;
+
     for(const t of selection){
+
         const p = places[t];
-        // xxxx const p = places[t].capacite
         if(!p) continue;
-        // FULL uniquement si capacite + attente saturées
-        if(p.ok>= p.capacite && p.attente >= p.attente_max){
-        // info visuelle mais on laisse backend décider
-            console.log("FULL FRONT", t);
+        const ok = Number(p.ok || 0);
+        const capacite = Number(p.capacite || 0);
+        const attente = Number(p.attente || 0);
+        const attenteMax = Number(p.attente_max || 0);
+
+        if(
+            ok >= capacite &&
+            attente >= attenteMax
+        ){
+            // console.log("FULL FRONT", t);
+            openModal(
+                `Le tableau ${t} est complet en inscription et en attente`
+            );
+            blocked = true;
+            break;
         }
-    // sinon attente autorisée
     }
+
+    if(blocked){
+        return;
+    }
+
     const payload = {
         licence: currentPlayer.licence,
         nom: currentPlayer.nom,

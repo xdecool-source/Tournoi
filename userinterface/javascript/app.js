@@ -12,6 +12,7 @@ import { sendCode, verifyCode } from "./mail.js"
 import { showRecap } from "./recap.js"
 import { renderTableaux, limitSelection } from "./renderTableaux.js"
 import { setIsAdmin } from "./state.js";
+import { FROM_EMAIL } from "./config.js";
 
 window.loginAdmin = loginAdmin;
 window.logoutAdmin = logoutAdmin;
@@ -25,7 +26,6 @@ window.showRecap = showRecap
 window.renderTableaux = renderTableaux
 
 let tableauxGlobal = null;
-
 window.updateAdminButtons = updateAdminButtons;
 
 async function init(){
@@ -198,14 +198,16 @@ async function check(){
                 const msg = document.getElementById("alreadyMsg");
 
                 if (msg) {
+                    console.log("MSG =", document.getElementById("alreadyMsg"));
+                    msg.className = "infoBox";
+                    
                     if (!isAdmin) {
-                        msg.classList.remove("hidden");
                         msg.innerHTML = `
                             <b>Vous êtes déjà inscrit.</b><br>
                             Vous avez la liste de vos choix sur votre droite.
                             Si vous souhaitez modifier votre inscription<br>
                             merci d'envoyer un mail à <br>
-                            <a href="${FROM_EMAIL}"
+                            <a href="mailto:${FROM_EMAIL}"
                             style="color:red;text-decoration:underline;">
                             ${FROM_EMAIL}
                             </a>
@@ -230,8 +232,11 @@ async function check(){
                 }
             }
    
-        }catch(e){
-            // console.error("check error", e);
+        }
+        catch(e){
+
+            console.error("CHECK ERROR =", e);
+
             openModal("Erreur serveur licence");
         }
     }, 250);

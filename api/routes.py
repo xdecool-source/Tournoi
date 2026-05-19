@@ -477,8 +477,10 @@ async def send_code(data: dict, background_tasks: BackgroundTasks):
         }
     html = f"""
     <h2>Voici votre Code de vérification de votre Mail </h2>
-    <p>Votre code est :</p>
+    <p>Votre code de connexion est :</p>
     <h1>{code}</h1>
+    <p>Ce code expire dans 5 minutes.</p>
+    <p>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer ce message.</p>
     """
     background_tasks.add_task(
         send_email,

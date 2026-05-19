@@ -66,7 +66,7 @@ export async function showRecap(player, email, tableauxSel){
             color = "red";
         }
         else if(p.ok >= p.capacite){
-            txt = `${p.capacite}/${p.capacite} Vous êtes le (${p.attente} sur ${p.attente_max}) en liste d'attente`;
+            txt = `${p.capacite}/${p.capacite} Vous êtes le (${p.attente}/${p.attente_max}) en liste d'attente`;
             color = "orange";
         }
         else{
@@ -74,24 +74,12 @@ export async function showRecap(player, email, tableauxSel){
         }
 
         tableauxHTML += `
-            <div style="
-                margin-bottom:18px;
-                padding:10px;
-                background:#f8f8f8;
-                border-radius:8px;
-            ">
-
-                <div style="margin-bottom:4px;">
-                    <b>${escapeHTML(t)}</b>
-                    ${escapeHTML(range)}
-                    ${escapeHTML(jourTxt)}
-                    - 💰 <b>${prix}€</b>
-                </div>
-
-                <div style="color:${color}; font-weight:bold;">
+            <div style="margin:6px 0">
+                ${escapeHTML(t)} ${escapeHTML(range)} ${escapeHTML(jourTxt)} - 💰 ${prix}€
+                
+                <span style="color:${color}">
                     ${escapeHTML(txt)}
-                </div>
-
+                </span>
             </div>
         `;
     });
@@ -121,7 +109,14 @@ export async function showRecap(player, email, tableauxSel){
                 Votre Adresse Mail: ${escapeHTML(email)}<br><br>
 
                 Plus aucun tableau sélectionné
-                <br>
+                <br><br>
+
+                <b style="font-size:18px;">
+                    Merci de nous envoyer votre RIB ou votre adresse pour le remboursement.
+                    Les frais de timbre sont à votre charge. 
+                </b>
+                <br><br>
+
                 <b style="color:#007bff;">
                     Un mail va suivre afin de confirmer votre annulation
                 </b>
@@ -136,16 +131,42 @@ export async function showRecap(player, email, tableauxSel){
                 Ayant ${escapeHTML(player.points)} Points dans cette Phase<br>
                 Votre Adresse Mail: ${escapeHTML(email)}<br><br>
 
-                <b>Liste des tableaux validés</b><br><br>
+                Liste des tableaux validés<br>
                 ${tableauxHTML}
+
 
                 <b style="font-size:18px; color:#28a745;">
                     Total : ${total}€
                 </b>
-                <br><br><br>
+                <div style="text-align:center">
+                    <div style="color:orange; font-size:14px; margin-bottom:10px;">
+                        ⚠️ Merci de payer exactement ${total}€
+                    </div>
 
+                    <a href="https://www.helloasso.com/associations/tennis-de-table-thuirinois/evenements/tournoi-l-homopongistus"
+                    target="_blank"
+                    style="
+                        display:inline-block;
+                        padding:12px 25px;
+                        background:#ffcc00;
+                        color:black;
+                        font-weight:bold;
+                        border-radius:8px;
+                        text-decoration:none;
+                        margin-bottom:15px;
+                    ">
+                    💳 Payer maintenant
+                    </a>
+                </div>
+
+                <br>
                 <b style="color:#007bff;">
-                Un mail va suivre afin de confirmer vos Tableaux et Tarifs 
+                Paiement obligatoire pour valider définitivement votre inscription
+                la contribution HelloAsso est facultative et peut être modifiée.
+                </b>
+                <br><br>
+                <b style="color:#007bff;">
+                Un mail va suivre afin de confirmer vos Tableaux et Tarifs avec le lien de paiement
                 </b>
             `;
         }

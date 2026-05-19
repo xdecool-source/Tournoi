@@ -17,7 +17,7 @@ load_dotenv()
 async def lifespan(app: FastAPI):
     
     print(" Application démarrage")
-    print(" Imitation FFTT : MOCK_FFTT raw =", os.getenv("MOCK_FFTT"))
+    # print(" Imitation FFTT : MOCK_FFTT raw =", os.getenv("MOCK_FFTT"))
 
     await init_db_pool()
     await init_db()

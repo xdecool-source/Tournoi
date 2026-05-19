@@ -34,15 +34,21 @@ au fur et à mesure de l'évolution des tableaux.
 <tr><td><b>Licence :</b></td><td>{{ licence }}</td></tr>
 <tr><td><b>Club :</b></td><td>{{ club }}</td></tr>
 <tr><td><b>Points :</b></td><td>{{ points }}</td></tr>
-<tr><td><b>Jour :</b></td><td>{{ jour }}</td></tr>
+<tr><td><b>Date du tournoi :</b></td><td>{{ DATE_TOURNOI_JOUR }} le {{ DATE_TOURNOI }}</td></tr>
 <tr>
 <td><b>Tableaux :</b></td>
 <td>{{ tableaux | safe }}</td>
 </tr>
+<tr>
+<td colspan="2"
+    style="background:#f2f2f2; padding:15px; text-align:center; font-size:16px; color:#666;">
+    Paiement en espèces ou par chèque
+    <b style="color:#007bff;">— Pas de carte bancaire —</b>
+</td>
 </table>
 
 
-<!-- Bouton Paiement   -->
+<!-- Bouton Paiement  (commenter paiement helloasso)
 <p style="margin-top:15px;">
 <a href="https://www.helloasso.com/associations/tennis-de-table-thuirinois/evenements/tournoi-l-homopongistus"
 target="_blank"
@@ -55,12 +61,13 @@ font-weight:bold;
 border-radius:8px;
 text-decoration:none;
 ">
-💳 Payer maintenant si cela n'a pas déjà été réalisé 
+💳 Payer maintenant avec HelloAsso
 </a>
 </p>
 
 </td>
 </tr>
+-->
 
 <!-- Pied -->
 <tr>

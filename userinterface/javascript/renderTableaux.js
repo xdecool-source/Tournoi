@@ -81,7 +81,16 @@ export function renderTableaux(
     }
 
     if(isAdmin){
-        disabled = false;
+        // admin peut modifier
+        // mais pas dépasser la liste d'attente
+
+        if(att >= attMax){
+            disabled = true;
+            color = "red";
+            attenteLabel = "🔒 COMPLET";
+        }else{
+            disabled = false;
+        }
     }
 
     return `
@@ -107,13 +116,13 @@ export function renderTableaux(
         </span>
 
         <div class="tableau-stats">
-            <span>🏓 ${used}/${cap}</span>
-            <span>⏳ ${att}/${attMax}</span>
+            <span>🏓 ${used}/${cap} Inscrits</span>
+            <span>⏳ ${att}/${attMax} Attentes </span> 
         </div>
     </div>`;
 }).join("");
 
-// 👇 ICI (après le render complet)
+// après le render complet
 box.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
     cb.addEventListener("change", limitSelection);
 });

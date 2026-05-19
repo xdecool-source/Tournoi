@@ -14,7 +14,7 @@ import aiosmtplib
 from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
 from email.message import EmailMessage
-from core.config import TABLEAUX, NOM_TOURNOI
+from core.config import TABLEAUX, NOM_TOURNOI, DATE_TOURNOI, DATE_TOURNOI_JOUR
 from services.db import get_conn
 
 #  Chargement environnement
@@ -68,6 +68,8 @@ async def build_email_html(data: dict, type_mail: str):
             tableaux="Aucun tableau sélectionné",
             site_url=SITE_URL,
             NOM_TOURNOI=NOM_TOURNOI,
+            DATE_TOURNOI=DATE_TOURNOI,
+            DATE_TOURNOI_JOUR=DATE_TOURNOI_JOUR,
             reste_inscriptions=reste_inscriptions,
             FROM_EMAIL=FROM_EMAIL   
         )
@@ -76,12 +78,12 @@ async def build_email_html(data: dict, type_mail: str):
     #  print(" 2 - construction tableaux")
     
     tableaux_details = []
-    tableaux_str = ""   # 🔥 AJOUT ICI
-    total_html = ""     # 🔥 AJOUT ICI
+    tableaux_str = ""   
+    total_html = ""  
     
     async with get_conn() as conn:
 
-        # 🔥 TOTAL GLOBAL (tous les jours)
+        # TOTAL GLOBAL (tous les jours)
         rows = await conn.fetch("""
             SELECT tableau
             FROM inscription_tableaux
@@ -94,7 +96,7 @@ async def build_email_html(data: dict, type_mail: str):
             for r in rows
         )
 
-        # 🔁 détails du jour
+        #  détails du jour
         event_id = data.get("event_id", 1)
 
         for t in data["tableaux"]:
@@ -156,6 +158,8 @@ async def build_email_html(data: dict, type_mail: str):
         site_url=SITE_URL,
         jour=jour,
         NOM_TOURNOI=NOM_TOURNOI,
+        DATE_TOURNOI=DATE_TOURNOI,
+        DATE_TOURNOI_JOUR=DATE_TOURNOI_JOUR,
         reste_inscriptions=reste_inscriptions,
         FROM_EMAIL=FROM_EMAIL   
     )

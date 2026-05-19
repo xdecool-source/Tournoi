@@ -13,6 +13,7 @@ MOT_DE_PASSE = os.getenv("MOT_DE_PASSE", "")
 ADMIN_PASSWORD_HASH = os.getenv("ADMIN_PASSWORD_HASH")
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATE_TOURNOI = "28/03/2027"
+DATE_TOURNOI_JOUR = "Dimanche"
 NOM_TOURNOI = "Homopongistus"
 
 TABLEAUX = {
@@ -40,11 +41,11 @@ TABLEAUX = {
         "id": 1,
         "label": "Dimanche"
     }},
-    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 18, "attente": 2, "prix": 9, "jour": {
+    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 18, "attente": 5, "prix": 9, "jour": {
         "id": 1,
         "label": "Dimanche"
     }},
-    "T6": {"min": 800, "max": 1999, "capacite": 8, "attente": 2, "prix": 8, "jour": {
+    "T6": {"min": 800, "max": 1999, "capacite": 8, "attente": 4, "prix": 8, "jour": {
         "id": 1,
         "label": "Dimanche"
     }},

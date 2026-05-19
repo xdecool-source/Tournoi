@@ -1,0 +1,1 @@
+export const FROM_EMAIL = "thuirtt66@gmail.com";
