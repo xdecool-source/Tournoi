@@ -4,12 +4,12 @@
 # envoie les emails de confirmation
 # gère les places restantes
 # fournit les exports admin
-# gère login admin
+# gère login admin et durée de vie de la session 
 
 from fastapi import APIRouter, HTTPException, Request, Response, BackgroundTasks, Header, Depends
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
-from core.config import TABLEAUX, ADMIN_PASSWORD_HASH, MOCK_FFTT
+from core.config import TABLEAUX, ADMIN_PASSWORD_HASH, MOCK_FFTT, TIME_ADMIN_SESSION
 from services.fftt_service import appel_fftt
 from services.mail_inscription import send_email, send_confirmation_email
 from services.mail_code import store_verification_code, verify_code
@@ -66,7 +66,7 @@ if not SECRET_KEY:
     raise RuntimeError("SECRET_KEY manquante")
 
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 10  # 10 mn
+ACCESS_TOKEN_EXPIRE_MINUTES = TIME_ADMIN_SESSION
 
 def create_access_token(data: dict):
     to_encode = data.copy()

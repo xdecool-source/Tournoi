@@ -204,7 +204,9 @@ async function check(){
                     if (!isAdmin) {
                         msg.innerHTML = `
                             <b>Vous êtes déjà inscrit.</b><br>
-                            Vous avez la liste de vos choix sur votre droite.
+                            Vérifiez vos choix comme suit :  
+                            <span style="color:#007bff;">☑️</span> 
+                            <br><br>
                             Si vous souhaitez modifier votre inscription<br>
                             merci d'envoyer un mail à <br>
                             <a href="mailto:${FROM_EMAIL}"

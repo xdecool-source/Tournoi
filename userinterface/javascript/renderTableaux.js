@@ -27,9 +27,7 @@ export function renderTableaux(
     const box = document.getElementById("tableauxContainer");
     // console.log("IS ADMIN RENDER:", isAdmin);
     if(!box || !TABLEAUX) return;
-
     const points = Number(joueurPoints);
-
     box.innerHTML = Object.keys(TABLEAUX).map(key => {
     const conf = TABLEAUX[key];
     if(!conf) return "";
@@ -38,15 +36,12 @@ export function renderTableaux(
     const safeKey = escapeHTML(key);
     const safeLabel = escapeHTML(conf.label ?? "");
     const safePrix = Number(conf.prix ?? 0); // number safe
-
     const used   = places?.[key]?.ok ?? 0;
     const cap    = places?.[key]?.capacite ?? conf.capacite ?? 0;
     const att    = places?.[key]?.attente ?? 0;
     const attMax = places?.[key]?.attente_max ?? conf.attente ?? 0;
-
     const min = conf.min != null ? Number(conf.min) : null;
     const max = conf.max != null ? Number(conf.max) : null;
-
     const isChecked = tableauxInscrits.includes(key);
 
     let interdit = false;
@@ -103,18 +98,15 @@ export function renderTableaux(
                 ${isChecked ? "checked" : ""}>
             <span class="checkmark"></span>
         </label>
-
         <div class="col-tableau">
             <div class="jour">${jourTxt}</div>
             <div class="tableau-ligne">
                 ${safeKey} - 💰 ${safePrix}€
             </div>
         </div>
-        
         <span class="col-tranche ${interdit ? "tranche-ko" : "tranche-ok"}">
             ${safeLabel || (min !== null && max !== null ? `${min}-${max}` : "")}
         </span>
-
         <div class="tableau-stats">
             <span>🏓 ${used}/${cap} Inscrits</span>
             <span>⏳ ${att}/${attMax} Attentes </span> 
@@ -131,22 +123,16 @@ box.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
 export function limitSelection(e){
 
     const current = e.target;
-
     const checked = Array.from(
         document.querySelectorAll("#tableauxContainer input:checked")
     );
-
     const counts = {};
     const grouped = {};
-
     checked.forEach(cb => {
         const c = window.TABLEAUX_GLOBAL?.[cb.value];
         const jour = c?.jour?.label?.toLowerCase();
-
         if(!jour) return;
-
         counts[jour] = (counts[jour] || 0) + 1;
-
         if(!grouped[jour]) grouped[jour] = [];
         grouped[jour].push(cb);
     });
@@ -156,11 +142,9 @@ export function limitSelection(e){
 
             // ❗ on garde les 4 premiers, on décoche le reste
             const list = grouped[jour];
-
             list.slice(4).forEach(cb => {
                 cb.checked = false;
             });
-
             openModal(`Maximum 4 tableaux le ${jour}`);
             return;
         }

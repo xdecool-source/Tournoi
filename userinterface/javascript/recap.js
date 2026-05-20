@@ -62,11 +62,11 @@ export async function showRecap(player, email, tableauxSel){
         let color = "green";
 
         if(p.ok >= p.capacite && p.attente >= p.attente_max){
-            txt = `${p.capacite}/${p.capacite} et vous êtes le dernier en liste d'attente`;
+            txt = `${p.capacite}/${p.capacite} et vous êtes le dernier en liste d'attente de ${p.attente_max} `;
             color = "red";
         }
         else if(p.ok >= p.capacite){
-            txt = `${p.capacite}/${p.capacite} Vous êtes le (${p.attente} sur ${p.attente_max}) en liste d'attente`;
+            txt = `${p.capacite}/${p.capacite} et vous êtes le (${p.attente}/${p.attente_max}) en liste d'attente`;
             color = "orange";
         }
         else{
@@ -145,7 +145,7 @@ export async function showRecap(player, email, tableauxSel){
                 <br><br><br>
 
                 <b style="color:#007bff;">
-                Un mail va suivre afin de confirmer vos Tableaux et Tarifs 
+                Un mail va suivre afin de confirmer votre inscription 
                 </b>
             `;
         }

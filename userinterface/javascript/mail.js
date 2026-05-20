@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // reset état bouton
         btn.disabled = false;
         btn.innerText = "Valide ton mail";
-
         // ajout du click
         btn.addEventListener("click", sendCode);
     }

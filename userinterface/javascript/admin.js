@@ -38,7 +38,7 @@ export async function loginAdmin(){
 
         if(currentPlayer){
             setTimeout(() => {
-                window.check();   // RELOAD COMPLET AVEC isAdmin
+                window.check();   // Reloas complet avec isAdmin
             }, 200);
         }
     }else{

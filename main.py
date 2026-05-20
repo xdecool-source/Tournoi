@@ -35,3 +35,11 @@ app.mount("/static", StaticFiles(directory="userinterface"), name="static")
 
 async def ping():
     return {"status": "ok"}
+
+# @app.middleware("http")
+# async def log_requests(request, call_next):
+#     print("URL =", request.url)
+#     print("METHOD =", request.method)
+#     response = await call_next(request)
+#     return response
+

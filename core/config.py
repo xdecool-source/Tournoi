@@ -15,6 +15,7 @@ ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATE_TOURNOI = "28/03/2027"
 DATE_TOURNOI_JOUR = "Dimanche"
 NOM_TOURNOI = "Homopongistus"
+TIME_ADMIN_SESSION = 4
 
 TABLEAUX = {
     "T1": {"min": 500, "max": 799, "capacite": 8, "attente": 2, "prix": 8, "jour": {
@@ -37,7 +38,7 @@ TABLEAUX = {
         "id": 1,
         "label": "Dimanche"
     }},
-    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 18, "attente": 2, "prix": 10, "jour": {
+    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 18, "attente": 13, "prix": 10, "jour": {
         "id": 1,
         "label": "Dimanche"
     }},
