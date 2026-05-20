@@ -36,6 +36,7 @@ app.mount("/static", StaticFiles(directory="userinterface"), name="static")
 async def ping():
     return {"status": "ok"}
 
+# Ne marche pas sur Railway (normal http !!)
 # @app.middleware("http")
 # async def log_requests(request, call_next):
 #     print("URL =", request.url)

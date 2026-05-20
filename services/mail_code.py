@@ -5,14 +5,17 @@ import random
 import time
 import httpx
 import aiosmtplib
+import psycopg2
 
 from dotenv import load_dotenv
 from email.message import EmailMessage
+from sqlalchemy import text
 
 #  Env
 
 load_dotenv(".env", override=False)
 ENV = os.getenv("ENV", "dev")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 #  Smtp (Dev)
 
@@ -53,6 +56,10 @@ def store_verification_code(email):
         "code": code,
         "expire": now + 300
     }
+    # reveil database
+    import asyncio
+
+    reveil_database() 
     # print("Code généré pour", email, ":", code)
     return code
 
@@ -111,6 +118,20 @@ async def send_brevo_email(to_email, subject, html):
             json=payload
         )
         print("Brevo Status", r.status_code)
+
+# Reveil database Neon
+    
+def reveil_database():
+
+    try:
+        conn = psycopg2.connect(DATABASE_URL)
+        cur = conn.cursor()
+        cur.execute("SELECT 1")
+        cur.close()
+        conn.close()
+        print("DB réveillée")
+    except Exception as e:
+        print("Erreur DB:", e)
 
 # Routeur Mail 
 

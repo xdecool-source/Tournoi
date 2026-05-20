@@ -110,7 +110,7 @@ export async function sendInscription(){
     });
 
     if(res.status === 401){
-        openModal("Session admin expirée");
+        openModal("Session admin expirée voir variable TIME_ADMIN_SESSION");
         return;
     }
 
