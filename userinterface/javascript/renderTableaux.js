@@ -33,6 +33,7 @@ export function renderTableaux(
     if(!conf) return "";
 
     const jourTxt = escapeHTML(conf.jour?.label || "Jour inconnu");
+    const heureTxt = escapeHTML(conf.jour?.hour || "");
     const safeKey = escapeHTML(key);
     const safeLabel = escapeHTML(conf.label ?? "");
     const safePrix = Number(conf.prix ?? 0); // number safe
@@ -99,7 +100,7 @@ export function renderTableaux(
             <span class="checkmark"></span>
         </label>
         <div class="col-tableau">
-            <div class="jour">${jourTxt}</div>
+            <div class="jour small-jour">${jourTxt} - ${heureTxt}</div>
             <div class="tableau-ligne">
                 ${safeKey} - 💰 ${safePrix}€
             </div>
@@ -108,8 +109,8 @@ export function renderTableaux(
             ${safeLabel || (min !== null && max !== null ? `${min}-${max}` : "")}
         </span>
         <div class="tableau-stats">
-            <span>🏓 ${used}/${cap} Inscrits</span>
-            <span>⏳ ${att}/${attMax} Attentes </span> 
+            <span>${used}/${cap} Inscrits</span><br>
+            <span>${att}/${attMax} Attentes </span> 
         </div>
     </div>`;
 }).join("");

@@ -130,12 +130,12 @@ async def build_email_html(data: dict, type_mail: str):
             nom = conf.get("label", t)
             prix = conf.get("prix", 0)
             jour = conf.get("jour", {}).get("label", "")
+            heure = conf.get("jour", {}).get("hour", "")
             
             if min_pts is None and max_pts is None:
-                ligne = f"{nom} ({jour}) — {prix}€ {statut_txt}"
+                ligne = f"{nom} ({jour} à {heure}) — {prix}€ {statut_txt}"
             else:
-                ligne = f"{nom} ({min_pts}-{max_pts} pts, {jour}) — {prix}€ {statut_txt}"
-
+                ligne = f"{nom} ({min_pts}-{max_pts} pts, {jour} à {heure}) — {prix}€ {statut_txt}"
             # print("LIGNE:", ligne)
 
             tableaux_details.append(ligne) 

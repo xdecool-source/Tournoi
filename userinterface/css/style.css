@@ -225,6 +225,9 @@ transform:translate(-50%,-50%);
     color: #f39c12;
 }
 
+.small-jour{
+    font-size:14px;
+}
 /* STATS TABLEAU en globale puis pas libelle */
 
 .stat-inscrit {

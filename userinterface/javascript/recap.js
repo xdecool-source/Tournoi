@@ -42,6 +42,7 @@ export async function showRecap(player, email, tableauxSel){
         const p = placesNow[t] || {};
         // xx const jourTxt = c.jour === 1 ? "Samedi" : "Dimanche"; 
         const jourTxt = c.jour?.label || "Jour inconnu";
+        const heureTxt = c.jour?.hour || "";
 
         if(!c){
             // console.warn("MANQUANT", t);
@@ -84,7 +85,7 @@ export async function showRecap(player, email, tableauxSel){
                 <div style="margin-bottom:4px;">
                     <b>${escapeHTML(t)}</b>
                     ${escapeHTML(range)}
-                    ${escapeHTML(jourTxt)}
+                    ${escapeHTML(jourTxt)} à ${escapeHTML(heureTxt)}
                     - 💰 <b>${prix}€</b>
                 </div>
 

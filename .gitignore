@@ -1,6 +1,6 @@
 *.pyc
 .env
 Database/
+DB/
 A_Info/
 __pycache__/
-Create_Encrypt_Password._Admin_Tournoi.py

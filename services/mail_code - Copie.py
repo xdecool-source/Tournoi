@@ -64,25 +64,23 @@ def store_verification_code(email):
     return code
 
 def verify_code(email, code):
-
-    # print("AVANT VERIFY =", verification_codes)
+    print("AVANT VERIFY =", verification_codes)
     data = verification_codes.get(email)
     if not data:
-        # print("AUCUN CODE")
         return False
-    # expiration
+    
+    # expiration 
     if time.time() > data["expire"]:
         del verification_codes[email]
-        # print("EXPIRE")
         return False
-    # mauvais code
-    if data["code"] != code:
-        # print("MAUVAIS CODE")
-        return False
-    # SUCCESS
+    # mauvais code 
+    if data["code"] == code:
+        del verification_codes[email]
+        return True
+    # code bon : suppression immédiate pour empecher sa réutilisation
     del verification_codes[email]
-    # print("SUPPRIME =", verification_codes)
-    return True
+    print("SUPPRIME =", verification_codes)
+    return False
 
 # Smtp Dev
 

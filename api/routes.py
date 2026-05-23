@@ -496,6 +496,7 @@ async def send_code(data: dict, background_tasks: BackgroundTasks):
 
 async def verify_code_api(data: dict):
     # bypass en dev
+    # print("ROUTE VERIFY APPELEE")
     if ENVCODE == "dev":
         return {"success": True}
     email = data["email"].strip().lower()

@@ -24,31 +24,38 @@ NOM_TOURNOI = "Homopongistus"
 TABLEAUX = {
     "T1": {"min": 500, "max": 799, "capacite": 10, "attente": 2, "prix": 8, "jour": {
         "id": 1,
-        "label": "Dimanche"
+        "label": "Dimanche",
+        "hour": "11h00"
     }},
     "T2": {"min": 500, "max": 999, "capacite": 10, "attente": 2, "prix": 8, "jour": {
         "id": 1,
-        "label": "Dimanche"
+        "label": "Dimanche",
+        "hour": "8h30"
     }},
     "T3": {"min": 500, "max": 1299, "capacite": 10, "attente": 2, "prix": 8, "jour": {
         "id": 1,
-        "label": "Dimanche"
+        "label": "Dimanche",
+        "hour": "14h30"
     }},
     "T4": {"min": 700, "max": 1599, "capacite": 10, "attente": 2, "prix": 8, "jour": {
         "id": 1,
-        "label": "Dimanche"
+        "label": "Dimanche",
+        "hour": "9h45"
     }},
     "T5": {"min": 800, "max": 1999, "capacite": 10, "attente": 2, "prix": 9, "jour": {
         "id": 1,
-        "label": "Dimanche"
+        "label": "Dimanche",
+        "hour": "12h00"
     }},
-    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 15, "attente": 13, "prix": 10, "jour": {
+    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 15, "attente": 5, "prix": 10, "jour": {
         "id": 1,
-        "label": "Dimanche"
+        "label": "Dimanche",
+        "hour": "13h00"
     }},
     "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 15, "attente": 5, "prix": 9, "jour": {
         "id": 1,
-        "label": "Dimanche"
+        "label": "Dimanche",
+        "hour": "14h00"
     }},
     
 }
