@@ -11,12 +11,14 @@ from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from core.config import TABLEAUX, ADMIN_PASSWORD_HASH, MOCK_FFTT
 from services.fftt_service import appel_fftt
-from services.mail_inscription import send_email, send_confirmation_email
+
+from services.mail_code import send_email
 from services.mail_code import store_verification_code, verify_code
+from services.mail_inscription import send_confirmation_email
+
 from dotenv import load_dotenv
 from userinterface.screens import home_screen
 from export.generate_inscription import generate 
-# from services.admin_ex_mail import process_admin_export
 from datetime import datetime, timedelta, date
 from jose import jwt, JWTError, ExpiredSignatureError
 
@@ -47,7 +49,6 @@ CACHE_TTL = 3
 
 #  Backend 
 
-
 router = APIRouter()
 ENV = os.getenv("ENV", "dev")
 ENVCODE = os.getenv("ENVCODE", "dev")
@@ -57,7 +58,6 @@ ENVCODE = os.getenv("ENVCODE", "dev")
 @router.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     return home_screen(request)
-
 
 #  Début token
 
@@ -107,7 +107,6 @@ def get_current_admin(request: Request):
     if payload.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Admin only")
     return payload
-
 
 @router.get("/tableaux")
 async def get_tableaux():
@@ -258,9 +257,6 @@ async def get_places(request: Request, response: Response):
 
 #  update inscription 
 
-from fastapi import Depends
-
-
 @router.put("/inscription/{licence}")
 async def update_inscription(
     licence: str,
@@ -272,7 +268,6 @@ async def update_inscription(
 
     # print("ROUTE UPDATE APPELEE")  # 
     # raise HTTPException(403, "Admin only")
-    
     # on block en cas de non saisi de tableau sans etre admin 
     if not data.get("tableaux") and not admin:
         return {"success": False, "error": "Suppression réservée admin"}
@@ -360,12 +355,10 @@ async def update_inscription(
             
         tableaux_quittes = old_tableaux - new_tableaux
         for t in tableaux_quittes:
-            await promote_attente(t)
-            
+            await promote_attente(t)   
         places_cache = None
         
         return {"success": True}
-
 
 
 #  inscription ( Gestion erreur fftt ) 
@@ -460,7 +453,6 @@ def login_admin(data: dict, response: Response):
 def logout_admin(response: Response):
     response.delete_cookie("access_token")
     return {"success": True}
-
 
 #  Verification Mail  
 

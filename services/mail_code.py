@@ -31,6 +31,7 @@ BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 #  Commun
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
+REPLY_TO_EMAIL = os.getenv("REPLY_TO_EMAIL")
 # print("Env Valeur =", ENV)
 # print("Smtp host =", SMTP_HOST)
 # print("From Email =", FROM_EMAIL)
@@ -38,7 +39,7 @@ FROM_EMAIL = os.getenv("FROM_EMAIL")
 #  Stockages Codes
 
 verification_codes = {}
-
+# print("MAIL_CODE CHARGE")
 # Génération code
 
 def generate_code():
@@ -89,10 +90,10 @@ def verify_code(email, code):
 async def send_smtp_email(to_email, subject, html):
 
     msg = EmailMessage()
-    msg["From"] = FROM_EMAIL
+    msg["From"] = f"Tournoi <{FROM_EMAIL}>"
     msg["To"] = to_email
     msg["Subject"] = subject
-    msg.set_content("Votre client mail ne supporte pas HTML")
+    msg["Reply-To"] = REPLY_TO_EMAIL
     msg.add_alternative(html, subtype="html")
     await aiosmtplib.send(
         msg,
@@ -109,8 +110,17 @@ async def send_smtp_email(to_email, subject, html):
 async def send_brevo_email(to_email, subject, html):
 
     payload = {
-        "sender": {"email": FROM_EMAIL},
-        "to": [{"email": to_email}],
+        "sender": {
+            "name": "Tournoi",
+            "email": FROM_EMAIL
+        },
+        "to": [
+            {"email": to_email}
+        ],
+        "replyTo": {
+            "email": REPLY_TO_EMAIL,
+            "name": "Tournoi"
+        },
         "subject": subject,
         "htmlContent": html
     }
@@ -144,7 +154,7 @@ def reveil_database():
 # Routeur Mail 
 
 async def send_email(to_email, subject, html):
-
+    
     print("Mode Mail =", "Smtp" if ENV == "dev" else "Brevo")
     if ENV == "dev":
         await send_smtp_email(to_email, subject, html)
