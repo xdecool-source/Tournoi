@@ -7,7 +7,7 @@ from psycopg2.extras import DictCursor
 from dotenv import load_dotenv
 
 load_dotenv(".env", override=False)
-if os.getenv("ENV") != "production":
+if os.getenv("MOCK_FFTT") == "true":
     print("Mode Test No access FFTT")
         
 # load_dotenv()  # charge le fichier .env

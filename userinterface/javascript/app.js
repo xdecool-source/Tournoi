@@ -200,7 +200,7 @@ async function check(){
                 if (msg) {
                     console.log("MSG =", document.getElementById("alreadyMsg"));
                     msg.className = "infoBox";
-                    
+                    // variable FROM_EMAIL initiliser dans config.js
                     if (!isAdmin) {
                         msg.innerHTML = `
                             <b>Vous êtes déjà inscrit.</b><br>

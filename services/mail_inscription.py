@@ -54,7 +54,7 @@ async def build_email_html(data: dict, type_mail: str):
 
     template_name = template_map.get(type_mail, "email_creation.html")
     
-    #  print(" 1 - chargement template")
+    # print(" 1 - chargement template")
     
     template = env.get_template(template_name)
     
@@ -75,7 +75,7 @@ async def build_email_html(data: dict, type_mail: str):
         )
         return html_content
     
-    #  print(" 2 - construction tableaux")
+    # print(" 2 - construction tableaux")
     
     tableaux_details = []
     tableaux_str = ""   
@@ -144,7 +144,7 @@ async def build_email_html(data: dict, type_mail: str):
             total_html = f"<br><br>💰 Total : {total}€"
                 
     
-    #  print(" 3 - render HTML")
+    # print(" 3 - render HTML")
     
     jour = "Samedi" if event_id == 1 else "Dimanche"
     
@@ -175,7 +175,7 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
     message["From"] = FROM_EMAIL
     message["To"] = to_email
     message["Subject"] = subject
-    message.set_content("Votre client mail ne supporte pas le HTML.")
+    # message.set_content("Votre client mail ne supporte pas le HTML.")
     message.add_alternative(html_content, subtype="html")
 
     try:
@@ -195,17 +195,19 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
 
 async def send_brevo_email(to_email: str, subject: str, html_content: str):
 
-    #  print(" 4 - envoi Brevo")
+    # print(" 4 - envoi Brevo") # xxxx
     
     payload = {
         "sender": {"email": FROM_EMAIL},
         "to": [{"email": to_email}],
-        # "cc": [{"email": ADMIN_EMAIL}] if ADMIN_EMAIL else [],
+        "cc": [{"email": ADMIN_EMAIL}] if ADMIN_EMAIL else [],
         "subject": subject,
         "htmlContent": html_content,
     }
     # print("Brevo Api key =", BREVO_API_KEY)
     # print("From Email =", FROM_EMAIL)
+    # print("cc Email =", ADMIN_EMAIL)
+
     async with httpx.AsyncClient(timeout=20) as client:
 
         response = await client.post(
@@ -253,6 +255,7 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
 
 async def send_email(to_email: str, subject: str, html_content: str):
 
+    # print("Mode Mail =", "Smtp" if ENV == "dev" else "Brevo")
     if ENV != "dev":
         await send_brevo_email(
             to_email,
