@@ -378,7 +378,7 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
             return {"success": False, "error": "Licence inconnue FFTT"}
     try:
         await save_inscription(data)
-        print("Inscription Ok - lancement mail")
+        # print("Inscription Ok - lancement mail")
         
         # Send mail joueur
         background_tasks.add_task(
