@@ -1,8 +1,6 @@
 // Génère l’interface des tableaux
 //  (avec règles, états, sélection limitée et visuel dynamique).
 
-
-
 function escapeHTML(str){
     return String(str)
         .replaceAll("&", "&amp;")

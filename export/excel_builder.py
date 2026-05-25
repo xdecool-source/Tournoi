@@ -181,7 +181,6 @@ def create_tableaux_sheet(wb, data_by_table):
                 max_length = max(max_length, len(str(cell.value)))
         ws.column_dimensions[col_letter].width = max_length + 2
         
-
 def create_deleted_sheet(wb, deleted_rows):
     
     ws = wb.create_sheet("Suppression")
@@ -228,5 +227,4 @@ def create_deleted_sheet(wb, deleted_rows):
         ])
 
     format_sheet(ws)
-    
     

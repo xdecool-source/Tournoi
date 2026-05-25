@@ -223,7 +223,7 @@ async def send_brevo_email(to_email: str, subject: str, html_content: str):
             },
             json=payload,
         )
-        print("Brevo status du mail de confirmation :", response.status_code)
+        # print("Brevo status du mail de confirmation :", response.status_code)
         # print("Brevo response:", response.text)
         response.raise_for_status()
 

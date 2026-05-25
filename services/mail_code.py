@@ -135,7 +135,7 @@ async def send_brevo_email(to_email, subject, html):
             },
             json=payload
         )
-        print("Brevo Status pour le code mail", r.status_code)
+        # print("Brevo Status pour le code mail", r.status_code)
 
 # Reveil database Neon
     

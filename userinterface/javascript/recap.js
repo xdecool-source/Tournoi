@@ -49,7 +49,7 @@ export async function showRecap(player, email, tableauxSel){
             return;
         }
 
-        // xx const prix = Number(c.prix || 0);
+        // const prix = Number(c.prix || 0);
         const prix = Number(c.prix ?? 0);
         total += prix;
 

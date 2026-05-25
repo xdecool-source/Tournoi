@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-
 export async function sendCode(){
 
     const btn = document.getElementById("sendCodeBtn");
@@ -75,7 +74,6 @@ export async function sendCode(){
         btn.disabled = false;
     }, 10000);
 }
-
 
 export async function verifyCode(){
 

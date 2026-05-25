@@ -40,7 +40,8 @@ async def appel_fftt(endpoint, params_metier):
         joueurs = {
             "111": ("Dupond", "Xavier", "Perpignan TT", 850),
             "222": ("Durand", "Paul", "Montpellier TT", 1450),
-            "333": ("Martin", "Luc", "Toulouse TT", 2000)
+            "333": ("Martin", "Luc", "Toulouse TT", 2000),   
+            "444": ("Albert", "loic", "Foix TT", 1250)
         }
 
         nom, prenom, club, point = joueurs.get(

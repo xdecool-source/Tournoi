@@ -497,7 +497,6 @@ async def verify_code_api(data: dict):
     valid = verify_code(email, code)
     return {"success": valid}
 
-
 @router.post("/admin/export")
 async def download_excel(admin=Depends(get_current_admin)):
     
