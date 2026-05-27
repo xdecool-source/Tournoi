@@ -638,3 +638,12 @@ letter-spacing:1px;
 .blink{
 animation:blinkSoft 1.5s infinite;
 }
+
+@media screen and (max-width:600px){
+
+    #adminBtn,
+    #logoutBtn{
+        display:none !important;
+    }
+
+}

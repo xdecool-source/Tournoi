@@ -9,7 +9,7 @@
 from fastapi import APIRouter, HTTPException, Request, Response, BackgroundTasks, Header, Depends
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
-from core.config import TABLEAUX, ADMIN_PASSWORD_HASH, MOCK_FFTT
+from core.config import TABLEAUX, ADMIN_PASS_HASH, MOCK_FFTT
 from services.fftt_service import appel_fftt
 
 from services.mail_code import send_email
@@ -41,6 +41,8 @@ from services.db import (
     promote_attente
 )
 
+templates = Jinja2Templates(directory="userinterface/templates")
+
 #  cache places 
 
 places_cache = None
@@ -52,6 +54,7 @@ CACHE_TTL = 3
 router = APIRouter()
 ENV = os.getenv("ENV", "dev")
 ENVCODE = os.getenv("ENVCODE", "dev")
+INSCRIT_PASS = os.getenv("INSCRIT_PASS")
 
 # Date 
     
@@ -433,7 +436,7 @@ def login_admin(data: dict, response: Response):
     
     if bcrypt.checkpw(
         data.get("pwd", "").encode(),
-        ADMIN_PASSWORD_HASH.encode()
+        ADMIN_PASS_HASH.encode()
     ):
         token = create_access_token({"role": "admin"})
         IS_PROD = os.getenv("ENV") == "prod"
@@ -469,10 +472,13 @@ async def send_code(data: dict, background_tasks: BackgroundTasks):
             "error": str(e)
         }
     html = f"""
-    <h2>Voici votre Code de vérification de votre Mail </h2>
-    <p>Votre code de connexion est :</p>
-    <h1>{code}</h1>
+    <h2>Voici votre Code de vérification pour valider votre Mail <h1>{code}</h1> </h2>
     <p>Ce code expire dans 5 minutes.</p>
+    <p>De plus avec le Mot de passe liste inscrits ci-joint :
+    <b>{INSCRIT_PASS}</b>
+    vous avez la possibilite de consulter tous les inscrits.
+    il faut saisir votre licence et cliquer sur le bouton liste inscrits en bas à droite
+    </p>
     <p>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer ce message.</p>
     """
     background_tasks.add_task(
@@ -516,5 +522,93 @@ async def download_excel(admin=Depends(get_current_admin)):
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={
             "Content-Disposition": f"attachment; filename={filename}"
+        }
+    )
+    
+
+@router.post("/check-liste-password")
+async def check_liste_password(data: dict):
+
+    pwd = data.get("pwd")
+    if pwd == INSCRIT_PASS:
+        return {"success": True}
+    return {"success": False}
+
+@router.get("/inscrits")
+async def get_inscrits():
+
+    try:
+        async with get_conn() as conn:
+            rows = await conn.fetch("""
+
+                -- JOUEURS ACTIFS
+                SELECT i.dossard, i.licence, i.nom, i.prenom, i.club, i.points,
+                    COALESCE(
+                        array_agg(
+                            CASE
+                                WHEN it.statut = 'ATTENTE'
+                                THEN it.tableau || '_ATTENTE'
+                                ELSE it.tableau
+                            END
+                        )
+                        FILTER (
+                            WHERE it.tableau IS NOT NULL
+                        ),
+                        '{}'
+                    ) AS tableaux,
+                    FALSE AS annule
+                FROM inscriptions i
+                LEFT JOIN inscription_tableaux it
+                    ON i.licence = it.licence
+                GROUP BY i.dossard, i.licence, i.nom, i.prenom, i.club, i.points
+                UNION ALL
+                
+                -- JOUEURS ANNULES
+                SELECT
+                    di.dossard, di.licence, di.nom, di.prenom, di.club, di.points,
+                    ARRAY[]::text[] AS tableaux,
+                    TRUE AS annule
+                FROM delete_inscrit di
+                ORDER BY annule ASC, points DESC
+            """)
+
+            inscrits = []
+
+            for r in rows:
+
+                inscrits.append({
+
+                    "dossard": r["dossard"],
+                    "licence": r["licence"],
+                    "nom": r["nom"],
+                    "prenom": r["prenom"],
+                    "club": r["club"],
+                    "points": r["points"],
+                    "tableaux": r["tableaux"],
+                    "annule": r["annule"]
+
+                })
+        return {
+            "success": True,
+            "inscrits": inscrits
+        }
+
+    except Exception as e:
+
+        print("ERREUR EXPORT INSCRITS :", e)
+        return {
+            "success": False,
+            "error": "Erreur serveur"
+
+        }
+        
+@router.get("/export-inscrits", response_class=HTMLResponse)
+async def export_inscrits_page(request: Request):
+
+    return templates.TemplateResponse(
+        "exportInscrits.html",
+        {
+            "request": request,
+            "INSCRIT_PASS": INSCRIT_PASS
         }
     )

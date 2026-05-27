@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+<title>
+Liste des inscrits
+</title>
+<link
+    rel="stylesheet"
+    href="/static/css/exportInscrits.css?v=999"
+>
+</head>
+
+<body>
+<!--  HEADER -->
+<div class="header">
+    <h1>
+         Liste des inscrits
+    </h1>
+</div>
+<!--  CONTAINER -->
+<div class="container">
+    <!--  TOOLBAR -->
+    <div class="toolbar-mobile"
+        style="margin-bottom:40px;">
+        <button
+            class="btn-load"
+            onclick="chargerInscrits()"
+        >
+            Voire la liste
+        </button>
+        <button
+            class="btn-print"
+            onclick="window.print()"
+        >
+            Imprimer / PDF
+        </button>
+    </div>
+
+    <!-- STATS -->
+    <div
+        class="stats"
+        id="statsContainer"
+    >
+    </div>
+
+    <!-- TABLEAU -->
+    <div class="table-container">
+        <div id="resultat"></div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    Tennis de Table Thuirinois
+</div>
+
+<!--  JAVASCRIPT -->
+<script
+    type="module"
+    src="/static/javascript/exportInscrits.js">
+</script>
+</body>
+</html>

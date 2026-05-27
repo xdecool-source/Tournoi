@@ -15,7 +15,7 @@ MOCK_FFTT = os.getenv("MOCK_FFTT", "true").lower() == "true"
 BASE_URL = os.getenv("BASE_URL", "")
 APP_ID = os.getenv("APP_ID", "")
 MOT_DE_PASSE = os.getenv("MOT_DE_PASSE", "")
-ADMIN_PASSWORD_HASH = os.getenv("ADMIN_PASSWORD_HASH")
+ADMIN_PASS_HASH = os.getenv("ADMIN_PASS_HASH")
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATE_TOURNOI = "28/03/2027"
 DATE_TOURNOI_JOUR = "Dimanche"
@@ -42,17 +42,17 @@ TABLEAUX = {
         "label": "Dimanche",
         "hour": "9h45"
     }},
-    "T5": {"min": 800, "max": 1999, "capacite": 10, "attente": 2, "prix": 9, "jour": {
+    "T5": {"min": 800, "max": 1999, "capacite": 6, "attente": 3, "prix": 9, "jour": {
         "id": 1,
         "label": "Dimanche",
         "hour": "12h00"
     }},
-    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 15, "attente": 5, "prix": 10, "jour": {
+    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 10, "attente": 5, "prix": 10, "jour": {
         "id": 1,
         "label": "Dimanche",
         "hour": "13h00"
     }},
-    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 15, "attente": 5, "prix": 9, "jour": {
+    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 10, "attente": 5, "prix": 9, "jour": {
         "id": 1,
         "label": "Dimanche",
         "hour": "14h00"

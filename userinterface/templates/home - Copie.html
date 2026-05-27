@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/static/css/style.css?v=130">
+    <link rel="stylesheet" href="/static/css/style.css?v=129">
     <script type="module" src="/static/javascript/app.js"></script>
     <script type="module" src="/static/javascript/admin.js"></script>
     <link rel="icon" href="/static/favicon.ico">
@@ -166,14 +166,12 @@
 
                 <!-- ADMIN -->
                 <button
-                    id="adminBtn"
                     class="admin-btn"
                     onclick="loginAdmin()"
                     style="
                         position:fixed;
                         top:10px;
                         right:35px;
-                        display:none;
                     "
                 >
                     Admin
@@ -185,7 +183,6 @@
                         position:fixed;
                         top:50px;
                         right:10px;
-                        display:none;
                     "
                 >
                     Logout admin
@@ -193,26 +190,34 @@
 
                 <button
                     id="btnListeInscrits"
-                    onclick="openListeInscrits()"
+                    onclick="
+                        window.open(
+                            '/export-inscrits',
+                            'fenetre_inscrits'
+                        )
+                    "
                     style="
                         position:fixed;
                         bottom:40px;
                         right:10px;
+
                         width:auto;
+                        display:inline-block;
                         white-space:nowrap;
-                        appearance: none;
+
                         -webkit-appearance:none;
+
                         background:#1976d2;
                         color:white;
                         border:none;
                         padding:10px 14px;
                         border-radius:6px;
                         cursor:pointer;
-                        display:none;
                     "
                 >
                     Liste inscrits
                 </button>
+
 
                 <!-- FIN ADMIN -->
 
@@ -248,7 +253,7 @@
             color:white;
         "
     >
-        Tennis de Table Thuirinois XDC Version : v3.9
+        Tennis de Table Thuirinois XDC Version : v3.8
     </div>
 </body>
 </html>

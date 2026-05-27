@@ -25,6 +25,39 @@ window.limitSelection = limitSelection;
 window.showRecap = showRecap
 window.renderTableaux = renderTableaux
 
+window.openListeInscrits = async function(){
+
+    const pwd = prompt(
+    `Mot de passe liste inscrits
+
+    Voir le mail :
+    Code de vérification du Tournoi
+    qui contient le Mot de passe liste inscrits`
+    );
+    if(!pwd) return;
+    const newWindow = window.open("", "fenetre_inscrits");
+    try{
+        const r = await fetch("/check-liste-password",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({pwd})
+        });
+
+        const data = await r.json();
+        if(data.success){
+            newWindow.location.href = "/export-inscrits";
+        }else{
+            newWindow.close();
+            alert("Mot de passe incorrect");
+        }
+    }catch(e){
+        newWindow.close();
+        alert("Erreur serveur");
+    }
+}
+
 let tableauxGlobal = null;
 window.updateAdminButtons = updateAdminButtons;
 
@@ -57,6 +90,7 @@ async function init(){
             resetInterface();
             licenceInput.select();
         });
+        
     }
 }
 
@@ -72,6 +106,17 @@ async function check(){
     if(!input) return;
     const lic = input.value.trim();
     if(!lic) return;
+
+    // cacher bouton liste inscrits et admin 
+    const btnListe = document.getElementById("btnListeInscrits");
+    if(btnListe){
+        btnListe.style.display = "inline-block";
+    }
+    const adminBtn = document.getElementById("adminBtn");
+    if(adminBtn && window.innerWidth > 600){
+        adminBtn.style.display = "block";
+    }
+
     clearTimeout(checkTimer);
     checkTimer = setTimeout(async ()=>{
         const resAdmin = await fetch("/me", {
@@ -203,12 +248,13 @@ async function check(){
                     // variable FROM_EMAIL initiliser dans config.js
                     if (!isAdmin) {
                         msg.innerHTML = `
-                            <b>Vous êtes déjà inscrit.</b><br>
+                            <h2 style="font-size: 0.9rem;">Vous êtes déjà inscrit.</h2>
                             Vérifiez vos choix comme suit :  
                             <span style="color:#007bff;">☑️</span> 
-                            <br><br>
-                            Si vous souhaitez modifier votre inscription<br>
-                            merci d'envoyer un mail à <br>
+                            <br>
+                            Si vous souhaitez modifier votre inscription <br>
+                            merci d'envoyer un e-mail avec : <br>
+                            <h2 style="font-size: 0.8rem;" ><b>vos choix et votre numéro de licence</b> à <br></h2>
                             <a href="mailto:${FROM_EMAIL}"
                             style="color:red;text-decoration:underline;">
                             ${FROM_EMAIL}
@@ -221,6 +267,7 @@ async function check(){
                 }
   
                 const btn = document.querySelector("button[onclick='sendInscription()']");
+                // const adminBtn = document.getElementById("adminBtn");
                 if(btn){
                     if(!isAdmin){
                         btn.disabled = true;
@@ -254,14 +301,15 @@ async function updateAdminButtons(){
     const data = await res.json();
     const isAdmin = data.admin;
 
-    const adminBtn  = document.querySelector("button[onclick='loginAdmin()']");
+    // const adminBtn  = document.querySelector("button[onclick='loginAdmin()']");
+    const adminBtn = document.getElementById("adminBtn");
     const logoutBtn = document.getElementById("logoutBtn");
 
     if(isAdmin){
         if(adminBtn) adminBtn.style.display = "none";
         if(logoutBtn) logoutBtn.style.display = "block";
     }else{
-        if(adminBtn) adminBtn.style.display = "block";
+        if(adminBtn) adminBtn.style.display = "none";
         if(logoutBtn) logoutBtn.style.display = "none";
     }
 }

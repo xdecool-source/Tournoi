@@ -28,6 +28,7 @@ export async function loginAdmin(){
     const data = await res.json();
     if(data.success){
         const adminBtn = document.querySelector("button[onclick='loginAdmin()']");
+        // const adminBtn = document.getElementById("adminBtn");
         const logoutBtn = document.getElementById("logoutBtn");
 
         if(adminBtn) adminBtn.style.display="none";
@@ -38,7 +39,7 @@ export async function loginAdmin(){
 
         if(currentPlayer){
             setTimeout(() => {
-                window.check();   // Reloas complet avec isAdmin
+                window.check();   // Reload complet avec isAdmin
             }, 200);
         }
     }else{
@@ -57,6 +58,7 @@ export async function logoutAdmin(){
     });
     localStorage.removeItem("isAdmin");     
     const adminBtn = document.querySelector("button[onclick='loginAdmin()']");
+    // const adminBtn = document.getElementById("adminBtn");
     const logoutBtn = document.getElementById("logoutBtn");
     
     if(adminBtn) adminBtn.style.display="block";
