@@ -17,10 +17,14 @@ from services.mail_code import store_verification_code, verify_code
 from services.mail_inscription import send_confirmation_email
 
 from dotenv import load_dotenv
-from userinterface.screens import home_screen
 from export.generate_inscription import generate 
 from datetime import datetime, timedelta, date
 from jose import jwt, JWTError, ExpiredSignatureError
+from os import getenv
+
+from userinterface.screens import templates, MOIS_FR
+# from userinterface.screens import home_screen
+
 
 import xml.etree.ElementTree as ET
 import time
@@ -55,13 +59,30 @@ router = APIRouter()
 ENV = os.getenv("ENV", "dev")
 ENVCODE = os.getenv("ENVCODE", "dev")
 INSCRIT_PASS = os.getenv("INSCRIT_PASS")
+FROM_EMAIL = os.getenv("FROM_EMAIL")
+NBRE_TABLEAU = os.getenv("NBRE_TABLEAU")
+DATE_TOURNOI = os.getenv("DATE_TOURNOI")
+DATE_TOURNOI_JOUR = os.getenv("DATE_TOURNOI_JOUR")
+NOM_TOURNOI = os.getenv("NOM_TOURNOI")
 
-# Date 
-    
 @router.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    return home_screen(request)
 
+    date_obj = datetime.strptime(DATE_TOURNOI, "%d/%m/%Y")
+    date_formatee = f"{date_obj.day} {MOIS_FR[date_obj.month]} {date_obj.year}"
+
+    return templates.TemplateResponse(
+        "home.html",
+        {
+            "request": request,
+            "NBRE_TABLEAU": NBRE_TABLEAU,
+            "DATE_TOURNOI": date_formatee,
+            "DATE_TOURNOI_JOUR": DATE_TOURNOI_JOUR,
+            "NOM_TOURNOI": NOM_TOURNOI,
+            "FROM_EMAIL": FROM_EMAIL
+        }
+    )
+    
 #  Début token
 
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -413,7 +434,7 @@ async def export_excel(admin=Depends(get_current_admin)):
             "Content-Disposition": f'attachment; filename="Inscriptions_Tournoi_{now}.xlsx"'
         }
     )
-
+        
 #  Admin 
 
 @router.get("/me")

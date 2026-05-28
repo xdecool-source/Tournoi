@@ -14,7 +14,7 @@ import aiosmtplib
 from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
 from email.message import EmailMessage
-from core.config import TABLEAUX, NOM_TOURNOI, DATE_TOURNOI, DATE_TOURNOI_JOUR
+from core.config import TABLEAUX
 from services.db import get_conn
 
 #  Chargement environnement
@@ -39,6 +39,11 @@ ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 SITE_URL = os.getenv("SITE_URL")
 REPLY_TO_EMAIL = os.getenv("REPLY_TO_EMAIL")
+
+NBRE_TABLEAU = os.getenv("NBRE_TABLEAU")
+DATE_TOURNOI = os.getenv("DATE_TOURNOI")
+DATE_TOURNOI_JOUR = os.getenv("DATE_TOURNOI_JOUR")
+NOM_TOURNOI = os.getenv("NOM_TOURNOI")
 
 
 env = Environment(loader=FileSystemLoader("userinterface/templates"))
@@ -135,7 +140,7 @@ async def build_email_html(data: dict, type_mail: str):
             heure = conf.get("jour", {}).get("hour", "")
             
             if min_pts is None and max_pts is None:
-                ligne = f"{nom} ({jour} à {heure}) — {prix}€ {statut_txt}"
+                ligne = f"{t} ({nom}, {jour} à {heure}) — {prix}€ {statut_txt}"
             else:
                 ligne = f"{nom} ({min_pts}-{max_pts} pts, {jour} à {heure}) — {prix}€ {statut_txt}"
             # print("LIGNE:", ligne)

@@ -4,6 +4,16 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        window.APP_CONFIG = {
+            NBRE_TABLEAU: "{{ NBRE_TABLEAU }}",
+            FROM_EMAIL: "{{ FROM_EMAIL }}",
+            NBRE_TABLEAU: "{{ NBRE_TABLEAU }}",
+            DATE_TOURNOI: "{{ DATE_TOURNOI }}",
+            DATE_TOURNOI_JOUR: "{{ DATE_TOURNOI_JOUR }}",
+            NOM_TOURNOI: "{{ NOM_TOURNOI}}"
+        };
+    </script>
     <link rel="stylesheet" href="/static/css/style.css?v=130">
     <script type="module" src="/static/javascript/app.js"></script>
     <script type="module" src="/static/javascript/admin.js"></script>
@@ -78,7 +88,8 @@
                     class="card hidden"
                 >
                     <h2>
-                        Votre Selection des Tableaux 🏓
+                        Votre Selection des Tableaux : 🏓<br>  
+                        Pas plus de {{ NBRE_TABLEAU }} inscriptions 🧑‍🏫
                     </h2>
                     <div class="email-row">
                         <input
@@ -248,7 +259,7 @@
             color:white;
         "
     >
-        Tennis de Table Thuirinois XDC Version : v3.9
+        Tennis de Table Thuirinois XDC Version : v4.0
     </div>
 </body>
 </html>

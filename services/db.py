@@ -59,27 +59,16 @@ async def init_db():
 
         await conn.execute("""
         CREATE TABLE IF NOT EXISTS inscriptions (
-            id SERIAL PRIMARY KEY,
-            dossard INTEGER DEFAULT nextval('dossard_seq'),
-            licence TEXT,
-            nom TEXT,
-            prenom TEXT,
-            club TEXT,
-            points INTEGER,
-            mail TEXT,
-            date_inscription TIMESTAMP,
+            id SERIAL PRIMARY KEY, dossard INTEGER DEFAULT nextval('dossard_seq'), licence TEXT,
+            nom TEXT, prenom TEXT, club TEXT, points INTEGER, mail TEXT, date_inscription TIMESTAMP,
             event_id INT DEFAULT 1
         )
         """)
 
         await conn.execute("""
         CREATE TABLE IF NOT EXISTS inscription_tableaux (
-            id SERIAL PRIMARY KEY,
-            licence TEXT,
-            tableau TEXT,
-            statut TEXT,
-            event_id INT DEFAULT 1,
-            UNIQUE(licence, tableau, event_id)
+            id SERIAL PRIMARY KEY, licence TEXT, tableau TEXT, statut TEXT,
+            event_id INT DEFAULT 1, UNIQUE(licence, tableau, event_id)
         )
         """)
         
@@ -98,16 +87,8 @@ async def init_db():
         
         await conn.execute("""
         CREATE TABLE IF NOT EXISTS delete_inscrit (
-            id SERIAL PRIMARY KEY,
-            dossard INT,
-            licence TEXT,
-            nom TEXT,
-            prenom TEXT,
-            club TEXT,
-            points INT,
-            mail TEXT,
-            date_inscription TIMESTAMP,
-            date_suppression TIMESTAMP DEFAULT NOW()
+            id SERIAL PRIMARY KEY, dossard INT, licence TEXT, nom TEXT, prenom TEXT,
+            club TEXT, points INT, mail TEXT, date_inscription TIMESTAMP, date_suppression TIMESTAMP DEFAULT NOW()
         )
         """)
         
@@ -267,8 +248,7 @@ async def promote_attente(t):
         row = await conn.fetchrow("""
         SELECT licence FROM inscription_tableaux
         WHERE tableau=$1 AND statut='ATTENTE'
-        ORDER BY id
-        LIMIT 1
+        ORDER BY id LIMIT 1
         """, t)
 
         if row:
@@ -328,68 +308,48 @@ async def update_admin_mail_status(conn, current_count):
 
     await conn.execute("""
         UPDATE mail_control
-        SET last_admin_mail=$1,
-            last_count=$2
+        SET last_admin_mail=$1, last_count=$2
         WHERE id=1
     """, date.today(), current_count)
     
 async def init_archive_trigger():
-    
+
     async with pool.acquire() as conn:
-        await conn.execute("""
-        CREATE OR REPLACE PROCEDURE create_archive_trigger()
-        LANGUAGE plpgsql
-        AS $$
-        BEGIN
+
+        trigger_exists = await conn.fetchval("""
+            SELECT EXISTS (
+                SELECT 1
+                FROM pg_trigger
+                WHERE tgname = 'before_delete_inscription'
+            );
+        """)
+
+        if not trigger_exists:
+
+            await conn.execute("""
 
             CREATE OR REPLACE FUNCTION archive_inscription()
             RETURNS TRIGGER AS $func$
             BEGIN
-                INSERT INTO delete_inscrit (
-                    dossard,
-                    licence,
-                    nom,
-                    prenom,
-                    club,
-                    points,
-                    mail,
-                    date_inscription,
-                    date_suppression
-                )
-                VALUES (
-                    OLD.dossard,
-                    OLD.licence,
-                    OLD.nom,
-                    OLD.prenom,
-                    OLD.club,
-                    OLD.points,
-                    OLD.mail,
-                    OLD.date_inscription,
-                    NOW()
+
+                INSERT INTO delete_inscrit (dossard, licence, nom, prenom, club, points, 
+                mail, date_inscription, date_suppression)
+                VALUES (OLD.dossard, OLD.licence, OLD.nom, OLD.prenom, OLD.club,OLD.points,
+                OLD.mail, OLD.date_inscription,NOW()
                 );
 
                 RETURN OLD;
             END;
             $func$ LANGUAGE plpgsql;
 
-            IF EXISTS (
-                SELECT 1 FROM pg_trigger 
-                WHERE tgname = 'before_delete_inscription'
-            ) AND EXISTS (
-                SELECT 1 FROM information_schema.tables 
-                WHERE table_name = 'inscriptions'
-            ) THEN
-                DROP TRIGGER before_delete_inscription ON inscriptions;
-            END IF;
-
             CREATE TRIGGER before_delete_inscription
             BEFORE DELETE ON inscriptions
             FOR EACH ROW
             EXECUTE FUNCTION archive_inscription();
 
-        END;
-        $$;
-        """)
+            """)
 
-        # exécuter la procédure
-        await conn.execute("CALL create_archive_trigger();")   
+            print("Trigger créé")
+        else:
+            print("Trigger déjà existant")
+            

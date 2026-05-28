@@ -10,6 +10,8 @@ function escapeHTML(str){
         .replaceAll("'", "&#039;");
 }
 
+import { NBRE_TABLEAU } from "./config.js";
+
 //  Render Tableaux 
 
 export function renderTableaux(
@@ -125,29 +127,29 @@ export function limitSelection(e){
     const checked = Array.from(
         document.querySelectorAll("#tableauxContainer input:checked")
     );
+    // console.log("CHECKED =", checked.length);
     const counts = {};
     const grouped = {};
     checked.forEach(cb => {
         const c = window.TABLEAUX_GLOBAL?.[cb.value];
         const jour = c?.jour?.label?.toLowerCase();
+        // console.log("JOUR =", jour);
         if(!jour) return;
         counts[jour] = (counts[jour] || 0) + 1;
+        
         if(!grouped[jour]) grouped[jour] = [];
         grouped[jour].push(cb);
     });
 
-    for(const jour in counts){
-        if(counts[jour] > 4){
-
-            // ❗ on garde les 4 premiers, on décoche le reste
-            const list = grouped[jour];
-            list.slice(4).forEach(cb => {
-                cb.checked = false;
-            });
-            openModal(`Maximum 4 tableaux le ${jour}`);
-            return;
-        }
+    // console.log("COUNTS =", counts);
+    // console.log("LIMIT =", NBRE_TABLEAU);
+    for (const jour in counts) {
+    if (counts[jour] > NBRE_TABLEAU) {
+        current.checked = false;
+        openModal(`Maximum ${NBRE_TABLEAU} tableaux le ${jour}`);
+        return;
     }
+}
 }
 
 

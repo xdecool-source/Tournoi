@@ -5,7 +5,7 @@
 #         "id": 2,
 #         "label": "Lundi"
 #     }},
-# "id": 1 = Dimanche "id": 2 = lundi
+# "id": 1 = Dimanche "id": 2 = lundi etc
 
 import os
 from dotenv import load_dotenv
@@ -17,9 +17,6 @@ APP_ID = os.getenv("APP_ID", "")
 MOT_DE_PASSE = os.getenv("MOT_DE_PASSE", "")
 ADMIN_PASS_HASH = os.getenv("ADMIN_PASS_HASH")
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATE_TOURNOI = "28/03/2027"
-DATE_TOURNOI_JOUR = "Dimanche"
-NOM_TOURNOI = "Homopongistus"
 
 TABLEAUX = {
     "T1": {"min": 500, "max": 799, "capacite": 10, "attente": 4, "prix": 8, "jour": {
@@ -42,7 +39,7 @@ TABLEAUX = {
         "label": "Dimanche",
         "hour": "9h45"
     }},
-    "T5": {"min": 800, "max": 1999, "capacite": 15, "attente": 3, "prix": 9, "jour": {
+    "T5": {"min": 800, "max": 1999, "capacite": 20, "attente": 8, "prix": 9, "jour": {
         "id": 1,
         "label": "Dimanche",
         "hour": "12h00"

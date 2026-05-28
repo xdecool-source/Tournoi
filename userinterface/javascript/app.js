@@ -12,7 +12,7 @@ import { sendCode, verifyCode } from "./mail.js"
 import { showRecap } from "./recap.js"
 import { renderTableaux, limitSelection } from "./renderTableaux.js"
 import { setIsAdmin } from "./state.js";
-import { FROM_EMAIL } from "./config.js";
+import { FROM_EMAIL, DATE_TOURNOI, DATE_TOURNOI_JOUR, NBRE_TABLEAU, NOM_TOURNOI } from "./config.js";
 
 window.loginAdmin = loginAdmin;
 window.logoutAdmin = logoutAdmin;
