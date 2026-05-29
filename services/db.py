@@ -234,21 +234,15 @@ async def save_inscription(data):
         async with conn.transaction():   # transaction globale
             
             # 1 insertion joueur
-            # dt = datetime.now(timezone.utc)
-            dt = datetime.now()
-            print("DT =", repr(dt))
-            print("TZ =", dt.tzinfo)
             await conn.execute("""
             INSERT INTO inscriptions
-            (nom, prenom, club, points, date_inscription, licence, mail)
+            (nom, prenom, club, points, licence, mail)
             VALUES ($1,$2,$3,$4,$5,$6,$7)
             """,
             data["nom"],
             data["prenom"],
             data["club"],
             int(data["points"]),
-            # datetime.now(timezone.utc),
-            dt,
             data["licence"],
             data["mail"]
             )

@@ -1,5 +1,6 @@
 *.pyc
 .env
+serie.txt
 Database/
 DB/
 A_Info/
