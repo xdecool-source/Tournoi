@@ -18,11 +18,11 @@ from services.mail_inscription import send_confirmation_email
 
 from dotenv import load_dotenv
 from export.generate_inscription import generate 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, date
 from jose import jwt, JWTError, ExpiredSignatureError
 from os import getenv
 
-from userinterface.screens import MOIS_FR
+from userinterface.screens import templates, MOIS_FR
 # from userinterface.screens import home_screen
 
 
@@ -95,7 +95,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = TIME_ADMIN_SESSION
 
 def create_access_token(data: dict):
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({
         "exp": expire,
         "type": "access"
@@ -143,85 +143,97 @@ async def get_tableaux():
         }
     return result
 
-#  licence fftt
+#  licence fftt 
+
+async def check_fftt_player(licence: str):
+    try:
+        xml_data = await appel_fftt("xml_joueur.php", {"licence": licence})
+        if not xml_data.strip():
+            return None
+        root = ET.fromstring(xml_data)
+        return root.find(".//joueur")
+    except Exception:
+        return None
     
 @router.get("/licence/{licence}")
+
 async def get_licence(licence: str):
-
-    # 1. Validation format
-    licence = licence.strip()
-    if not licence.isdigit() or not (3 <= len(licence) <= 8):
-        raise HTTPException(400, "Licence invalide (6 à 8 chiffres)")
-
-    # 2. Récupérer les données existantes en DB (indépendant de FFTT)
+    if not licence.isdigit():
+        raise HTTPException(400, "Licence numérique obligatoire")
     already = await licence_exists(licence)
     tableaux_inscrits = []
+    # mail = "xavier.decool@outlook.com"  
     mail = ""
-
+    
     if already:
         tableaux_inscrits = await get_tableaux_by_licence(licence)
         async with get_conn() as conn:
             mail = await conn.fetchval(
-                "SELECT mail FROM inscriptions WHERE licence=$1", licence
+                "SELECT mail FROM inscriptions WHERE licence=$1",
+                licence
             ) or ""
-
-    # 3. Mode mock (dev uniquement)
-    if MOCK_FFTT:
+    
+    xml_data = await appel_fftt("xml_joueur.php", {"licence": licence})
+    root = ET.fromstring(xml_data)
+    joueur = root.find(".//joueur")
+    if joueur is not None:
+        points_raw = joueur.findtext("point", "0")
+        try:
+            points = int(float(points_raw))
+        except:
+            points = 0
         return {
-            "licence": licence,
-            "nom": "Joueur",
-            "prenom": "Test",
-            "club": "Club Test",
-            "points": 1000,
-            "classement": "NC",
-            "categorie": "S",
+            "licence": joueur.findtext("licence", licence),
+            "nom": joueur.findtext("nom", ""),
+            "prenom": joueur.findtext("prenom", ""),
+            "club": joueur.findtext("club", ""),
+            "points": points,
+            "classement": joueur.findtext("clglob", ""),
+            "categorie": joueur.findtext("categ", ""),
             "already_inscrit": already,
             "tableaux_inscrits": tableaux_inscrits,
             "mail": mail,
             "fftt": True
         }
+        
+#  Mode fftt réel
 
-    # 4. Appel FFTT — une seule tentative, pas de fallback
-    try:
-        xml_data = await appel_fftt("xml_joueur.php", {"licence": licence})
-    except Exception:
-        # API FFTT injoignable → on bloque, on ne laisse pas passer
-        raise HTTPException(503, "Service FFTT indisponible. Réessayez dans quelques instants.")
+    joueur = await check_fftt_player(licence)
 
-    if not xml_data or not xml_data.strip():
-        raise HTTPException(503, "Réponse FFTT vide. Réessayez dans quelques instants.")
-
-    # 5. Parsing XML
-    try:
-        root = ET.fromstring(xml_data)
-    except ET.ParseError:
-        raise HTTPException(503, "Réponse FFTT invalide.")
-
-    joueur = root.find(".//joueur")
-
-    # 6. Licence inconnue FFTT → refus franc
-    if joueur is None:
-        raise HTTPException(404, "Licence introuvable à la FFTT.")
-
-    # 7. Retour propre — licence confirmée
-    try:
-        points = int(float(joueur.findtext("valcla", "0")))
-    except (ValueError, TypeError):
-        points = 0
-
+    if joueur is not None:
+        points_raw = joueur.findtext("point", "0")
+        try:
+            points = int(float(points_raw))
+        except:
+            points = 0
+        return {
+            "licence": joueur.findtext("licence", licence),
+            "nom": joueur.findtext("nom", ""),
+            "prenom": joueur.findtext("prenom", ""),
+            "club": joueur.findtext("club", ""),
+            "points": points,
+            "classement": joueur.findtext("clglob", ""),
+            "categorie": joueur.findtext("categ", ""),
+            "already_inscrit": already,
+            "tableaux_inscrits": tableaux_inscrits,
+            "mail": mail,
+            "fftt": True
+        }
+#   Inconnu FFTT
     return {
-        "licence": joueur.findtext("licence", licence),
-        "nom": joueur.findtext("nom", ""),
-        "prenom": joueur.findtext("prenom", ""),
-        "club": joueur.findtext("club", ""),
-        "points": points,
-        "classement": joueur.findtext("valcla", ""),
-        "categorie": joueur.findtext("categ", ""),
+        "licence": licence,
+        "nom": "Inconnu FFTT",
+        "prenom": "Inconnu FFTT",
+        "club": "TT Inconnu",
+        "points": "1000",
+        "classement": "00",
+        "categorie": "Inconnu",
         "already_inscrit": already,
         "tableaux_inscrits": tableaux_inscrits,
         "mail": mail,
-        "fftt": True
+        "fftt": False
     }
+
 #  inscriptions 
 
 @router.get("/inscriptions")
@@ -378,22 +390,16 @@ async def update_inscription(
 @router.post("/inscription")
 
 async def inscription(data: dict, background_tasks: BackgroundTasks):
+
     licence = str(data.get("licence", ""))
-
-    if not licence.isdigit() or not (3 <= len(licence) <= 8):
-        return {"success": False, "error": "Licence invalide"}
-
+    if not licence.isdigit():
+        return {"success": False, "error": "Licence numérique obligatoire"}
+    #  Bloquage fftt
+    
     if not MOCK_FFTT:
-        try:
-            xml_data = await appel_fftt("xml_joueur.php", {"licence": licence})
-            root = ET.fromstring(xml_data)
-            joueur = root.find(".//joueur")
-        except Exception:
-            return {"success": False, "error": "Service FFTT indisponible. Réessayez."}
-
+        joueur = await check_fftt_player(licence)
         if joueur is None:
-            return {"success": False, "error": "Licence introuvable à la FFTT."}
-        
+            return {"success": False, "error": "Licence inconnue FFTT"}
     try:
         await save_inscription(data)
         # print("Inscription Ok - lancement mail")
@@ -419,7 +425,7 @@ async def export_excel(admin=Depends(get_current_admin)):
     if not stream:
         raise HTTPException(404, "Aucune donnée")
 
-    now = datetime.now(timezone.utc).strftime("%d-%m-%Y_%Hh%M")
+    now = datetime.now().strftime("%d-%m-%Y_%Hh%M")
 
     return StreamingResponse(
         stream,
@@ -440,7 +446,7 @@ def me(request: Request):
     try:
         payload = verify_token(token)
         return {"admin": payload.get("role") == "admin"}
-    except Exception:
+    except:
         return {"admin": False}
     
 @router.post("/login-admin")
@@ -530,7 +536,7 @@ async def download_excel(admin=Depends(get_current_admin)):
     
     #  nom dynamique
     
-    filename = datetime.now(timezone.utc).strftime("Inscriptions_Tournoi_%d-%m-%Y_%Hh%M.xlsx")
+    filename = datetime.now().strftime("Inscriptions_Tournoi_%d-%m-%Y_%Hh%M.xlsx")
 
     return StreamingResponse(
         excel_stream,
@@ -624,6 +630,6 @@ async def export_inscrits_page(request: Request):
         "exportInscrits.html",
         {
             "request": request,
-           #  "INSCRIT_PASS": INSCRIT_PASS
+            "INSCRIT_PASS": INSCRIT_PASS
         }
     )

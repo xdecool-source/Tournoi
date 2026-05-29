@@ -6,10 +6,10 @@ import time
 import httpx
 import aiosmtplib
 import psycopg2
+import secrets
 
 from dotenv import load_dotenv
 from email.message import EmailMessage
-from sqlalchemy import text
 
 #  Env
 
@@ -43,7 +43,7 @@ verification_codes = {}
 # Génération code
 
 def generate_code():
-    return str(random.randint(100000, 999999))
+    return f"{secrets.randbelow(900000) + 100000}"
 
 def store_verification_code(email):
 
@@ -58,7 +58,7 @@ def store_verification_code(email):
         "expire": now + 300
     }
     # reveil database
-    import asyncio
+    # import asyncio
 
     reveil_database() 
     # print("Code généré pour", email, ":", code)
@@ -136,7 +136,8 @@ async def send_brevo_email(to_email, subject, html):
             json=payload
         )
         # print("Brevo Status pour le code mail", r.status_code)
-
+        r.raise_for_status()
+        
 # Reveil database Neon
     
 def reveil_database():

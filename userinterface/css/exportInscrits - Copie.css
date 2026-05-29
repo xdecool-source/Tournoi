@@ -5,38 +5,6 @@
     color:#222;
 }
 
-.password-info{
-    text-align:center;
-    margin-bottom:25px;
-    color:rgb(196, 21, 21);
-}
-
-.password-info h2{
-    margin-bottom:15px;
-    font-size:32px;
-}
-
-.password-info p{
-    margin-bottom:12px;
-    font-size:16px;
-}
-
-.mail-box{
-    background:rgba(255,255,255,0.15);
-    border:1px solid rgba(255,255,255,0.25);
-    padding:12px 18px;
-    border-radius:12px;
-    font-weight:bold;
-    backdrop-filter:blur(6px);
-}
-
-
-
-
-
-
-
-
 .export-action{
     margin-top:20px;
     margin-bottom:20px;

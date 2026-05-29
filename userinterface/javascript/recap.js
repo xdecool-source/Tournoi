@@ -39,6 +39,9 @@ export async function showRecap(player, email, tableauxSel){
 
     tableauxSel.forEach(t=>{
         const c = conf[t];
+        if(!c){
+            return;
+        }
         const p = placesNow[t] || {};
         // xx const jourTxt = c.jour === 1 ? "Samedi" : "Dimanche"; 
         const jourTxt = c.jour?.label || "Jour inconnu";

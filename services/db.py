@@ -6,11 +6,10 @@
 
 import asyncpg, os
 
-from datetime import datetime
+from datetime import datetime, date, timezone
 from core.config import TABLEAUX
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
-from datetime import date
 
 load_dotenv(".env", override=False)
         
@@ -21,6 +20,55 @@ load_dotenv(".env", override=False)
 DATABASE_URL = os.getenv("DATABASE_URL")
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    
+
+# Gestion de le concordance des places Valide/Attente en fonction modification de Config.py
+    
+async def rebalance_tableau(t):
+
+    async with pool.acquire() as conn:
+        conf = TABLEAUX[t]
+        while True:
+
+            ok_count = await conn.fetchval("""
+                SELECT COUNT(*)
+                FROM inscription_tableaux
+                WHERE tableau=$1
+                AND statut='OK'
+            """, t)
+
+            if ok_count >= conf["capacite"]:
+                break
+
+            attente = await conn.fetchrow("""
+                SELECT licence
+                FROM inscription_tableaux
+                WHERE tableau=$1
+                AND statut='ATTENTE'
+                ORDER BY id
+                LIMIT 1
+            """, t)
+
+            if not attente:
+                break
+            print(f"Promotion {attente['licence']} -> {t}")
+            await conn.execute("""
+                UPDATE inscription_tableaux
+                SET statut='OK'
+                WHERE licence=$1
+                AND tableau=$2
+            """,
+            attente["licence"],
+            t
+            )
+            
+async def rebalance_all():
+    for tableau in TABLEAUX:
+        print(f"Rebalance {tableau}")
+        await rebalance_tableau(tableau)
+
+# fin de cette gestion 
+    
     
 pool = None
 
@@ -37,7 +85,7 @@ async def init_db_pool():
             max_size=5
         )
     else:
-        # Production (Raiway → SSL obligatoire)
+        # Production (Railway ou Neon → SSL obligatoire)
         
         pool = await asyncpg.create_pool(
             DATABASE_URL,
@@ -59,15 +107,16 @@ async def init_db():
 
         await conn.execute("""
         CREATE TABLE IF NOT EXISTS inscriptions (
-            id SERIAL PRIMARY KEY, dossard INTEGER DEFAULT nextval('dossard_seq'), licence TEXT,
-            nom TEXT, prenom TEXT, club TEXT, points INTEGER, mail TEXT, date_inscription TIMESTAMP,
+            id SERIAL PRIMARY KEY, dossard INTEGER DEFAULT nextval('dossard_seq'), licence TEXT NOT NULL UNIQUE,
+            nom TEXT NOT NULL , prenom TEXT NOT NULL, club TEXT, points INTEGER NOT NULL, mail TEXT, 
+            date_inscription TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             event_id INT DEFAULT 1
         )
         """)
 
         await conn.execute("""
         CREATE TABLE IF NOT EXISTS inscription_tableaux (
-            id SERIAL PRIMARY KEY, licence TEXT, tableau TEXT, statut TEXT,
+            id SERIAL PRIMARY KEY, licence TEXT NOT NULL, tableau TEXT, statut TEXT,
             event_id INT DEFAULT 1, UNIQUE(licence, tableau, event_id)
         )
         """)
@@ -87,8 +136,9 @@ async def init_db():
         
         await conn.execute("""
         CREATE TABLE IF NOT EXISTS delete_inscrit (
-            id SERIAL PRIMARY KEY, dossard INT, licence TEXT, nom TEXT, prenom TEXT,
-            club TEXT, points INT, mail TEXT, date_inscription TIMESTAMP, date_suppression TIMESTAMP DEFAULT NOW()
+            id SERIAL PRIMARY KEY, dossard INT, licence TEXT NOT NULL, nom TEXT NOT NULL, prenom TEXT NOT NULL,
+            club TEXT, points INT NOT NULL, mail TEXT, date_inscription TIMESTAMP, 
+            date_suppression TIMESTAMPTZ DEFAULT NOW()
         )
         """)
         
@@ -184,7 +234,10 @@ async def save_inscription(data):
         async with conn.transaction():   # transaction globale
             
             # 1 insertion joueur
-            
+            # dt = datetime.now(timezone.utc)
+            dt = datetime.now()
+            print("DT =", repr(dt))
+            print("TZ =", dt.tzinfo)
             await conn.execute("""
             INSERT INTO inscriptions
             (nom, prenom, club, points, date_inscription, licence, mail)
@@ -194,7 +247,8 @@ async def save_inscription(data):
             data["prenom"],
             data["club"],
             int(data["points"]),
-            datetime.now(),
+            # datetime.now(timezone.utc),
+            dt,
             data["licence"],
             data["mail"]
             )

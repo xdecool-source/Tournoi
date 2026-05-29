@@ -11,24 +11,43 @@ import hmac
 import random
 import string
 
-from datetime import datetime
+from datetime import datetime, timezone
 from core.config import BASE_URL, APP_ID, MOT_DE_PASSE, MOCK_FFTT
 
 # ce numéro est calculé une seule fois au démarrage de l'APP
 
+if not BASE_URL:
+    raise RuntimeError("BASE_URL manquant")
+
+if not APP_ID:
+    raise RuntimeError("APP_ID manquant")
+
+if not MOT_DE_PASSE:
+    raise RuntimeError("MOT_DE_PASSE manquant")
+
+
+# Calculé une seule fois au démarrage
+CLE_FFTT = hashlib.md5(MOT_DE_PASSE.encode()).hexdigest()
+
 def generer_serie():
     chars = string.ascii_uppercase + string.digits
     return "".join(random.choice(chars) for _ in range(15))
+
 SERIE_UTILISATEUR = generer_serie()
 
 def timestamp():
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
+    # now = datetime.now()
     return now.strftime("%Y%m%d%H%M%S") + f"{int(now.microsecond/1000):03d}"
 
 def tmc(tm):
-    cle = hashlib.md5(MOT_DE_PASSE.encode()).hexdigest()
-    return hmac.new(cle.encode(), tm.encode(), hashlib.sha1).hexdigest()
-
+    return hmac.new(
+        CLE_FFTT.encode(),
+        tm.encode(),
+        hashlib.sha1
+    ).hexdigest()
+    
+    
 async def appel_fftt(endpoint, params_metier):
 
 #   Mock Dev 
@@ -57,7 +76,7 @@ async def appel_fftt(endpoint, params_metier):
                 <nom>{nom}</nom>
                 <prenom>{prenom}</prenom>
                 <club>{club}</club>
-                <clglob>{point}</clglob>
+                <valcla>{point}</valcla>
                 <point>{point}</point>
                 <categ>S</categ>
             </joueur>
@@ -75,4 +94,5 @@ async def appel_fftt(endpoint, params_metier):
     url = f"{BASE_URL}/{endpoint}?{urllib.parse.urlencode(params)}"
     async with httpx.AsyncClient(timeout=15) as client:
         r = await client.get(url)
+        r.raise_for_status()
     return r.text

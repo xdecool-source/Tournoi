@@ -49,7 +49,7 @@ TABLEAUX = {
         "label": "Dimanche",
         "hour": "13h00"
     }},
-    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 15, "attente": 5, "prix": 9, "jour": {
+    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 18, "attente": 5, "prix": 9, "jour": {
         "id": 1,
         "label": "Dimanche",
         "hour": "14h00"

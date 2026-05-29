@@ -6,6 +6,13 @@ from openpyxl.drawing.image import Image
 from core.config import TABLEAUX
 from pathlib import Path
 
+def sanitize_excel(value):
+    if isinstance(value, str):
+        value = value.strip()
+        if value.startswith(("=", "+", "-", "@")):
+            return "'" + value
+    return value
+
 def create_price_sheet(wb, data_joueurs, root_dir):
 
     ws = wb.create_sheet("Prix")
@@ -15,7 +22,7 @@ def create_price_sheet(wb, data_joueurs, root_dir):
     image_path = root_dir / "ressources" / "Tournoi.jpg"
     if image_path.exists():
         img = Image(str(image_path))
-        img.width = 600
+        img.width = min(img.width, 600)
         img.height = 110
         ws.add_image(img, "C1")
 
@@ -31,17 +38,19 @@ def create_price_sheet(wb, data_joueurs, root_dir):
         montant_attente = 0
         for tableau, statut in infos["Inscriptions"]:
             prix = TABLEAUX.get(tableau, {}).get("prix", 0)
-            if statut.upper() == "OK":
+            statut = (statut or "").upper()
+            if statut == "OK":
                 montant_valide += prix
-            elif statut.upper() == "ATTENTE":
+            elif statut == "ATTENTE":
                 montant_attente += prix
         total_valide_general += montant_valide
         total_attente_general += montant_attente
         lignes_prix.append([
             dossard,
-            infos["Nom"],
-            infos.get("Licence", ""),
-            ", ".join([f"{t} ({s})" for t, s in infos["Inscriptions"]]),
+            sanitize_excel(infos["Nom"]),
+            sanitize_excel(infos.get("Licence", "")),
+            sanitize_excel(
+                ", ".join([f"{t} ({s})" for t, s in infos["Inscriptions"]])),
             montant_valide,
             montant_attente
         ])

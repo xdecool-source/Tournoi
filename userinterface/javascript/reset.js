@@ -63,6 +63,7 @@ if(res) res.textContent = "";
     // réactiver bouton inscription
 
     const btn = document.querySelector("button[onclick='sendInscription()']");
+    // const btn = document.getElementById("btnValider");
     if(btn){
         btn.disabled = false;
         btn.innerText = "Valider";
@@ -71,6 +72,7 @@ if(res) res.textContent = "";
     // réactiver bouton envoyer code
 
     const sendBtn = document.querySelector("button[onclick='sendCode()']");
+    // const sendBtn = document.getElementById("sendCodeBtn");
     if(sendBtn) sendBtn.disabled = false;
 
     // décocher tableaux

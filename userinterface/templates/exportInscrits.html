@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
+
 <title>
 Liste des inscrits
 </title>
+
 <link
     rel="stylesheet"
     href="/static/css/exportInscrits.css?v=999"
@@ -14,53 +17,129 @@ Liste des inscrits
 </head>
 
 <body>
-<!--  HEADER -->
-<div class="header">
-    <h1>
-         Liste des inscrits
-    </h1>
-</div>
-<!--  CONTAINER -->
-<div class="container">
-    <!--  TOOLBAR -->
-    <div class="toolbar-mobile"
-        style="margin-bottom:40px;">
-        <button
-            class="btn-load"
-            onclick="chargerInscrits()"
+
+<!-- PASSWORD SCREEN -->
+<div id="password-screen" class="password-screen">
+
+    <div class="password-info">
+
+        <h2>
+            Liste des inscrits
+        </h2>
+
+        <p>
+            Ce mot de passe se trouve dans le mail :<br>
+            Code de vérification du Tournoi<br>
+            que vous avez reçu pour vous inscrire
+        </p>
+       
+        <input
+            type="password"
+            id="pwd-input"
+            class="password-input"
+            placeholder="Mot de passe liste inscrits"
+
+            onkeydown="
+                if(event.key==='Enter'){
+                    checkPassword();
+                }
+            "
         >
-            Voire la liste
-        </button>
-        <button
-            class="btn-print"
-            onclick="window.print()"
+
+        <p id="pwd-error" style="display:none">
+            Mot de passe incorrect
+        </p>
+
+    </div>
+
+</div>
+
+<!-- CONTENU MASQUÉ -->
+<div id="liste-screen" style="display:none">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>
+            Liste des inscrits
+        </h1>
+    </div>
+
+    <!-- CONTAINER -->
+    <div class="container">
+
+        <!-- TOOLBAR -->
+        <div
+            class="toolbar-mobile"
+            style="margin-bottom:40px;"
         >
-            Imprimer / PDF
-        </button>
+
+        <!-- STATS -->
+        <div
+            class="stats"
+            id="statsContainer"
+        >
+        </div>
+
+        <!-- TABLEAU -->
+        <div class="table-container">
+            <div id="resultat"></div>
+        </div>
+
     </div>
 
-    <!-- STATS -->
-    <div
-        class="stats"
-        id="statsContainer"
-    >
+    <!-- FOOTER -->
+    <div class="footer">
+        Tennis de Table Thuirinois
     </div>
 
-    <!-- TABLEAU -->
-    <div class="table-container">
-        <div id="resultat"></div>
-    </div>
 </div>
 
-<!-- FOOTER -->
-<div class="footer">
-    Tennis de Table Thuirinois
-</div>
-
-<!--  JAVASCRIPT -->
-<script
-    type="module"
-    src="/static/javascript/exportInscrits.js">
+<!-- JAVASCRIPT -->
+<script type="module"
+src="/static/javascript/exportInscrits.js">
 </script>
+
+<script>
+async function checkPassword() {
+
+    const pwd =
+        document.getElementById("pwd-input")
+        .value
+        .trim();
+
+    const res = await fetch(
+        "/check-liste-password",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ pwd })
+        }
+    );
+
+    const data = await res.json();
+
+    if (data.success) {
+
+        document.getElementById(
+            "password-screen"
+        ).style.display = "none";
+
+        document.getElementById(
+            "liste-screen"
+        ).style.display = "block";
+
+        chargerInscrits();
+
+    } else {
+
+        document.getElementById(
+            "pwd-error"
+        ).style.display = "block";
+    }
+}
+</script>
+
 </body>
 </html>

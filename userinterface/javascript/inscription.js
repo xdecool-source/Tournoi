@@ -26,15 +26,18 @@ export async function sendInscription(){
     }
     const email = document.getElementById("email").value.trim();
     const error = document.getElementById("emailError");
-    error.innerText = "";
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if(!emailRegex.test(email)){
-        error.innerText = "Email invalide";
-        return;
+    if(error){
+        error.innerText = "";
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!emailRegex.test(email)){
+        if(error){
+            error.innerText = "Email invalide";
+        }
+        return;
+    }
+    
     // je recupere la saisie des tableaux 
 
     const selection = Array.from(
@@ -102,12 +105,23 @@ export async function sendInscription(){
         btn.disabled = true;
         btn.innerText = "Enregistrement...";
     }
-    const res = await fetch(url,{
-        method,
-        credentials: "include",   // cookies
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify(payload)
-    });
+    // si réseau tombe evite crash JS
+    let res;
+
+    try{
+        res = await fetch(url,{
+            method,
+            credentials:"include",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(payload)
+        });
+    }
+    catch(err){
+        openModal("Serveur inaccessible");
+        return;
+}
 
     if(res.status === 401){
         openModal("Session admin expirée voir variable TIME_ADMIN_SESSION");

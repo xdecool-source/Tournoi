@@ -14,6 +14,8 @@ import { NBRE_TABLEAU } from "./config.js";
 
 //  Render Tableaux 
 
+let tableauxGlobal = null;
+
 export function renderTableaux(
     TABLEAUX,
     places,
@@ -21,8 +23,10 @@ export function renderTableaux(
     alreadyInscrit = false,
     tableauxInscrits = [],
     isAdmin = false  
-){
-    window.TABLEAUX_GLOBAL = TABLEAUX; 
+) { tableauxGlobal = TABLEAUX;
+  
+
+    // window.TABLEAUX_GLOBAL = TABLEAUX; 
     // const isAdmin = document.cookie.includes("admin=1");
     const box = document.getElementById("tableauxContainer");
     // console.log("IS ADMIN RENDER:", isAdmin);
@@ -129,7 +133,6 @@ export function limitSelection(e){
     );
     // console.log("CHECKED =", checked.length);
     const counts = {};
-    const grouped = {};
     checked.forEach(cb => {
         const c = window.TABLEAUX_GLOBAL?.[cb.value];
         const jour = c?.jour?.label?.toLowerCase();

@@ -22,7 +22,16 @@ export async function sendCode(){
         console.error("Bouton introuvable");
         return;
     }
+
     const email = document.getElementById("email").value.trim();
+
+    // Validation email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if(!emailRegex.test(email)){
+        alert("Email invalide");
+        return;
+    }
 
     // état envoi
 
@@ -107,6 +116,11 @@ export async function verifyCode(){
         body:JSON.stringify({email,code})
     });
 
+    if(!res.ok){
+        alert("Erreur serveur");
+        return;
+    }
+    
     const data = await res.json();
 
     if(data.success){

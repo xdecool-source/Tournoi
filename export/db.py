@@ -36,10 +36,10 @@ def fetch_inscriptions():
         raise ValueError("DATABASE_URL manquante")
     conn = psycopg2.connect(database_url)
     cursor = conn.cursor(cursor_factory=DictCursor)
-    cursor.execute(QUERY)
-    rows = cursor.fetchall()
-    cursor.close()
-    conn.close()
+    with psycopg2.connect(database_url) as conn:
+        with conn.cursor(cursor_factory=DictCursor) as cursor:
+            cursor.execute(QUERY)
+            rows = cursor.fetchall()
     return rows
 
 def get_deleted_inscriptions():

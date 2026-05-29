@@ -25,8 +25,37 @@ window.limitSelection = limitSelection;
 window.showRecap = showRecap
 window.renderTableaux = renderTableaux
 
-window.openListeInscrits = function () {
-    window.open("/export-inscrits", "fenetre_inscrits");
+window.openListeInscrits = async function(){
+
+    const pwd = prompt(
+    `Mot de passe liste inscrits
+
+    Voir le mail :
+    Code de vérification du Tournoi
+    qui contient le Mot de passe liste inscrits`
+    );
+    if(!pwd) return;
+    const newWindow = window.open("", "fenetre_inscrits");
+    try{
+        const r = await fetch("/check-liste-password",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({pwd})
+        });
+
+        const data = await r.json();
+        if(data.success){
+            newWindow.location.href = "/export-inscrits";
+        }else{
+            newWindow.close();
+            alert("Mot de passe incorrect");
+        }
+    }catch(e){
+        newWindow.close();
+        alert("Erreur serveur");
+    }
 }
 
 let tableauxGlobal = null;
@@ -99,7 +128,7 @@ async function check(){
         setIsAdmin(dataAdmin.admin);
         const isAdmin = dataAdmin.admin; 
 
-        if (!/^\d+$/.test(lic)) {
+        if(isNaN(Number(lic))){
             openModal("Licence numérique obligatoire");
             return;
         }

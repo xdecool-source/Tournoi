@@ -5,6 +5,13 @@ from collections import defaultdict
 from openpyxl.styles import PatternFill, Font, Border, Side, Alignment
 from core.config import TABLEAUX
 
+def sanitize_excel(value):
+    if isinstance(value, str):
+        value = value.strip()
+        if value.startswith(("=", "+", "-", "@")):
+            return "'" + value
+    return value
+
 #  Styles  
 
 header_fill = PatternFill(start_color="FFFF00", fill_type="solid")
@@ -85,11 +92,11 @@ def create_players_sheet(wb, data_joueurs):
     for dossard, infos in sorted(data_joueurs.items()):
         ws.append([
             dossard,
-            infos["Licence"],
-            infos["Nom"],
-            infos["Classement"],
-            infos["Club"],
-            infos["Mail"],
+            sanitize_excel(infos["Licence"]),
+            sanitize_excel(infos["Nom"]),
+            sanitize_excel(infos["Classement"]),
+            sanitize_excel(infos["Club"]),
+            sanitize_excel(infos["Mail"]),
             ", ".join([f"{t} ({s})" for t, s in infos["Inscriptions"]])
         ])
     format_sheet(ws)
@@ -111,12 +118,12 @@ def create_table_sheets(wb, data_by_table):
         for joueur in joueurs_sorted:
             ws.append([
                 joueur["Dossard"],
-                joueur["Licence"],
-                joueur["Nom"],
-                joueur["Classement"],
-                joueur["Club"],
-                joueur["Mail"],
-                joueur["Statut"]
+                sanitize_excel(joueur["Licence"]),
+                sanitize_excel(joueur["Nom"]),
+                sanitize_excel(joueur["Classement"]),
+                sanitize_excel(joueur["Club"]),
+                sanitize_excel(joueur["Mail"]),
+                sanitize_excel(joueur["Statut"])
             ])
         format_sheet(ws)
         ws["A3"].alignment = Alignment(horizontal="center")
@@ -151,7 +158,7 @@ def create_tableaux_sheet(wb, data_by_table):
         joueurs = data_by_table.get(tableau, [])
         prix = TABLEAUX.get(tableau, {}).get("prix", 0)
         nb_inscrits = len(joueurs)
-        nb_valides = sum(1 for j in joueurs if j["Statut"].upper() == "OK")
+        nb_valides = sum(1 for j in joueurs if str(j["Statut"]).upper() == "OK")
         nb_attente = sum(1 for j in joueurs if j["Statut"].upper() == "ATTENTE")
         ws.cell(row=row, column=1, value=tableau)
         ws.cell(row=row, column=2, value=config["min"])
@@ -216,12 +223,12 @@ def create_deleted_sheet(wb, deleted_rows):
 
         ws.append([
             r.get("dossard"),
-            r.get("licence"),
-            r.get("nom"),
-            r.get("prenom"),
-            r.get("club"),
+            sanitize_excel(r.get("licence")),
+            sanitize_excel(r.get("nom")),
+            sanitize_excel(r.get("prenom")),
+            sanitize_excel(r.get("club")),
             r.get("points"),
-            r.get("mail"),
+            sanitize_excel(r.get("mail")),
             str(r.get("date_inscription")),
             str(r.get("date_suppression"))
         ])
