@@ -237,7 +237,7 @@ async def save_inscription(data):
             await conn.execute("""
             INSERT INTO inscriptions
             (nom, prenom, club, points, licence, mail)
-            VALUES ($1,$2,$3,$4,$5,$6,$7)
+            VALUES ($1,$2,$3,$4,$5,$6)
             """,
             data["nom"],
             data["prenom"],
