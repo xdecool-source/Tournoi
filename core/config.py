@@ -44,12 +44,12 @@ TABLEAUX = {
         "label": "Dimanche",
         "hour": "12h00"
     }},
-    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 15, "attente": 5, "prix": 10, "jour": {
+    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 22, "attente": 5, "prix": 10, "jour": {
         "id": 1,
         "label": "Dimanche",
         "hour": "13h00"
     }},
-    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 18, "attente": 5, "prix": 9, "jour": {
+    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 22, "attente": 5, "prix": 9, "jour": {
         "id": 1,
         "label": "Dimanche",
         "hour": "14h00"

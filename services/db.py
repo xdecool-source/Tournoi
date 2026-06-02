@@ -24,7 +24,7 @@ if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
 
 # Gestion de le concordance des places Valide/Attente en fonction modification de Config.py
     
-async def rebalance_tableau(t):
+async def reaffectation_tableau(t):
 
     async with pool.acquire() as conn:
         conf = TABLEAUX[t]
@@ -62,10 +62,10 @@ async def rebalance_tableau(t):
             t
             )
             
-async def rebalance_all():
+async def reaffectation_all():
     for tableau in TABLEAUX:
-        print(f"Rebalance {tableau}")
-        await rebalance_tableau(tableau)
+        print(f"  Reaffectation des tableaux des licenciés suivants : {tableau}")
+        await reaffectation_tableau(tableau)
 
 # fin de cette gestion 
     
@@ -93,7 +93,7 @@ async def init_db_pool():
             max_size=10,
             ssl="require"
         )
-print("Creation tables si besoin")
+print(" Creation tables si besoin")
 
 #  init DB
 
@@ -397,7 +397,7 @@ async def init_archive_trigger():
 
             """)
 
-            print("Trigger créé")
+            print(" Trigger créé")
         else:
-            print("Trigger déjà existant")
+            print(" Trigger déjà existant")
             
