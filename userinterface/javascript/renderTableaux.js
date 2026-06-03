@@ -133,8 +133,10 @@ export function limitSelection(e){
     );
     // console.log("CHECKED =", checked.length);
     const counts = {};
+    const grouped = {}; // en plus sinon bug si nbre tableau
     checked.forEach(cb => {
-        const c = window.TABLEAUX_GLOBAL?.[cb.value];
+        // const c = window.TABLEAUX_GLOBAL?.[cb.value];
+        const c = tableauxGlobal?.[cb.value];
         const jour = c?.jour?.label?.toLowerCase();
         // console.log("JOUR =", jour);
         if(!jour) return;

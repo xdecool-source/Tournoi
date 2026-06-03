@@ -29,7 +29,7 @@ TABLEAUX = {
         "label": "Dimanche",
         "hour": "8h30"
     }},
-    "T3": {"min": 500, "max": 1299, "capacite": 10, "attente": 2, "prix": 8, "jour": {
+    "T3": {"min": 500, "max": 1299, "capacite": 18, "attente": 2, "prix": 8, "jour": {
         "id": 1,
         "label": "Dimanche",
         "hour": "14h30"
