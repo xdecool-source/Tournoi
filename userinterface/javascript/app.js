@@ -29,6 +29,11 @@ window.openListeInscrits = function () {
     window.open("/export-inscrits", "fenetre_inscrits");
 }
 
+// reveil database 
+document.addEventListener("DOMContentLoaded", () => {
+    fetch("/wake-db").catch(() => {});
+});
+
 let tableauxGlobal = null;
 window.updateAdminButtons = updateAdminButtons;
 

@@ -57,12 +57,8 @@ def store_verification_code(email):
         "code": code,
         "expire": now + 300
     }
-    # reveil database
     # import asyncio
     start = time.time()
-    reveil_database() 
-    print("REVEIL DB =", round((time.time() - start) * 1000), "ms")
-    # print("Code généré pour", email, ":", code)
     return code
 
 def verify_code(email, code):
@@ -142,20 +138,6 @@ async def send_brevo_email(to_email, subject, html):
     duration = round((time.time() - start) * 1000)
     print(f"BREVO API {duration} ms - status={r.status_code}")
     r.raise_for_status()
-        
-# Reveil database Neon
-    
-def reveil_database():
-
-    try:
-        conn = psycopg2.connect(DATABASE_URL)
-        cur = conn.cursor()
-        cur.execute("SELECT 1")
-        cur.close()
-        conn.close()
-        print("DB réveillée")
-    except Exception as e:
-        print("Erreur DB:", e)
 
 # Routeur Mail 
 

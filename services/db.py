@@ -434,4 +434,10 @@ async def init_archive_trigger():
             print(" Trigger créé")
         else:
             print(" Trigger déjà existant")
+ 
+# reveil de la base             
+async def wake_db():
+    async with pool.acquire() as conn:
+        await conn.execute("SELECT 1")
+        
             

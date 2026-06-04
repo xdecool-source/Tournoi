@@ -32,6 +32,7 @@ import hashlib
 import json
 import bcrypt
 import os
+import psycopg2
 
 from services.db import (
     save_inscription,
@@ -66,6 +67,7 @@ DATE_TOURNOI_JOUR = os.getenv("DATE_TOURNOI_JOUR")
 NOM_TOURNOI = os.getenv("NOM_TOURNOI")
 
 @router.get("/", response_class=HTMLResponse)
+
 async def home(request: Request):
 
     date_obj = datetime.strptime(DATE_TOURNOI, "%d/%m/%Y")
@@ -540,7 +542,6 @@ async def download_excel(admin=Depends(get_current_admin)):
         }
     )
     
-
 @router.post("/check-liste-password")
 async def check_liste_password(data: dict):
 

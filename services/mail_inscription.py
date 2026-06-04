@@ -181,6 +181,7 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
     message["From"] = FROM_EMAIL
     message["To"] = to_email
     message["Subject"] = subject
+    message["Reply-To"] = REPLY_TO_EMAIL
     # message.set_content("Votre client mail ne supporte pas le HTML.")
     message.add_alternative(html_content, subtype="html")
 

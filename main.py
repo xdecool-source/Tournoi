@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from services.db import init_db_pool, init_db, init_archive_trigger, reaffectation_all
 from fastapi.staticfiles import StaticFiles
 from core.config import MOCK_FFTT
+from services.db import wake_db
 
 import asyncio
 import os
@@ -18,7 +19,6 @@ load_dotenv()
 async def lifespan(app: FastAPI):
     
     print(" Application démarrage")
-
     if MOCK_FFTT:
         {
          print( " Sans connxion FFTT : mode simulation licence : MOCK_FFTT raw =", os.getenv("MOCK_FFTT"))
@@ -42,15 +42,8 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(router)
 app.mount("/static", StaticFiles(directory="userinterface"), name="static")
 
+# Reveil Railway et Neon
 @app.get("/ping")
-
 async def ping():
+    await wake_db()
     return {"status": "ok"}
-
-# Ne marche pas sur Railway (normal http !!)
-# @app.middleware("http")
-# async def log_requests(request, call_next):
-#     print("URL =", request.url)
-#     print("METHOD =", request.method)
-#     response = await call_next(request)
-#     return response
