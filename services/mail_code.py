@@ -59,8 +59,9 @@ def store_verification_code(email):
     }
     # reveil database
     # import asyncio
-
+    start = time.time()
     reveil_database() 
+    print("REVEIL DB =", round((time.time() - start) * 1000), "ms")
     # print("Code généré pour", email, ":", code)
     return code
 
@@ -125,6 +126,8 @@ async def send_brevo_email(to_email, subject, html):
         "htmlContent": html
     }
 
+    # temps de brevo 
+    start = time.time()
     async with httpx.AsyncClient(timeout=20) as client:
 
         r = await client.post(
@@ -135,8 +138,10 @@ async def send_brevo_email(to_email, subject, html):
             },
             json=payload
         )
-        # print("Brevo Status pour le code mail", r.status_code)
-        r.raise_for_status()
+
+    duration = round((time.time() - start) * 1000)
+    print(f"BREVO API {duration} ms - status={r.status_code}")
+    r.raise_for_status()
         
 # Reveil database Neon
     
