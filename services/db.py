@@ -227,8 +227,9 @@ async def tableau_status(t):
 
 #  sauvegarde inscription
 import time 
-start = time.time() # xxxx
+    
 async def save_inscription(data):
+    start = time.time() # xxxx
     print(
         "SAVE_INSCRIPTION =",
         round((time.time()-start)*1000),
@@ -244,6 +245,8 @@ async def save_inscription(data):
         async with conn.transaction():   # transaction globale
             
             # 1 insertion joueur
+            
+            t0 = time.time()
             await conn.execute("""
             INSERT INTO inscriptions
             (nom, prenom, club, points, licence, mail)
@@ -277,13 +280,15 @@ async def save_inscription(data):
                     "ms"
                 )
                 
-                
+                t0 = time.time()
+
                 conf = TABLEAUX[t]
                 used_ok = await conn.fetchval("""
                     SELECT COUNT(*) FROM inscription_tableaux
                     WHERE tableau=$1 AND statut='OK'
                 """, t)
-
+                print(f"COUNT_OK {t} =", round((time.time()-t0)*1000), "ms")
+                
                 if used_ok < conf["capacite"]:
                     status = "OK"
                 else:
@@ -295,6 +300,8 @@ async def save_inscription(data):
                         status = "ATTENTE"
                     else:
                         raise ValueError(f"{t} complet")
+                
+                t0 = time.time()
                 await conn.execute("""
                 INSERT INTO inscription_tableaux
                 (licence, tableau, statut)
@@ -303,7 +310,14 @@ async def save_inscription(data):
                 data["licence"],
                 t,
                 status
-                )      
+                ) 
+                print(f"INSERT_TABLEAU {t} =", round((time.time()-t0)*1000), "ms")
+                
+            print(
+                "SAVE_INSCRIPTION TOTAL =",
+                round((time.time()-start)*1000),
+                "ms"
+            )     
 
 #  promotion attente
 
