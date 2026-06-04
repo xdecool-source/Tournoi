@@ -226,8 +226,14 @@ async def tableau_status(t):
 
 
 #  sauvegarde inscription
-
+import time 
+start = time.time() # xxxx
 async def save_inscription(data):
+    print(
+        "SAVE_INSCRIPTION =",
+        round((time.time()-start)*1000),
+        "ms"
+    )
     if await licence_exists(data["licence"]):
         raise ValueError("Licence déjà inscrite")
     async with pool.acquire() as conn:
