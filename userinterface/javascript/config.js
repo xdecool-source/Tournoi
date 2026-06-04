@@ -1,5 +1,6 @@
 export const NBRE_TABLEAU = Number(window.APP_CONFIG.NBRE_TABLEAU);
 export const FROM_EMAIL = window.APP_CONFIG.FROM_EMAIL;
+export const ORIGINE_EMAIL = window.APP_CONFIG.ORIGINE_EMAIL;
 export const DATE_TOURNOI = window.APP_CONFIG.DATE_TOURNOI
 export const DATE_TOURNOI_JOUR = window.APP_CONFIG.DATE_TOURNOI_JOUR
 export const NOM_TOURNOI = window.APP_CONFIG.NOM_TOURNOI

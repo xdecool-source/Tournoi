@@ -36,6 +36,7 @@ BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 #  Identique
 
 FROM_EMAIL = os.getenv("FROM_EMAIL")
+ORIGINE_EMAIL = os.getenv("ORIGINE_EMAIL")
 SITE_URL = os.getenv("SITE_URL")
 REPLY_TO_EMAIL = os.getenv("REPLY_TO_EMAIL")
 
@@ -77,7 +78,8 @@ async def build_email_html(data: dict, type_mail: str):
             DATE_TOURNOI=DATE_TOURNOI,
             DATE_TOURNOI_JOUR=DATE_TOURNOI_JOUR,
             reste_inscriptions=reste_inscriptions,
-            FROM_EMAIL=FROM_EMAIL   
+            FROM_EMAIL=FROM_EMAIL,
+            ORIGINE_EMAIL=ORIGINE_EMAIL   
         )
         return html_content
     
@@ -167,7 +169,8 @@ async def build_email_html(data: dict, type_mail: str):
         DATE_TOURNOI=DATE_TOURNOI,
         DATE_TOURNOI_JOUR=DATE_TOURNOI_JOUR,
         reste_inscriptions=reste_inscriptions,
-        FROM_EMAIL=FROM_EMAIL   
+        FROM_EMAIL=FROM_EMAIL,
+        ORIGINE_EMAIL=ORIGINE_EMAIL   
     )
     return html_content
 

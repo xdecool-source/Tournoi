@@ -12,7 +12,7 @@ import { sendCode, verifyCode } from "./mail.js"
 import { showRecap } from "./recap.js"
 import { renderTableaux, limitSelection } from "./renderTableaux.js"
 import { setIsAdmin } from "./state.js";
-import { FROM_EMAIL, DATE_TOURNOI, DATE_TOURNOI_JOUR, NBRE_TABLEAU, NOM_TOURNOI } from "./config.js";
+import { FROM_EMAIL, DATE_TOURNOI, DATE_TOURNOI_JOUR, NBRE_TABLEAU, NOM_TOURNOI, ORIGINE_EMAIL } from "./config.js";
 
 window.loginAdmin = loginAdmin;
 window.logoutAdmin = logoutAdmin;
@@ -231,9 +231,9 @@ async function check(){
                             Si vous souhaitez modifier votre inscription <br>
                             merci d'envoyer un e-mail avec : <br>
                             <h2 style="font-size: 0.8rem;" ><b>vos choix et votre numéro de licence</b> à <br></h2>
-                            <a href="mailto:${FROM_EMAIL}"
+                            <a href="mailto:${ORIGINE_EMAIL}"
                             style="color:red;text-decoration:underline;">
-                            ${FROM_EMAIL}
+                            ${ORIGINE_EMAIL}
                             </a>
                         `;
                     } else {
