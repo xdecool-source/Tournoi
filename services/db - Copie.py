@@ -234,12 +234,8 @@ async def save_inscription(data):
         round((time.time()-start)*1000),
         "ms"
     )
-    t0 = time.time()
     if await licence_exists(data["licence"]):
         raise ValueError("Licence déjà inscrite")
-        
-    print("LICENCE_EXISTS =", round((time.time()-t0)*1000), "ms")
-    
     async with pool.acquire() as conn:
         async with conn.transaction():   # transaction globale
             
@@ -257,27 +253,17 @@ async def save_inscription(data):
             data["mail"]
             )
 
-            print("INSERT INSCRIPTION =", round((time.time()-t0)*1000), "ms")
-        
+
             # 2 insertion tableaux avec verrouillage
             
             for t in data["tableaux"]:
                 
                 # verrouille les lignes de ce tableau merci chatgpt
-                t0 = time.time()
+                
                 await conn.execute(
                 "SELECT pg_advisory_xact_lock(hashtext($1))",
                 t
                 )
-                
-                
-                print(
-                    f"LOCK {t} =",
-                    round((time.time()-t0)*1000),
-                    "ms"
-                )
-                
-                
                 conf = TABLEAUX[t]
                 used_ok = await conn.fetchval("""
                     SELECT COUNT(*) FROM inscription_tableaux
