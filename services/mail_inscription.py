@@ -32,7 +32,6 @@ SMTP_PASS = os.getenv("SMTP_PASS")
 #  Brevo (Production)
 
 BREVO_API_KEY = os.getenv("BREVO_API_KEY")
-ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 
 #  Identique
 
@@ -181,7 +180,6 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
     message = EmailMessage()
     message["From"] = FROM_EMAIL
     message["To"] = to_email
-    # message["Cc"] = ADMIN_EMAIL
     message["Subject"] = subject
     # message.set_content("Votre client mail ne supporte pas le HTML.")
     message.add_alternative(html_content, subtype="html")
@@ -208,14 +206,12 @@ async def send_brevo_email(to_email: str, subject: str, html_content: str):
     payload = {
         "sender":{"name": "Tournoi", "email": FROM_EMAIL},
         "to": [{"email": to_email}],
-        # "cc": [{"email": ADMIN_EMAIL}] if ADMIN_EMAIL else [],
         "replyTo": {"email": REPLY_TO_EMAIL,"name": "Tournoi"},
         "subject": subject,
         "htmlContent": html_content,
     }
     # print("Brevo Api key =", BREVO_API_KEY)
     # print("From Email =", FROM_EMAIL)
-    # print("cc Email =", ADMIN_EMAIL)
 
     async with httpx.AsyncClient(timeout=20) as client:
 
