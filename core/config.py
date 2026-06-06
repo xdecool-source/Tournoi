@@ -29,17 +29,17 @@ TABLEAUX = {
         "label": "Dimanche",
         "hour": "8h30"
     }},
-    "T3": {"min": 500, "max": 1299, "capacite": 18, "attente": 2, "prix": 8, "jour": {
+    "T3": {"min": 500, "max": 1299, "capacite": 18, "attente": 8, "prix": 8, "jour": {
         "id": 1,
         "label": "Dimanche",
         "hour": "14h30"
     }},
-    "T4": {"min": 700, "max": 1599, "capacite": 10, "attente": 2, "prix": 8, "jour": {
+    "T4": {"min": 700, "max": 1599, "capacite": 15, "attente": 2, "prix": 8, "jour": {
         "id": 1,
         "label": "Dimanche",
         "hour": "9h45"
     }},
-    "T5": {"min": 800, "max": 1999, "capacite": 35, "attente": 8, "prix": 9, "jour": {
+    "T5": {"min": 800, "max": 1999, "capacite": 20, "attente": 8, "prix": 9, "jour": {
         "id": 1,
         "label": "Dimanche",
         "hour": "12h00"

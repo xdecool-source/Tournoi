@@ -135,6 +135,21 @@ async def init_db():
         """)
         
         await conn.execute("""
+        CREATE TABLE IF NOT EXISTS email_logs (
+            id SERIAL PRIMARY KEY,
+            created_at TIMESTAMPTZ DEFAULT NOW(),
+            licence TEXT,
+            email TEXT NOT NULL,
+            type_mail TEXT NOT NULL,
+            event_id INT DEFAULT 1,
+            subject TEXT,
+            brevo_message_id TEXT,
+            statut TEXT DEFAULT 'envoye',
+            opened BOOLEAN DEFAULT FALSE
+        )
+        """)
+        
+        await conn.execute("""
         CREATE TABLE IF NOT EXISTS delete_inscrit (
             id SERIAL PRIMARY KEY, dossard INT, licence TEXT NOT NULL, nom TEXT NOT NULL, prenom TEXT NOT NULL,
             club TEXT, points INT NOT NULL, mail TEXT, date_inscription TIMESTAMP, 
@@ -272,8 +287,7 @@ async def save_inscription(data):
                 "SELECT pg_advisory_xact_lock(hashtext($1))",
                 t
                 )
-                
-                
+                     
                 print(
                     f"LOCK {t} =",
                     round((time.time()-t0)*1000),
@@ -434,6 +448,18 @@ async def init_archive_trigger():
             print(" Trigger créé")
         else:
             print(" Trigger déjà existant")
+            
+async def log_email(
+    licence, email, type_mail, event_id, subject, brevo_message_id
+):
+    async with pool.acquire() as conn:
+        await conn.execute(
+            """
+            INSERT INTO email_logs (licence, email, type_mail, event_id, subject, brevo_message_id)
+            VALUES ($1,$2,$3,$4,$5,$6)
+            """,
+            licence, email, type_mail, event_id, subject, brevo_message_id
+        )
  
 # reveil de la base             
 async def wake_db():

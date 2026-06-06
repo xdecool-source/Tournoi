@@ -1,5 +1,7 @@
 *.pyc
 .env
+.env_smtp
+.env_brevo
 serie.txt
 Database/
 DB/

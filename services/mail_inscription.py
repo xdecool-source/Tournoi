@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
 from email.message import EmailMessage
 from core.config import TABLEAUX
-from services.db import get_conn
+from services.db import get_conn, log_email
 
 #  Chargement environnement
 
@@ -185,7 +185,11 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
     message["To"] = to_email
     message["Subject"] = subject
     message["Reply-To"] = REPLY_TO_EMAIL
-    # message.set_content("Votre client mail ne supporte pas le HTML.")
+    message.set_content(
+        "Confirmation d'inscription au tournoi. "
+        "Si vous ne visualisez pas correctement ce message, "
+        "contactez l'organisation."
+    )
     message.add_alternative(html_content, subtype="html")
 
     try:
@@ -203,22 +207,30 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
 
 #  Envoi Brevo (Production)
 
-async def send_brevo_email(to_email: str, subject: str, html_content: str):
-
-    # print(" 4 - envoi Brevo") # xxxx
+async def send_brevo_email(
+    to_email: str,
+    subject: str,
+    html_content: str
+):
     
     payload = {
-        "sender":{"name": "Tournoi", "email": FROM_EMAIL},
-        "to": [{"email": to_email}],
-        "replyTo": {"email": REPLY_TO_EMAIL,"name": "Tournoi"},
+        "sender": {
+            "name": "Tournoi",
+            "email": FROM_EMAIL
+        },
+        "to": [
+            {"email": to_email}
+        ],
+        "replyTo": {
+            "email": REPLY_TO_EMAIL,
+            "name": "Tournoi"
+        },
         "subject": subject,
         "htmlContent": html_content,
     }
-    # print("Brevo Api key =", BREVO_API_KEY)
-    # print("From Email =", FROM_EMAIL)
-
+    
     async with httpx.AsyncClient(timeout=20) as client:
-
+        
         response = await client.post(
             "https://api.brevo.com/v3/smtp/email",
             headers={
@@ -228,9 +240,10 @@ async def send_brevo_email(to_email: str, subject: str, html_content: str):
             },
             json=payload,
         )
-        # print("Brevo status du mail de confirmation :", response.status_code)
-        # print("Brevo response:", response.text)
         response.raise_for_status()
+        result = response.json()
+        return result.get("messageId")
+
 
 #  Fonction principale
 
@@ -246,13 +259,24 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
         subject = f"Annulation d'inscription - Tournoi {NOM_TOURNOI}"
     else:
         subject = f"Tournoi {NOM_TOURNOI}"
-        
+            
     if ENV == "prod":
-        await send_brevo_email(
+
+        message_id = await send_brevo_email(
             to_email,
             subject,
             html_content
         )
+
+        await log_email(
+            licence=data["licence"],
+            email=to_email,
+            type_mail=type_mail,
+            event_id=data.get("event_id", 1),
+            subject=subject,
+            brevo_message_id=message_id
+        )
+
     else:
         await send_smtp_email(
             to_email,
@@ -260,6 +284,16 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
             html_content
         )
         
+        await log_email(
+            licence=data["licence"],
+            email=to_email,
+            type_mail=type_mail,
+            event_id=data.get("event_id", 1),
+            subject=subject,
+            brevo_message_id="SMTP_DEV"
+        )
+        
+                        
 #  Fonction générique envoi de mail
 
 async def send_email(to_email: str, subject: str, html_content: str):
