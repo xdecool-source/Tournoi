@@ -49,7 +49,7 @@ def tmc(tm):
     
     
 async def appel_fftt(endpoint, params_metier):
-
+    
 #   Mock Dev 
 #   Simule un retour xml
     

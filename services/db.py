@@ -10,6 +10,7 @@ from datetime import datetime, date, timezone
 from core.config import TABLEAUX
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
+import time 
 
 load_dotenv(".env", override=False)
         
@@ -241,7 +242,6 @@ async def tableau_status(t):
 
 
 #  sauvegarde inscription
-import time 
     
 async def save_inscription(data):
     start = time.time() # xxxx
@@ -250,11 +250,6 @@ async def save_inscription(data):
         round((time.time()-start)*1000),
         "ms"
     )
-    t0 = time.time()
-    if await licence_exists(data["licence"]):
-        raise ValueError("Licence déjà inscrite")
-        
-    print("LICENCE_EXISTS =", round((time.time()-t0)*1000), "ms")
     
     async with pool.acquire() as conn:
         async with conn.transaction():   # transaction globale
@@ -262,18 +257,21 @@ async def save_inscription(data):
             # 1 insertion joueur
             
             t0 = time.time()
-            await conn.execute("""
-            INSERT INTO inscriptions
-            (nom, prenom, club, points, licence, mail)
-            VALUES ($1,$2,$3,$4,$5,$6)
-            """,
-            data["nom"],
-            data["prenom"],
-            data["club"],
-            int(data["points"]),
-            data["licence"],
-            data["mail"]
-            )
+            try:
+                await conn.execute("""
+                INSERT INTO inscriptions
+                (nom, prenom, club, points, licence, mail)
+                VALUES ($1,$2,$3,$4,$5,$6)
+                """,
+                data["nom"],
+                data["prenom"],
+                data["club"],
+                int(data["points"]),
+                data["licence"],
+                data["mail"]
+                )
+            except asyncpg.UniqueViolationError:
+                raise ValueError("Licence déjà inscrite")  
 
             print("INSERT INSCRIPTION =", round((time.time()-t0)*1000), "ms")
         
@@ -297,23 +295,33 @@ async def save_inscription(data):
                 t0 = time.time()
 
                 conf = TABLEAUX[t]
-                used_ok = await conn.fetchval("""
-                    SELECT COUNT(*) FROM inscription_tableaux
-                    WHERE tableau=$1 AND statut='OK'
+
+                counts = await conn.fetchrow("""
+                    SELECT
+                        COUNT(*) FILTER (WHERE statut='OK') AS ok_count,
+                        COUNT(*) FILTER (WHERE statut='ATTENTE') AS attente_count
+                    FROM inscription_tableaux
+                    WHERE tableau=$1
                 """, t)
-                print(f"COUNT_OK {t} =", round((time.time()-t0)*1000), "ms")
-                
+
+                used_ok = counts["ok_count"]
+                used_att = counts["attente_count"]
+
+                print(
+                    f"COUNTS {t} =",
+                    round((time.time()-t0)*1000),
+                    "ms"
+                )
+
                 if used_ok < conf["capacite"]:
                     status = "OK"
+                elif used_att < conf.get("attente", 0):
+                    status = "ATTENTE"
                 else:
-                    used_att = await conn.fetchval("""
-                        SELECT COUNT(*) FROM inscription_tableaux
-                        WHERE tableau=$1 AND statut='ATTENTE'
-                    """, t)
-                    if used_att < conf.get("attente", 0):
-                        status = "ATTENTE"
-                    else:
-                        raise ValueError(f"{t} complet")
+                    raise ValueError(f"{t} complet")
+                    
+                    
+            
                 
                 t0 = time.time()
                 await conn.execute("""

@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()    # si existe .env et pas de variable globale alors .env
 
 MOCK_FFTT = os.getenv("MOCK_FFTT", "true").lower() == "true"
+ENV = os.getenv("ENV", "prod").lower() == "prod"
 BASE_URL = os.getenv("BASE_URL", "")
 APP_ID = os.getenv("APP_ID", "")
 MOT_DE_PASSE = os.getenv("MOT_DE_PASSE", "")
@@ -39,17 +40,17 @@ TABLEAUX = {
         "label": "Dimanche",
         "hour": "9h45"
     }},
-    "T5": {"min": 800, "max": 1999, "capacite": 20, "attente": 8, "prix": 9, "jour": {
+    "T5": {"min": 800, "max": 1999, "capacite": 30, "attente": 8, "prix": 9, "jour": {
         "id": 1,
         "label": "Dimanche",
         "hour": "12h00"
     }},
-    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 30, "attente": 5, "prix": 10, "jour": {
+    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 35, "attente": 5, "prix": 10, "jour": {
         "id": 1,
         "label": "Dimanche",
         "hour": "13h00"
     }},
-    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 30, "attente": 5, "prix": 9, "jour": {
+    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 35, "attente": 5, "prix": 9, "jour": {
         "id": 1,
         "label": "Dimanche",
         "hour": "14h00"

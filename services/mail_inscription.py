@@ -89,44 +89,39 @@ async def build_email_html(data: dict, type_mail: str):
     tableaux_str = ""   
     total_html = ""  
     
+
+    # TOTAL GLOBAL (tous les jours)
     async with get_conn() as conn:
 
-        # TOTAL GLOBAL (tous les jours)
+        event_id = data.get("event_id", 1)
+
         rows = await conn.fetch("""
-            SELECT tableau
+            SELECT tableau, statut, event_id
             FROM inscription_tableaux
             WHERE licence=$1
         """, data["licence"])
-        
+
         reste_inscriptions = len(rows) > 0
+
         total = sum(
             TABLEAUX.get(r["tableau"], {}).get("prix", 0)
             for r in rows
         )
 
-        #  détails du jour
-        event_id = data.get("event_id", 1)
+        statuts = {
+            r["tableau"]: r["statut"]
+            for r in rows
+            if r["event_id"] == event_id
+        }
 
         for t in data["tableaux"]:
-            # print("BOUCLE T:", t) 
-            # print("CONF:", TABLEAUX.get(t))
-            
+
             conf = TABLEAUX.get(t, {})
-            prix = conf.get("prix", 0)
 
             min_pts = conf.get("min")
             max_pts = conf.get("max")
 
-            statut = await conn.fetchval(
-                """
-                SELECT statut
-                FROM inscription_tableaux
-                WHERE licence=$1 AND tableau=$2 AND event_id=$3
-                """,
-                data["licence"],
-                t,
-                event_id
-            )
+            statut = statuts.get(t)
 
             if statut == "OK":
                 statut_txt = "✅ Confirmé"
@@ -139,40 +134,38 @@ async def build_email_html(data: dict, type_mail: str):
             prix = conf.get("prix", 0)
             jour = conf.get("jour", {}).get("label", "")
             heure = conf.get("jour", {}).get("hour", "")
-            
+
             if min_pts is None and max_pts is None:
                 ligne = f"{t} ({nom}, {jour} à {heure}) — {prix}€ {statut_txt}"
             else:
                 ligne = f"{nom} ({min_pts}-{max_pts} pts, {jour} à {heure}) — {prix}€ {statut_txt}"
-            # print("LIGNE:", ligne)
 
-            tableaux_details.append(ligne) 
+            tableaux_details.append(ligne)
 
-            tableaux_str = "<br>".join(tableaux_details)
-            total_html = f"<br><br>💰 Total : {total}€"
-                
-    
-    # print(" 3 - render HTML")
-    
-    jour = "Samedi" if event_id == 1 else "Dimanche"
-    
-    html_content = template.render(
-        prenom=data["prenom"],
-        nom=data["nom"],
-        licence=data["licence"],
-        club=data.get("club", ""),
-        points=data.get("points", ""),
-        tableaux=tableaux_str + total_html, 
-        site_url=SITE_URL,
-        jour=jour,
-        NOM_TOURNOI=NOM_TOURNOI,
-        DATE_TOURNOI=DATE_TOURNOI,
-        DATE_TOURNOI_JOUR=DATE_TOURNOI_JOUR,
-        reste_inscriptions=reste_inscriptions,
-        FROM_EMAIL=FROM_EMAIL,
-        ORIGINE_EMAIL=ORIGINE_EMAIL   
-    )
-    return html_content
+        tableaux_str = "<br>".join(tableaux_details)
+        total_html = f"<br><br>💰 Total : {total}€"
+        
+        # print(" 3 - render HTML")
+        
+        jour = "Samedi" if event_id == 1 else "Dimanche"
+        
+        html_content = template.render(
+            prenom=data["prenom"],
+            nom=data["nom"],
+            licence=data["licence"],
+            club=data.get("club", ""),
+            points=data.get("points", ""),
+            tableaux=tableaux_str + total_html, 
+            site_url=SITE_URL,
+            jour=jour,
+            NOM_TOURNOI=NOM_TOURNOI,
+            DATE_TOURNOI=DATE_TOURNOI,
+            DATE_TOURNOI_JOUR=DATE_TOURNOI_JOUR,
+            reste_inscriptions=reste_inscriptions,
+            FROM_EMAIL=FROM_EMAIL,
+            ORIGINE_EMAIL=ORIGINE_EMAIL   
+        )
+        return html_content
 
 #  Envoi SMTP (Dev)
 

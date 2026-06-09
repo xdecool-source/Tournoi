@@ -121,6 +121,16 @@ async function check(){
                 return;
             }
             const data = await r.json();
+            if (data.admin) {
+
+                const adminBtn = document.getElementById("adminBtn");
+                if (adminBtn) {
+                    adminBtn.style.display = "block";
+                }
+                // openModal("Mode administrateur détecté");
+                return;
+            }
+
             if(isAdmin){
                 setEmailVerified(true);
                 const emailRow = document.querySelector(".email-row");

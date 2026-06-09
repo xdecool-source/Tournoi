@@ -4,7 +4,7 @@ from api.routes import router
 from contextlib import asynccontextmanager
 from services.db import init_db_pool, init_db, init_archive_trigger, reaffectation_all
 from fastapi.staticfiles import StaticFiles
-from core.config import MOCK_FFTT
+from core.config import MOCK_FFTT, ENV
 from services.db import wake_db
 
 import asyncio
@@ -19,14 +19,11 @@ load_dotenv()
 async def lifespan(app: FastAPI):
     
     print(" Application démarrage")
-    if MOCK_FFTT:
-        {
-         print( " Sans connxion FFTT : mode simulation licence : MOCK_FFTT raw =", os.getenv("MOCK_FFTT"))
-        }
-    else:
-        { 
-         print ( " Avec connexion FFTT :MOCK_FFTT raw =", os.getenv("MOCK_FFTT"))
-        }
+    if MOCK_FFTT: {print( " Sans connxion FFTT : mode simulation licence : MOCK_FFTT raw =", os.getenv("MOCK_FFTT"))}
+    else: { print ( " Avec connexion FFTT :MOCK_FFTT raw =", os.getenv("MOCK_FFTT"))}
+    
+    if ENV: {print( " On utilise Brevo", os.getenv("ENV"))}
+    else: { print ( " On utilise SMTP Mail", os.getenv("ENV"))}
         
     await init_db_pool()
     await init_db()
