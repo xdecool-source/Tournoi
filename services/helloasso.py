@@ -4,11 +4,9 @@ import httpx
 CLIENT_ID = os.getenv("HELLOASSO_CLIENT_ID")
 CLIENT_SECRET = os.getenv("HELLOASSO_CLIENT_SECRET")
 
-
 async def get_token():
 
     async with httpx.AsyncClient() as client:
-
         response = await client.post(
             "https://api.helloasso.com/oauth2/token",
             data={
@@ -17,41 +15,22 @@ async def get_token():
                 "client_secret": CLIENT_SECRET
             }
         )
-
     response.raise_for_status()
-
     data = response.json()
-
     return data["access_token"]
-
-import httpx
-import os
 
 ORGANIZATION = "tennis-de-table-thuirinois"
 
-async def create_checkout(montant, data):
+
+
+async def create_checkout(montant, licence):
 
     token = await get_token()
 
     payload = {
         "totalAmount": int(montant * 100),
         "initialAmount": int(montant * 100),
-
-        "itemName": (
-            f"Inscription tournoi "
-            f"{data['prenom']} {data['nom']}"
-        ),
-
-        "metadata": {
-            "licence": str(data.get("licence", "")),
-            "nom": data.get("nom", ""),
-            "prenom": data.get("prenom", ""),
-            "email": data.get("mail", ""),
-            "club": data.get("club", ""),
-            "points": str(data.get("points", "")),
-            "tableaux": ",".join(data.get("tableaux", []))
-        },
-
+        "itemName": f"Inscription tournoi licence {licence}",
         "backUrl": "https://tournoi-thuir.up.railway.app",
         "errorUrl": "https://tournoi-thuir.up.railway.app",
         "returnUrl": "https://tournoi-thuir.up.railway.app"

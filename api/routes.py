@@ -423,7 +423,7 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
 
         checkout = await create_checkout(
             montant=total,
-            data=data
+            licence=licence
         )
         print(checkout["redirectUrl"])
         print("Montant envoyé =", total)
