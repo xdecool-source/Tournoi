@@ -433,8 +433,8 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
                 "error": "Erreur HelloAsso"
             }
         
-        print(checkout["redirectUrl"])
-        print("Montant envoyé =", total)
+        print("CHECKOUT ID =", checkout["id"])
+        print("URL =", checkout["redirectUrl"])
 
         return {
             "success": True,
@@ -442,8 +442,8 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
             "payment_url": checkout["redirectUrl"]
         }
         
-        # Send mail joueur
-        background_tasks.add_task(
+        #Send mail joueur
+        """ background_tasks.add_task(
             send_confirmation_email,
             data["mail"],
             data,
@@ -452,6 +452,8 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
         global places_cache
         places_cache = None
         return {"success": True}
+        """
+        
 
     except ValueError as e:
         return {"success": False, "error": str(e)}
@@ -677,7 +679,6 @@ async def export_inscrits_page(request: Request):
 async def helloasso_callback():
     return {"status": "ok"}
 
-from fastapi import Request
 
 @router.post("/helloasso/webhook")
 async def helloasso_webhook(request: Request):
@@ -686,7 +687,7 @@ async def helloasso_webhook(request: Request):
 
     print("=" * 50)
     print("WEBHOOK HELLOASSO RECU")
-    print(payload)
+    print(json.dumps(payload, indent=4, ensure_ascii=False))
     print("=" * 50)
 
     return {"ok": True}

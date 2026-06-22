@@ -42,6 +42,8 @@ async def create_checkout(montant, data):
             "nom": data.get("nom", ""),
             "prenom": data.get("prenom", ""),
             "email": data.get("mail", ""),
+            "club": data.get("club", ""), 
+            "points": str(data.get("points", "")),
             "tableaux": ",".join(data.get("tableaux", []))
         },
         
@@ -49,7 +51,8 @@ async def create_checkout(montant, data):
         "errorUrl": "https://tournoi-thuir.up.railway.app",
         "returnUrl": "https://tournoi-thuir.up.railway.app/helloasso/callback"
     }
-
+    
+    print("PAYLOAD =", payload)
     print("METADATA =", payload["metadata"])
     async with httpx.AsyncClient() as client:
         
@@ -69,7 +72,7 @@ async def create_checkout(montant, data):
             "body": response.text
         }
 
-    data = response.json()
-    print("HELLOASSO RESPONSE =", data)
+    checkout = response.json()
+    print("HELLOASSO RESPONSE =", checkout)
 
-    return data
+    return checkout
