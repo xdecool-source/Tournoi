@@ -25,6 +25,7 @@ from os import getenv
 from userinterface.screens import MOIS_FR
 # from userinterface.screens import home_screen
 
+from services.helloasso import create_checkout
 
 import xml.etree.ElementTree as ET
 import time
@@ -410,8 +411,28 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
             return {"success": False, "error": "Licence introuvable à la FFTT."}
         
     try:
-        await save_inscription(data)
+
+        # await save_inscription(data)  # inscription valider après paiement
         # print("Inscription Ok - lancement mail")
+        total = sum(
+            TABLEAUX.get(t, {}).get("prix", 0)
+            for t in data.get("tableaux", [])
+        )
+        
+        print("TOTAL CALCULE =", total)
+
+        checkout = await create_checkout(
+            montant=total,
+            licence=licence
+        )
+        print(checkout["redirectUrl"])
+        print("Montant envoyé =", total)
+
+        return {
+            "success": True,
+            "montant": total,
+            "payment_url": checkout["redirectUrl"]
+        }
         
         # Send mail joueur
         background_tasks.add_task(
@@ -423,8 +444,10 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
         global places_cache
         places_cache = None
         return {"success": True}
+
     except ValueError as e:
         return {"success": False, "error": str(e)}
+    
 
 #  export excel 
 
@@ -641,3 +664,21 @@ async def export_inscrits_page(request: Request):
            #  "INSCRIT_PASS": INSCRIT_PASS
         }
     )
+    
+@router.get("/helloasso/callback")
+async def helloasso_callback():
+    return {"status": "ok"}
+
+from fastapi import Request
+
+@router.post("/helloasso/webhook")
+async def helloasso_webhook(request: Request):
+
+    payload = await request.json()
+
+    print("=" * 50)
+    print("WEBHOOK HELLOASSO RECU")
+    print(payload)
+    print("=" * 50)
+
+    return {"ok": True}

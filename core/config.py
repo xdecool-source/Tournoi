@@ -20,41 +20,55 @@ ADMIN_PASS_HASH = os.getenv("ADMIN_PASS_HASH")
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 TABLEAUX = {
-    "T1": {"min": 500, "max": 799, "capacite": 10, "attente": 4, "prix": 8, "jour": {
-        "id": 1,
+    "T1": {"min": 500, "max": 799,"label": "T 500-799", "capacite": 10,
+        "attente": 4, "prix": 8, "jour": 
+        { "id": 1,
         "label": "Dimanche",
         "hour": "11h00"
-    }},
-    "T2": {"min": 500, "max": 999, "capacite": 10, "attente": 4, "prix": 8, "jour": {
-        "id": 1,
+        }
+        },
+    "T2": {"min": 500, "max": 999,"label": "T 500-999", "capacite": 10,
+        "attente": 4, "prix": 8, "jour": 
+        {"id": 1,
         "label": "Dimanche",
         "hour": "8h30"
-    }},
-    "T3": {"min": 500, "max": 1299, "capacite": 18, "attente": 8, "prix": 8, "jour": {
-        "id": 1,
+        }
+        },
+    "T3": {"min": 500, "max": 1299,"label": "T 500-1299", "capacite": 18,
+        "attente": 8, "prix": 8, "jour": 
+        {"id": 1,
         "label": "Dimanche",
         "hour": "14h30"
-    }},
-    "T4": {"min": 700, "max": 1599, "capacite": 15, "attente": 2, "prix": 8, "jour": {
-        "id": 1,
+        }
+        },
+    "T4": {"min": 700, "max": 1599,"label": "T 700-1599", "capacite": 15,
+        "attente": 2, "prix": 8, "jour": 
+        {"id": 1,
         "label": "Dimanche",
         "hour": "9h45"
-    }},
-    "T5": {"min": 800, "max": 1999, "capacite": 30, "attente": 8, "prix": 9, "jour": {
-        "id": 1,
+        }
+        },
+    "T5": {"min": 800, "max": 1999, "label": "T 800-1999", "capacite": 30,
+        "attente": 8, "prix": 9, "jour":
+        {"id": 1,
         "label": "Dimanche",
         "hour": "12h00"
-    }},
-    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 35, "attente": 5, "prix": 10, "jour": {
-        "id": 1,
+        }
+        },
+    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 65,
+        "attente": 5, "prix": 10, "jour": 
+        {"id": 1,
         "label": "Dimanche",
         "hour": "13h00"
-    }},
-    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 35, "attente": 5, "prix": 9, "jour": {
-        "id": 1,
+        }
+        },
+    "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 35,
+        "attente": 5, "prix": 9, "jour": 
+        {"id": 1,
         "label": "Dimanche",
         "hour": "14h00"
-    }},
+        }
+        },
     
 }
 
