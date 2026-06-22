@@ -23,21 +23,34 @@ ORGANIZATION = "tennis-de-table-thuirinois"
 
 
 
-async def create_checkout(montant, licence):
+async def create_checkout(montant, data):
 
     token = await get_token()
 
     payload = {
         "totalAmount": int(montant * 100),
         "initialAmount": int(montant * 100),
-        "itemName": f"Inscription tournoi licence {licence}",
+        
+        "itemName": (
+            f"Inscription tournoi "
+            f"{data['prenom']} {data['nom']}"
+            ),
+        
         "containsDonation": False,
+        
+        "metadata": {
+            "nom": data.get("nom", ""),
+            "prenom": data.get("prenom", ""),
+            "email": data.get("mail", ""),
+            "tableaux": ",".join(data.get("tableaux", []))
+        },
+        
         "backUrl": "https://tournoi-thuir.up.railway.app",
         "errorUrl": "https://tournoi-thuir.up.railway.app",
-        "returnUrl": "https://tournoi-thuir.up.railway.app"
+        "returnUrl": "https://tournoi-thuir.up.railway.app/helloasso/callback"
     }
 
-    print("payload =", payload)
+    print("METADATA =", payload["metadata"])
     async with httpx.AsyncClient() as client:
         
         response = await client.post(

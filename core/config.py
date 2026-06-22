@@ -56,7 +56,7 @@ TABLEAUX = {
         }
         },
     "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 65,
-        "attente": 5, "prix": 10, "jour": 
+        "attente": 5, "prix": 1, "jour": 
         {"id": 1,
         "label": "Dimanche",
         "hour": "13h00"
