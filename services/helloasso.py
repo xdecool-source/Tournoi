@@ -36,7 +36,7 @@ async def create_checkout(montant, licence):
         "returnUrl": "https://tournoi-thuir.up.railway.app"
     }
 
-    print("METADATA =", payload["metadata"])
+    print("payload =", payload)
     async with httpx.AsyncClient() as client:
         
         response = await client.post(
