@@ -29,25 +29,37 @@ import os
 
 ORGANIZATION = "tennis-de-table-thuirinois"
 
-async def create_checkout(montant, licence):
+async def create_checkout(montant, data):
 
     token = await get_token()
 
     payload = {
-    "totalAmount": int(montant * 100),
-    "initialAmount": int(montant * 100),
-    "itemName": f"Inscription tournoi licence {licence}",
-    "containsDonation": False,
-    "backUrl": "https://tournoi-thuir.up.railway.app",
-    "errorUrl": "https://tournoi-thuir.up.railway.app",
-    "returnUrl": "https://tournoi-thuir.up.railway.app/helloasso/callback",
-    "metadata": {
-        "licence": licence
+        "totalAmount": int(montant * 100),
+        "initialAmount": int(montant * 100),
+
+        "itemName": (
+            f"Inscription tournoi "
+            f"{data['prenom']} {data['nom']}"
+        ),
+
+        "metadata": {
+            "licence": str(data.get("licence", "")),
+            "nom": data.get("nom", ""),
+            "prenom": data.get("prenom", ""),
+            "email": data.get("mail", ""),
+            "club": data.get("club", ""),
+            "points": str(data.get("points", "")),
+            "tableaux": ",".join(data.get("tableaux", []))
+        },
+
+        "backUrl": "https://tournoi-thuir.up.railway.app",
+        "errorUrl": "https://tournoi-thuir.up.railway.app",
+        "returnUrl": "https://tournoi-thuir.up.railway.app"
     }
-}
 
+    print("METADATA =", payload["metadata"])
     async with httpx.AsyncClient() as client:
-
+        
         response = await client.post(
             f"https://api.helloasso.com/v5/organizations/{ORGANIZATION}/checkout-intents",
             headers={
