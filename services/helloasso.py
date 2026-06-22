@@ -46,12 +46,16 @@ async def create_checkout(montant, licence):
             },
             json=payload
         )
-
+        print("STATUS =", response.status_code)
+    
     if response.status_code >= 400:
+        print("HELLOASSO ERROR =", response.text)
         return {
             "status": response.status_code,
             "body": response.text
         }
 
-    return response.json()
+    data = response.json()
+    print("HELLOASSO RESPONSE =", data)
 
+    return data
