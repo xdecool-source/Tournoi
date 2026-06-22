@@ -393,7 +393,7 @@ async def update_inscription(
 
 @router.post("/inscription")
 
-async def inscription(data: dict, background_tasks: BackgroundTasks):
+async def inscription(data: dict):
     licence = str(data.get("licence", ""))
 
     if not licence.isdigit() or not (3 <= len(licence) <= 8):
@@ -411,15 +411,12 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
             return {"success": False, "error": "Licence introuvable à la FFTT."}
         
     try:
-
-        # await save_inscription(data)  # inscription valider après paiement
-        # print("Inscription Ok - lancement mail")
         total = sum(
             TABLEAUX.get(t, {}).get("prix", 0)
             for t in data.get("tableaux", [])
         )
         
-        print("TOTAL CALCULE =", total)
+        print("Total  =", total)
 
         checkout = await create_checkout(
             montant=total,
@@ -427,14 +424,14 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
         )
         
         if "redirectUrl" not in checkout:
-            print("HELLOASSO KO =", checkout)
+            print("HelloAsso ko =", checkout)
             return {
                 "success": False,
                 "error": "Erreur HelloAsso"
             }
         
-        print("CHECKOUT ID =", checkout["id"])
-        print("URL =", checkout["redirectUrl"])
+        print("Checkout id =", checkout["id"])
+        print("Url =", checkout["redirectUrl"])
 
         return {
             "success": True,
@@ -442,19 +439,6 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
             "payment_url": checkout["redirectUrl"]
         }
         
-        #Send mail joueur
-        """ background_tasks.add_task(
-            send_confirmation_email,
-            data["mail"],
-            data,
-            "creation"
-        )
-        global places_cache
-        places_cache = None
-        return {"success": True}
-        """
-        
-
     except ValueError as e:
         return {"success": False, "error": str(e)}
     
@@ -686,8 +670,37 @@ async def helloasso_webhook(request: Request):
     payload = await request.json()
 
     print("=" * 50)
-    print("WEBHOOK HELLOASSO RECU")
+    print("Webhook HelloAsso reçu")
     print(json.dumps(payload, indent=4, ensure_ascii=False))
     print("=" * 50)
+    
+    if payload["eventType"] != "Order":
+        return {"ok": True}
+    
+    meta = payload["metadata"]
+    
+    data = {
+        "licence": meta["licence"],
+        "nom": meta["nom"],
+        "prenom": meta["prenom"],
+        "club": meta["club"],
+        "points": int(meta["points"]),
+        "mail": meta["email"],
+        "tableaux": meta["tableaux"].split(",")
+    }
 
+    print("Inscription à créer =", data)
+
+    await save_inscription(data)
+
+    await send_confirmation_email(
+        meta["email"],
+        data,
+        "creation"
+    )
+
+    global places_cache
+    places_cache = None
+
+    print("Inscription Enregistrée")
     return {"ok": True}
