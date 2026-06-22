@@ -146,14 +146,46 @@ export async function showRecap(player, email, tableauxSel){
                 <b style="font-size:18px; color:#28a745;">
                     Total : ${total}€
                 </b>
-                <br><br><br>
-
+                <br><br>
                 <b style="color:#007bff;">
-                Vous allez être redirigé vers HelloAsso afin d'effectuer le règlement.
                 Votre inscription sera confirmée après validation du paiement.
+                <br>
+                Le paiement s'ouvrira dans un nouvel onglet HelloAsso.
                 </b>
+                <br><br>
+                <button
+                id="btnHelloAsso"
+                style="
+                    background:#ffcc00;
+                    color:black;
+                    border:none;
+                    padding:6px 12px;
+                    border-radius:5px;
+                    cursor:pointer;
+                    font-weight:bold;
+                    font-size:13px;
+                "
+                >
+                💳 Payer
+                </button>
             `;
+
+           const btnHelloAsso = document.getElementById("btnHelloAsso");
+
+            if (btnHelloAsso && window.helloassoPaymentUrl) {
+
+                btnHelloAsso.onclick = () => {
+
+                    window.open(
+                        window.helloassoPaymentUrl,
+                        "_blank",
+                        "noopener,noreferrer"
+                    );
+
+                };
+            }
         }
+
    }
 
     // 4 afficher recap (FIX COMPLET)
@@ -169,5 +201,4 @@ export async function showRecap(player, email, tableauxSel){
         recapCard.scrollIntoView({ behavior: "smooth" }); 
     }
 
-    // console.log("RECAP OK", total);
 }

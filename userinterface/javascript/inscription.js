@@ -154,16 +154,9 @@ export async function sendInscription(){
     
     if (data.payment_url) {
 
-        openModal(
-            `Montant à régler : ${data.montant} €\n\n` +
-            `Vous allez être redirigé vers HelloAsso.`
-        );
+        window.helloassoPaymentUrl = data.payment_url;
+        window.helloassoMontant = data.montant;
 
-        setTimeout(() => {
-            window.location.href = data.payment_url;
-        }, 1500);
-
-        return;
     }
 
 
