@@ -65,7 +65,7 @@ async def reaffectation_tableau(t):
             
 async def reaffectation_all():
     for tableau in TABLEAUX:
-        print(f"  Reaffectation des tableaux des licenciés suivants : {tableau}")
+        # print(f"  Reaffectation des tableaux des licenciés suivants : {tableau}")
         await reaffectation_tableau(tableau)
 
 # fin de cette gestion 

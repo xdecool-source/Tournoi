@@ -425,6 +425,14 @@ async def inscription(data: dict, background_tasks: BackgroundTasks):
             montant=total,
             licence=licence
         )
+        
+        if "redirectUrl" not in checkout:
+            print("HELLOASSO KO =", checkout)
+            return {
+                "success": False,
+                "error": "Erreur HelloAsso"
+            }
+        
         print(checkout["redirectUrl"])
         print("Montant envoyé =", total)
 

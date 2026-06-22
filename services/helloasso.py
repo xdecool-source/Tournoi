@@ -31,6 +31,7 @@ async def create_checkout(montant, licence):
         "totalAmount": int(montant * 100),
         "initialAmount": int(montant * 100),
         "itemName": f"Inscription tournoi licence {licence}",
+        "containsDonation": False,
         "backUrl": "https://tournoi-thuir.up.railway.app",
         "errorUrl": "https://tournoi-thuir.up.railway.app",
         "returnUrl": "https://tournoi-thuir.up.railway.app"
