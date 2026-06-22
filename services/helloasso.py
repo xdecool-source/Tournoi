@@ -39,6 +39,7 @@ async def create_checkout(montant, data):
         "containsDonation": False,
         
         "metadata": {
+            "licence": data.get("licence", ""),
             "nom": data.get("nom", ""),
             "prenom": data.get("prenom", ""),
             "email": data.get("mail", ""),
