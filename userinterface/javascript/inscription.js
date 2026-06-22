@@ -151,6 +151,22 @@ export async function sendInscription(){
         openModal(data.error || "Erreur");
         return;
     }
+    
+    if (data.payment_url) {
+
+        openModal(
+            `Montant à régler : ${data.montant} €\n\n` +
+            `Vous allez être redirigé vers HelloAsso.`
+        );
+
+        setTimeout(() => {
+            window.location.href = data.payment_url;
+        }, 1500);
+
+        return;
+    }
+
+
     // tableaux refusés
 
     if(data.refused && data.refused.length){

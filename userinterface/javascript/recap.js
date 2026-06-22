@@ -149,7 +149,8 @@ export async function showRecap(player, email, tableauxSel){
                 <br><br><br>
 
                 <b style="color:#007bff;">
-                Un mail va suivre afin de confirmer votre inscription 
+                Vous allez être redirigé vers HelloAsso afin d'effectuer le règlement.
+                Votre inscription sera confirmée après validation du paiement.
                 </b>
             `;
         }
