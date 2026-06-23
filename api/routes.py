@@ -694,9 +694,8 @@ if HELLOASSO_CARTE:
 
     @router.post("/helloasso/webhook")
     async def helloasso_webhook(request: Request):
+        
         print("========== WEBHOOK RECU ==========")
-        print("WEBHOOK RECU")
-        print(payload)
         payload = await request.json()
 
         # print("=" * 50)

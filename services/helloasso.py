@@ -20,8 +20,6 @@ async def get_token():
             }
         )
         
-    print(response.status_code)
-    print(response.text)
     response.raise_for_status()
     data = response.json()
     return data["access_token"]
@@ -89,6 +87,6 @@ async def create_checkout(montant, data):
             "body": response.text
         }
     checkout = response.json()
-    print("HelloAsso Réponse =", checkout)
+    # print("HelloAsso Réponse =", checkout)
     return checkout
 
