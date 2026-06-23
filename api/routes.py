@@ -736,11 +736,12 @@ if HELLOASSO_CARTE:
         print("Inscription Enregistrée")
         return {"ok": True}
 
-    @router.get("/paiement-ok")
-    async def paiement_ok():
 
-        return HTMLResponse("""
-            <h2> Paiement effectué</h2>
-            <p>Votre inscription a bien été prise en compte.</p>
-            <p>dans la foulée Vous recevrez un email de confirmation.</p>
-        """)
+templates = Jinja2Templates(directory="userinterface/templates")
+
+@router.get("/paiement-ok")
+async def paiement_ok(request: Request):
+    return templates.TemplateResponse(
+        "paiement_ok.html",
+        {"request": request}
+    )

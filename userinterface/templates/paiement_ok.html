@@ -1,0 +1,155 @@
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement confirmé</title>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #22c55e;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --background: #f4f7fb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            font-family: Inter, Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, #dbeafe, transparent 35%),
+                radial-gradient(circle at bottom right, #dcfce7, transparent 35%),
+                var(--background);
+        }
+
+        .card {
+            width: 100%;
+            max-width: 650px;
+            background: white;
+            border-radius: 24px;
+            padding: 50px;
+            text-align: center;
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.08),
+                0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            background: var(--success);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.35);
+        }
+
+        h1 {
+            color: var(--text);
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 20px;
+            margin: 30px 0;
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: 0.25s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+        }
+
+        .footer {
+            margin-top: 25px;
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 640px) {
+            .card {
+                padding: 35px 25px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="icon">✓</div>
+
+    <h1>Paiement confirmé</h1>
+
+    <p class="subtitle">
+        Merci pour votre confiance.<br>
+        Votre inscription a bien été enregistrée.
+    </p>
+
+    <div class="info-box">
+        <strong>Et maintenant ?</strong><br><br>
+
+        Un email de confirmation va vous être envoyé dans les prochaines minutes.
+        Il contiendra le récapitulatif de votre inscription ainsi que les
+        informations utiles pour la suite.
+    </div>
+
+    <a href="/" class="btn">
+        Retour à l'accueil
+    </a>
+
+    <div class="footer">
+        Si vous ne recevez pas l'email, pensez à vérifier votre dossier
+        « Courriers indésirables ».
+    </div>
+
+</div>
+
+</body>
+</html>
+```
