@@ -31,8 +31,11 @@ export async function showRecap(player, email, tableauxSel){
 
     // 2 reload config et places temps réel
 
-    const conf = await fetch("/tableaux").then(r=>r.json());
-    const placesNow = await fetch("/places").then(r=>r.json());
+    const conf = await fetch("/tableaux").then(r => r.json());
+    const { helloasso_carte: helloassoCarte } =
+        await fetch("/config").then(r => r.json());
+    console.log("helloassoCarte =", helloassoCarte);
+    const placesNow = await fetch("/places").then(r => r.json());
 
     let tableauxHTML = "";
     let total = 0; 
@@ -147,46 +150,61 @@ export async function showRecap(player, email, tableauxSel){
                     Total : ${total}€
                 </b>
                 <br><br>
-                <b style="color:#007bff;">
-                Votre inscription sera confirmée après validation du paiement.
-                <br>
-                Le paiement s'ouvrira dans un nouvel onglet HelloAsso.
-                </b>
-                <br><br>
-                <button
-                id="btnHelloAsso"
-                style="
-                    background:#ffcc00;
-                    color:black;
-                    border:none;
-                    padding:6px 12px;
-                    border-radius:5px;
-                    cursor:pointer;
-                    font-weight:bold;
-                    font-size:13px;
-                "
-                >
-                💳 Payer
-                </button>
+
+                ${helloassoCarte ? `
+                    <b style="color:#007bff;">
+                        Votre inscription sera confirmée après validation du paiement.
+                        <br>
+                        Le paiement s'ouvrira dans un nouvel onglet HelloAsso.
+                    </b>
+                    <br><br>
+
+                    <button
+                        id="btnHelloAsso"
+                        style="
+                            background:#ffcc00;
+                            color:black;
+                            border:none;
+                            padding:6px 12px;
+                            border-radius:5px;
+                            cursor:pointer;
+                            font-weight:bold;
+                            font-size:13px;
+                        "
+                    >
+                        💳 Payer
+                    </button>
+                ` : `
+                    <b style="color:#28a745;">
+                        Votre inscription est enregistrée.
+                        <br>
+                        Vous recevrez un email de confirmation.
+                    </b>
+                `}
             `;
 
-           const btnHelloAsso = document.getElementById("btnHelloAsso");
+           
+            if (helloassoCarte) {
 
-            if (btnHelloAsso && window.helloassoPaymentUrl) {
+                const btnHelloAsso = document.getElementById("btnHelloAsso");
 
-                btnHelloAsso.onclick = () => {
+                if (btnHelloAsso && window.helloassoPaymentUrl) {
 
-                    window.open(
-                        window.helloassoPaymentUrl,
-                        "_blank",
-                        "noopener,noreferrer"
-                    );
+                    btnHelloAsso.onclick = () => {
 
-                };
+                        window.open(
+                            window.helloassoPaymentUrl,
+                            "_blank",
+                            "noopener,noreferrer"
+                        );
+
+                    };
+
+                }
+
             }
         }
-
-   }
+    }
 
     // 4 afficher recap (FIX COMPLET)
     

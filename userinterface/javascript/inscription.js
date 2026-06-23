@@ -159,7 +159,6 @@ export async function sendInscription(){
 
     }
 
-
     // tableaux refusés
 
     if(data.refused && data.refused.length){

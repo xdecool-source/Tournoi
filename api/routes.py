@@ -66,6 +66,7 @@ NBRE_TABLEAU = os.getenv("NBRE_TABLEAU")
 DATE_TOURNOI = os.getenv("DATE_TOURNOI")
 DATE_TOURNOI_JOUR = os.getenv("DATE_TOURNOI_JOUR")
 NOM_TOURNOI = os.getenv("NOM_TOURNOI")
+HELLOASSO_CARTE = os.getenv("HELLOASSO_CARTE", "true").lower() == "true"
 
 @router.get("/", response_class=HTMLResponse)
 
@@ -135,6 +136,12 @@ def get_current_admin(request: Request):
         raise HTTPException(status_code=403, detail="Admin only")
     return payload
 
+@router.get("/config")
+async def get_config():
+    return {
+        "helloasso_carte": HELLOASSO_CARTE
+    }
+    
 @router.get("/tableaux")
 async def get_tableaux():
     result = {}
@@ -185,9 +192,9 @@ async def get_licence(licence: str):
     if MOCK_FFTT:
         return {
             "licence": licence,
-            "nom": "Joueur",
-            "prenom": "Test",
-            "club": "Club Test",
+            "nom": "Dupond",
+            "prenom": "Samuel",
+            "club": "Tennis de Table Thuirinois",
             "points": 1000,
             "classement": "NC",
             "categorie": "S",
@@ -393,7 +400,7 @@ async def update_inscription(
 
 @router.post("/inscription")
 
-async def inscription(data: dict):
+async def inscription(data: dict, background_tasks: BackgroundTasks):
     licence = str(data.get("licence", ""))
 
     if not licence.isdigit() or not (3 <= len(licence) <= 8):
@@ -411,13 +418,30 @@ async def inscription(data: dict):
             return {"success": False, "error": "Licence introuvable à la FFTT."}
         
     try:
+        if not HELLOASSO_CARTE:
+            
+            await save_inscription(data)
+            # print("Inscription Ok - lancement mail")
+            
+            # Send mail joueur
+            background_tasks.add_task(
+                send_confirmation_email,
+                data["mail"],
+                data,
+                "creation"
+            )
+            global places_cache
+            places_cache = None
+            return {"success": True}
+        
+        # Paiement HelloAsso activé
+        
         total = sum(
             TABLEAUX.get(t, {}).get("prix", 0)
             for t in data.get("tableaux", [])
         )
         
-        print("Total  =", total)
-
+        # print("Total  =", total)
         checkout = await create_checkout(
             montant=total,
             data=data
@@ -430,8 +454,8 @@ async def inscription(data: dict):
                 "error": "Erreur HelloAsso"
             }
         
-        print("Checkout id =", checkout["id"])
-        print("Url =", checkout["redirectUrl"])
+        # print("Checkout id =", checkout["id"])
+        # print("Url =", checkout["redirectUrl"])
 
         return {
             "success": True,
@@ -659,48 +683,62 @@ async def export_inscrits_page(request: Request):
         }
     )
     
-@router.get("/helloasso/callback")
-async def helloasso_callback():
-    return {"status": "ok"}
+# HelloAsso 
+
+if HELLOASSO_CARTE:
+
+    @router.get("/helloasso/callback")
+    async def helloasso_callback():
+        return {"status": "ok"}
 
 
-@router.post("/helloasso/webhook")
-async def helloasso_webhook(request: Request):
+    @router.post("/helloasso/webhook")
+    async def helloasso_webhook(request: Request):
+        print("========== WEBHOOK RECU ==========")
+        print("WEBHOOK RECU")
+        print(payload)
+        payload = await request.json()
 
-    payload = await request.json()
+        # print("=" * 50)
+        # print("Webhook HelloAsso reçu")
+        # print(json.dumps(payload, indent=4, ensure_ascii=False))
+        # print("=" * 50)
 
-    print("=" * 50)
-    print("Webhook HelloAsso reçu")
-    print(json.dumps(payload, indent=4, ensure_ascii=False))
-    print("=" * 50)
-    
-    if payload["eventType"] != "Order":
+        if payload["eventType"] != "Order":
+            return {"ok": True}
+
+        meta = payload["metadata"]
+
+        data = {
+            "licence": meta["licence"],
+            "nom": meta["nom"],
+            "prenom": meta["prenom"],
+            "club": meta["club"],
+            "points": int(meta["points"]),
+            "mail": meta["email"],
+            "tableaux": meta["tableaux"].split(",")
+        }
+
+        # print("Inscription à créer =", data)
+
+        await save_inscription(data)
+
+        await send_confirmation_email(
+            meta["email"],
+            data,
+            "creation"
+        )
+
+        global places_cache
+        places_cache = None
+        print("Inscription Enregistrée")
         return {"ok": True}
-    
-    meta = payload["metadata"]
-    
-    data = {
-        "licence": meta["licence"],
-        "nom": meta["nom"],
-        "prenom": meta["prenom"],
-        "club": meta["club"],
-        "points": int(meta["points"]),
-        "mail": meta["email"],
-        "tableaux": meta["tableaux"].split(",")
-    }
 
-    print("Inscription à créer =", data)
+    @router.get("/paiement-ok")
+    async def paiement_ok():
 
-    await save_inscription(data)
-
-    await send_confirmation_email(
-        meta["email"],
-        data,
-        "creation"
-    )
-
-    global places_cache
-    places_cache = None
-
-    print("Inscription Enregistrée")
-    return {"ok": True}
+        return HTMLResponse("""
+            <h2> Paiement effectué</h2>
+            <p>Votre inscription a bien été prise en compte.</p>
+            <p>Vous recevrez un email de confirmation.</p>
+        """)

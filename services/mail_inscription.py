@@ -44,6 +44,7 @@ NBRE_TABLEAU = os.getenv("NBRE_TABLEAU")
 DATE_TOURNOI = os.getenv("DATE_TOURNOI")
 DATE_TOURNOI_JOUR = os.getenv("DATE_TOURNOI_JOUR")
 NOM_TOURNOI = os.getenv("NOM_TOURNOI")
+HELLOASSO_CARTE = (os.getenv("HELLOASSO_CARTE", "true").lower() == "true")
 
 
 env = Environment(loader=FileSystemLoader("userinterface/templates"))
@@ -53,13 +54,19 @@ env = Environment(loader=FileSystemLoader("userinterface/templates"))
 async def build_email_html(data: dict, type_mail: str):
     # print("DATA TABLEAUX:", data["tableaux"])
     reste_inscriptions = None
-    template_map = {
-        "creation": "email_creation.html",
-        "modification": "email_modification.html",
-        "suppression": "email_suppression.html"
-    }
-
-    template_name = template_map.get(type_mail, "email_creation.html")
+    
+    if type_mail == "creation":
+        print ("carte = ",HELLOASSO_CARTE )
+        if HELLOASSO_CARTE:
+            template_name = "email_creation_helloasso_carte.html"
+        else:
+            template_name = "email_creation.html"
+    elif type_mail == "modification":
+        template_name = "email_modification.html"
+    elif type_mail == "suppression":
+        template_name = "email_suppression.html"
+    else:
+        template_name = "email_creation.html"
     
     # print(" 1 - chargement template")
     
@@ -245,7 +252,18 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
     html_content = await build_email_html(data, type_mail)
     
     if type_mail == "creation":
-        subject = f"Confirmation d'inscription - Tournoi {NOM_TOURNOI}"
+        print("HELLOASSO_CARTE =", HELLOASSO_CARTE)
+        print("TYPE_MAIL =", type_mail)
+        if HELLOASSO_CARTE:
+            subject = (
+                f"Pré-inscription enregistrée - "
+                f"Paiement en attente - Tournoi {NOM_TOURNOI}"
+            )
+        else:
+            subject = (
+                f"Confirmation d'inscription - "
+                f"Tournoi {NOM_TOURNOI}"
+            )
     elif type_mail == "modification":
         subject = f"Modification d'inscription - Tournoi {NOM_TOURNOI}"
     elif type_mail == "suppression":

@@ -52,7 +52,7 @@ async def reaffectation_tableau(t):
 
             if not attente:
                 break
-            print(f"Promotion {attente['licence']} -> {t}")
+            # print(f"Promotion {attente['licence']} -> {t}")
             await conn.execute("""
                 UPDATE inscription_tableaux
                 SET statut='OK'
@@ -245,11 +245,13 @@ async def tableau_status(t):
     
 async def save_inscription(data):
     start = time.time() # xxxx
+    """
     print(
-        "SAVE_INSCRIPTION =",
-        round((time.time()-start)*1000),
-        "ms"
+       "SAVE_INSCRIPTION =",
+       round((time.time()-start)*1000),
+       "ms"
     )
+    """
     
     async with pool.acquire() as conn:
         async with conn.transaction():   # transaction globale
@@ -273,7 +275,7 @@ async def save_inscription(data):
             except asyncpg.UniqueViolationError:
                 raise ValueError("Licence déjà inscrite")  
 
-            print("INSERT INSCRIPTION =", round((time.time()-t0)*1000), "ms")
+            # print("INSERT INSCRIPTION =", round((time.time()-t0)*1000), "ms")
         
             # 2 insertion tableaux avec verrouillage
             
@@ -285,12 +287,14 @@ async def save_inscription(data):
                 "SELECT pg_advisory_xact_lock(hashtext($1))",
                 t
                 )
-                     
+                
+                """  
                 print(
                     f"LOCK {t} =",
                     round((time.time()-t0)*1000),
                     "ms"
                 )
+                """
                 
                 t0 = time.time()
 
@@ -307,11 +311,13 @@ async def save_inscription(data):
                 used_ok = counts["ok_count"]
                 used_att = counts["attente_count"]
 
+                """
                 print(
                     f"COUNTS {t} =",
                     round((time.time()-t0)*1000),
                     "ms"
                 )
+                """
 
                 if used_ok < conf["capacite"]:
                     status = "OK"
@@ -333,13 +339,15 @@ async def save_inscription(data):
                 t,
                 status
                 ) 
-                print(f"INSERT_TABLEAU {t} =", round((time.time()-t0)*1000), "ms")
-                
+                # print(f"INSERT_TABLEAU {t} =", round((time.time()-t0)*1000), "ms")
+            
+            """
             print(
                 "SAVE_INSCRIPTION TOTAL =",
                 round((time.time()-start)*1000),
                 "ms"
-            )     
+            ) 
+            """ 
 
 #  promotion attente
 
