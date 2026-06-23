@@ -691,16 +691,14 @@ if HELLOASSO_CARTE:
     async def helloasso_callback():
         return {"status": "ok"}
 
-
     @router.post("/helloasso/webhook")
     async def helloasso_webhook(request: Request):
         
-        print("========== WEBHOOK RECU ==========")
         payload = await request.json()
 
         # print("=" * 50)
         # print("Webhook HelloAsso reçu")
-        # print(json.dumps(payload, indent=4, ensure_ascii=False))
+        print(json.dumps(payload, indent=4, ensure_ascii=False))
         # print("=" * 50)
 
         if payload["eventType"] != "Order":

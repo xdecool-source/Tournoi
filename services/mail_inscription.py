@@ -56,7 +56,7 @@ async def build_email_html(data: dict, type_mail: str):
     reste_inscriptions = None
     
     if type_mail == "creation":
-        print ("carte = ",HELLOASSO_CARTE )
+        # print ("carte = ",HELLOASSO_CARTE )
         if HELLOASSO_CARTE:
             template_name = "email_creation_helloasso_carte.html"
         else:
@@ -252,12 +252,13 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
     html_content = await build_email_html(data, type_mail)
     
     if type_mail == "creation":
-        print("HELLOASSO_CARTE =", HELLOASSO_CARTE)
-        print("TYPE_MAIL =", type_mail)
+        
+        # print("HELLOASSO_CARTE =", HELLOASSO_CARTE)
+        # print("TYPE_MAIL =", type_mail)
         if HELLOASSO_CARTE:
             subject = (
-                f"Pré-inscription enregistrée - "
-                f"Paiement en attente - Tournoi {NOM_TOURNOI}"
+                f"Inscription et Paiement enregistrée - "
+                f"Tournoi {NOM_TOURNOI}"
             )
         else:
             subject = (

@@ -65,7 +65,7 @@ async def create_checkout(montant, data):
         
         "backUrl": "https://tournoi-thuir.up.railway.app",
         "errorUrl": "https://tournoi-thuir.up.railway.app",
-        "returnUrl": "https://tournoi-thuir.up.railway.app"
+        "returnUrl": "https://tournoi-thuir.up.railway.app/paiement-ok"
          
     }
     
