@@ -713,7 +713,9 @@ if HELLOASSO_CARTE:
             "club": meta["club"],
             "points": int(meta["points"]),
             "mail": meta["email"],
-            "tableaux": meta["tableaux"].split(",")
+            "tableaux": meta["tableaux"].split(","),
+            "paiement": "HelloAsso",
+            "helloasso_order_id": payload.get("id")
         }
 
         # print("Inscription à créer =", data)

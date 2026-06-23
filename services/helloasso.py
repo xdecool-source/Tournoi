@@ -40,7 +40,7 @@ async def create_checkout(montant, data):
         "initialAmount": int(montant * 100),
         
         "itemName": (
-            f"{data['prenom']} {data['nom']} "
+            f"{data['nom']} {data['prenom']}  "
             f"- Licence {data['licence']} "
             f"- {','.join(data['tableaux'])}"
         ),
@@ -48,8 +48,8 @@ async def create_checkout(montant, data):
         "containsDonation": False,
         
         "payer": {
-            "firstName": str(data.get("prenom", "")).strip(),
             "lastName": str(data.get("nom", "")).strip(),
+            "firstName": str(data.get("prenom", "")).strip(),
             "email": str(data.get("mail", "")).strip().lower()
         },
         

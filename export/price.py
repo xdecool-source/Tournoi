@@ -1,5 +1,5 @@
 # Prix dans confi.py
-# Calcul des prix pour la feuille 
+# Calcul des prix pour la feuille Prix de l'excel
 
 from openpyxl.styles import PatternFill, Font, Alignment
 from openpyxl.drawing.image import Image
