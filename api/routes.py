@@ -694,13 +694,18 @@ if HELLOASSO_CARTE:
     @router.post("/helloasso/webhook")
     async def helloasso_webhook(request: Request):
         
+        print("=== VERSION WEBHOOK 23-06-2026 ===")
+        
         payload = await request.json()
 
         # print("=" * 50)
         # print("Webhook HelloAsso reçu")
-        print(json.dumps(payload, indent=4, ensure_ascii=False))
+        # print(json.dumps(payload, indent=4, ensure_ascii=False))
         # print("=" * 50)
-
+        print(
+            f"Webhook HelloAsso reçu : "
+            f"event={payload.get('eventType')}"
+        )
         if payload["eventType"] != "Order":
             return {"ok": True}
 
@@ -715,7 +720,7 @@ if HELLOASSO_CARTE:
             "mail": meta["email"],
             "tableaux": meta["tableaux"].split(","),
             "paiement": "HelloAsso",
-            "helloasso_order_id": payload.get("id")
+            "helloasso_order_id": payload.get("data", {}).get("id")
         }
 
         # print("Inscription à créer =", data)
