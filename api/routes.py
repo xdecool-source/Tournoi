@@ -717,7 +717,12 @@ if HELLOASSO_CARTE:
         }
 
         # print("Inscription à créer =", data)
+        already = await licence_exists(meta["licence"])
 
+        if already:
+            print("Licence déjà inscrite :", meta["licence"])
+            return {"ok": True}
+        
         await save_inscription(data)
 
         await send_confirmation_email(
@@ -737,5 +742,5 @@ if HELLOASSO_CARTE:
         return HTMLResponse("""
             <h2> Paiement effectué</h2>
             <p>Votre inscription a bien été prise en compte.</p>
-            <p>Vous recevrez un email de confirmation.</p>
+            <p>dans la foulée Vous recevrez un email de confirmation.</p>
         """)

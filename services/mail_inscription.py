@@ -257,7 +257,7 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
         # print("TYPE_MAIL =", type_mail)
         if HELLOASSO_CARTE:
             subject = (
-                f"Inscription et Paiement enregistrée - "
+                f"Inscription et Paiement enregistrés - "
                 f"Tournoi {NOM_TOURNOI}"
             )
         else:
