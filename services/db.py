@@ -109,7 +109,7 @@ async def init_db():
         await conn.execute("""
         CREATE TABLE IF NOT EXISTS inscriptions (
             id SERIAL PRIMARY KEY, dossard INTEGER DEFAULT nextval('dossard_seq'), licence TEXT NOT NULL UNIQUE,
-            nom TEXT NOT NULL , prenom TEXT NOT NULL, club TEXT, points INTEGER NOT NULL, mail TEXT, 
+            nom TEXT NOT NULL , prenom TEXT NOT NULL, club TEXT, points INTEGER NOT NULL, paiement TEXT, mail TEXT, 
             date_inscription TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             event_id INT DEFAULT 1
         )
@@ -262,14 +262,15 @@ async def save_inscription(data):
             try:
                 await conn.execute("""
                 INSERT INTO inscriptions
-                (nom, prenom, club, points, licence, mail)
-                VALUES ($1,$2,$3,$4,$5,$6)
+                (nom, prenom, club, points, licence,paiement, mail)
+                VALUES ($1,$2,$3,$4,$5,$6,$7)
                 """,
                 data["nom"],
                 data["prenom"],
                 data["club"],
                 int(data["points"]),
                 data["licence"],
+                data.get("paiement", ""),
                 data["mail"]
                 )
             except asyncpg.UniqueViolationError:

@@ -612,7 +612,7 @@ async def get_inscrits():
             rows = await conn.fetch("""
 
                 -- JOUEURS ACTIFS
-                SELECT i.dossard, i.licence, i.nom, i.prenom, i.club, i.points,
+                SELECT i.dossard, i.licence, i.nom, i.prenom, i.club, i.points,i.paiement,
                     COALESCE(
                         array_agg(
                             CASE
@@ -635,7 +635,7 @@ async def get_inscrits():
                 
                 -- JOUEURS ANNULES
                 SELECT
-                    di.dossard, di.licence, di.nom, di.prenom, di.club, di.points,
+                    di.dossard, di.licence, di.nom, di.prenom, di.club, di.points,di.paiement,
                     ARRAY[]::text[] AS tableaux,
                     TRUE AS annule
                 FROM delete_inscrit di

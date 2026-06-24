@@ -20,6 +20,7 @@ SELECT
     i.points AS "Classement",
     i.licence AS "Licence",
     i.mail AS "Mail",
+    i.paiement,
     it.tableau,
     it.statut
 FROM inscriptions i

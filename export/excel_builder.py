@@ -49,6 +49,7 @@ def build_data(rows):
         "Classement": "",
         "Club": "",
         "Mail": "",
+        "paiement": "",
         "Inscriptions": []
     })
 
@@ -71,6 +72,7 @@ def build_data(rows):
         joueur["Classement"] = r["Classement"]
         joueur["Club"] = r["Club"]
         joueur["Mail"] = r["Mail"]
+        joueur["paiement"] = r.get("paiement", "")
         joueur["Inscriptions"].append((r["tableau"], r["statut"]))
 
     return data_by_table, data_joueurs
