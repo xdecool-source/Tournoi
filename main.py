@@ -25,8 +25,8 @@ async def lifespan(app: FastAPI):
     if MOCK_FFTT: {print( " Mode simulation licence : MOCK_FFTT = ", os.getenv("MOCK_FFTT"))}
     else: { print ( " Connexion FFTT : MOCK_FFTT = ", os.getenv("MOCK_FFTT"))}
     
-    if ENV: {print( " On utilise Messagerie Brevo : ENV = ", os.getenv("ENV"))}
-    else: { print ( " On utilise Messagerie SMTP Mail : ENV = ", os.getenv("ENV"))}
+    if ENV: {print( " On utilise Messagerie APi Brevo : ENV = ", os.getenv("ENV"))}
+    else: { print ( " On utilise Messagerie SMTP Mail de Brevo : ENV = ", os.getenv("ENV"))}
     
     if HELLOASSO_CARTE: {print( " Paiement par carte avec helloAsso : HELLOASSO_CARTE = ", os.getenv("HELLOASSO_CARTE"))}
     else: { print ( " Pas de paiement avec HelloAsso : HELLOASSO_CARTE = ", os.getenv("HELLOASSO_CARTE"))}

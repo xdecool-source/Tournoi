@@ -143,8 +143,8 @@ async def send_brevo_email(to_email, subject, html):
 
 async def send_email(to_email, subject, html):
     
-    print("Mode Mail =", "Smtp" if ENV == "dev" else "Brevo")
-    if ENV == "dev":
-        await send_smtp_email(to_email, subject, html)
-    else:
+    print("Mode Mail =", "Api brevo " if ENV == "prod" else "smtp brevo")
+    if ENV == "prod":
         await send_brevo_email(to_email, subject, html)
+    else:
+        await send_smtp_email(to_email, subject, html)

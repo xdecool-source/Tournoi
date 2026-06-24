@@ -5,7 +5,7 @@
 # Choisit comment envoyer le mail
 # SMTP en dev/local
 # API Brevo en production
-# Envoie le mail au joueur et avec copie à l’admin
+# Envoie le mail au joueur
 
 import os
 import httpx
@@ -311,7 +311,9 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
 async def send_email(to_email: str, subject: str, html_content: str):
 
     # print("Mode Mail =", "Smtp" if ENV == "dev" else "Brevo")
-    if ENV != "dev":
+    
+    if ENV == "prod":
+    # if ENV != "dev":
         await send_brevo_email(
             to_email,
             subject,

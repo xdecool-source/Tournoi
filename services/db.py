@@ -153,7 +153,7 @@ async def init_db():
         await conn.execute("""
         CREATE TABLE IF NOT EXISTS delete_inscrit (
             id SERIAL PRIMARY KEY, dossard INT, licence TEXT NOT NULL, nom TEXT NOT NULL, prenom TEXT NOT NULL,
-            club TEXT, points INT NOT NULL, mail TEXT, date_inscription TIMESTAMP, 
+            club TEXT, points INT NOT NULL, mail TEXT, paiement TEXT, date_inscription TIMESTAMP, 
             date_suppression TIMESTAMPTZ DEFAULT NOW()
         )
         """)
@@ -445,9 +445,9 @@ async def init_archive_trigger():
             RETURNS TRIGGER AS $func$
             BEGIN
 
-                INSERT INTO delete_inscrit (dossard, licence, nom, prenom, club, points, 
+                INSERT INTO delete_inscrit (dossard, licence, nom, prenom, club, points, paiement,
                 mail, date_inscription, date_suppression)
-                VALUES (OLD.dossard, OLD.licence, OLD.nom, OLD.prenom, OLD.club,OLD.points,
+                VALUES (OLD.dossard, OLD.licence, OLD.nom, OLD.prenom, OLD.club,OLD.points,OLD.paiement,
                 OLD.mail, OLD.date_inscription,NOW()
                 );
 

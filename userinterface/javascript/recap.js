@@ -126,7 +126,6 @@ export async function showRecap(player, email, tableauxSel){
                 Licencié au Club: ${escapeHTML(player.club)}<br>
                 Ayant ${escapeHTML(player.points)} Points dans cette Phase<br>
                 Votre Adresse Mail: ${escapeHTML(email)}<br><br>
-
                 Plus aucun tableau sélectionné
                 <br>
                 <b style="color:#007bff;">
@@ -187,19 +186,19 @@ export async function showRecap(player, email, tableauxSel){
             if (helloassoCarte) {
 
                 const btnHelloAsso = document.getElementById("btnHelloAsso");
-
                 if (btnHelloAsso && window.helloassoPaymentUrl) {
-
                     btnHelloAsso.onclick = () => {
-
+                        btnHelloAsso.outerHTML = `
+                            <b style="color:#28a745;">
+                                ✓ Fenêtre de paiement ouverte
+                            </b>
+                        `;
                         window.open(
                             window.helloassoPaymentUrl,
                             "_blank",
                             "noopener,noreferrer"
                         );
-
                     };
-
                 }
 
             }

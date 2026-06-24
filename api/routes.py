@@ -19,6 +19,7 @@ from services.mail_inscription import send_confirmation_email
 from dotenv import load_dotenv
 from export.generate_inscription import generate 
 from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 from jose import jwt, JWTError, ExpiredSignatureError
 from os import getenv
 
@@ -62,6 +63,7 @@ ENV = os.getenv("ENV", "dev")
 ENVCODE = os.getenv("ENVCODE", "dev")
 INSCRIT_PASS = os.getenv("INSCRIT_PASS")
 FROM_EMAIL = os.getenv("FROM_EMAIL")
+ORIGINE_EMAIL = os.getenv("ORIGINE_EMAIL")
 NBRE_TABLEAU = os.getenv("NBRE_TABLEAU")
 DATE_TOURNOI = os.getenv("DATE_TOURNOI")
 DATE_TOURNOI_JOUR = os.getenv("DATE_TOURNOI_JOUR")
@@ -83,7 +85,8 @@ async def home(request: Request):
             "DATE_TOURNOI": date_formatee,
             "DATE_TOURNOI_JOUR": DATE_TOURNOI_JOUR,
             "NOM_TOURNOI": NOM_TOURNOI,
-            "FROM_EMAIL": FROM_EMAIL
+            "FROM_EMAIL": FROM_EMAIL,
+            "ORIGINE_EMAIL": ORIGINE_EMAIL
         }
     )
     
@@ -475,7 +478,9 @@ async def export_excel(admin=Depends(get_current_admin)):
     if not stream:
         raise HTTPException(404, "Aucune donnée")
 
-    now = datetime.now(timezone.utc).strftime("%d-%m-%Y_%Hh%M")
+    now = datetime.now(
+        ZoneInfo("Europe/Paris")
+    ).strftime("%d-%m-%Y_%Hh%M")
 
     return StreamingResponse(
         stream,
@@ -586,7 +591,12 @@ async def download_excel(admin=Depends(get_current_admin)):
     
     #  nom dynamique
     
-    filename = datetime.now(timezone.utc).strftime("Inscriptions_Tournoi_%d-%m-%Y_%Hh%M.xlsx")
+    # filename = datetime.now(timezone.utc).strftime("Inscriptions_Tournoi_%d-%m-%Y_%Hh%M.xlsx")
+    filename = datetime.now(
+        ZoneInfo("Europe/Paris")
+    ).strftime(
+        "Inscriptions_Tournoi_%d-%m-%Y_%Hh%M.xlsx"
+    )
 
     return StreamingResponse(
         excel_stream,
@@ -630,7 +640,7 @@ async def get_inscrits():
                 FROM inscriptions i
                 LEFT JOIN inscription_tableaux it
                     ON i.licence = it.licence
-                GROUP BY i.dossard, i.licence, i.nom, i.prenom, i.club, i.points
+                GROUP BY i.dossard, i.licence, i.nom, i.prenom, i.club, i.points,i.paiement
                 UNION ALL
                 
                 -- JOUEURS ANNULES
