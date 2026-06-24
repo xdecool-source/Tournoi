@@ -13,6 +13,7 @@ load_dotenv()    # si existe .env et pas de variable globale alors .env
 
 MOCK_FFTT = os.getenv("MOCK_FFTT", "true").lower() == "true"
 ENV = os.getenv("ENV", "prod").lower() == "prod"
+HELLOASSO_CARTE= os.getenv("HELLOASSO_CARTE", "true").lower() == "true"
 BASE_URL = os.getenv("BASE_URL", "")
 APP_ID = os.getenv("APP_ID", "")
 MOT_DE_PASSE = os.getenv("MOT_DE_PASSE", "")
@@ -56,7 +57,7 @@ TABLEAUX = {
         }
         },
     "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 65,
-        "attente": 5, "prix": 1, "jour": 
+        "attente": 5, "prix": 10, "jour": 
         {"id": 1,
         "label": "Dimanche",
         "hour": "13h00"

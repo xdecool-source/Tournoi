@@ -6,13 +6,19 @@ load_dotenv()
 
 CLIENT_ID = os.getenv("HELLOASSO_CLIENT_ID")
 CLIENT_SECRET = os.getenv("HELLOASSO_CLIENT_SECRET")
+HELLOASSO_CARTE = os.getenv("HELLOASSO_CARTE", "true").lower() == "true"
+HELLOASSO_AUTH = os.getenv("HELLOASSO_AUTH")
+HELLOASSO_BACK_URL = os.getenv("HELLOASSO_BACK_URL")
+HELLOASSO_ERROR_URL = os.getenv("HELLOASSO_ERROR_URL")
+HELLOASSO_RETURN_URL = os.getenv("HELLOASSO_RETURN_URL")
+HELLOASSO_API = os.getenv("HELLOASSO_API")
+ORGANIZATION = os.getenv("ORGANIZATION")
 
 async def get_token():
 
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            # "https://api.helloasso.com/oauth2/token",
-            "https://api.helloasso-sandbox.com/oauth2/token",
+            HELLOASSO_AUTH,
             data={
                 "grant_type": "client_credentials",
                 "client_id": CLIENT_ID,
@@ -24,11 +30,6 @@ async def get_token():
     data = response.json()
     return data["access_token"]
 
-# ORGANIZATION = "tennis-de-table-thuirinois"
-ORGANIZATION = "test-tt-thuir"
-
-HELLOASSO_CARTE = os.getenv("HELLOASSO_CARTE", "true").lower() == "true"
-
 async def create_checkout(montant, data):
 
     if not HELLOASSO_CARTE:
@@ -36,23 +37,20 @@ async def create_checkout(montant, data):
     
     token = await get_token()
     payload = {
+        
         "totalAmount": int(montant * 100),
         "initialAmount": int(montant * 100),
-        
         "itemName": (
             f"{data['nom']} {data['prenom']}  "
             f"- Licence {data['licence']} "
             f"- {','.join(data['tableaux'])}"
         ),
-        
         "containsDonation": False,
-        
         "payer": {
             "lastName": str(data.get("nom", "")).strip(),
             "firstName": str(data.get("prenom", "")).strip(),
             "email": str(data.get("mail", "")).strip().lower()
         },
-        
         "metadata": {
             "licence": data.get("licence", ""),
             "nom": data.get("nom", ""),
@@ -62,18 +60,15 @@ async def create_checkout(montant, data):
             "points": str(data.get("points", "")),
             "tableaux": ",".join(data.get("tableaux", []))
         },
-        
-        "backUrl": "https://tournoi-thuir.up.railway.app",
-        "errorUrl": "https://tournoi-thuir.up.railway.app",
-        "returnUrl": "https://tournoi-thuir.up.railway.app/paiement-ok"
-         
+        "backUrl": HELLOASSO_BACK_URL,
+        "errorUrl": HELLOASSO_ERROR_URL,
+        "returnUrl": HELLOASSO_RETURN_URL
     }
     
     async with httpx.AsyncClient() as client:
         
         response = await client.post(
-            # f"https://api.helloasso.com/v5/organizations/{ORGANIZATION}/checkout-intents",
-            f"https://api.helloasso-sandbox.com/v5/organizations/{ORGANIZATION}/checkout-intents",
+            f"{HELLOASSO_API}/v5/organizations/{ORGANIZATION}/checkout-intents",
             headers={
                 "Authorization": f"Bearer {token}"
             },

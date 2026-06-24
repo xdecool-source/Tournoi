@@ -94,7 +94,7 @@ async def init_db_pool():
             max_size=10,
             ssl="require"
         )
-print(" Creation tables si besoin")
+# print(" Creation tables si besoin")
 
 #  init DB
 
@@ -463,8 +463,6 @@ async def init_archive_trigger():
             """)
 
             print(" Trigger créé")
-        else:
-            print(" Trigger déjà existant")
             
 async def log_email(
     licence, email, type_mail, event_id, subject, brevo_message_id

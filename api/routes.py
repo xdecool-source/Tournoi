@@ -693,15 +693,12 @@ if HELLOASSO_CARTE:
 
     @router.post("/helloasso/webhook")
     async def helloasso_webhook(request: Request):
-        
-        print("=== VERSION WEBHOOK 23-06-2026 ===")
-        
+                
         payload = await request.json()
 
-        # print("=" * 50)
         # print("Webhook HelloAsso reçu")
         # print(json.dumps(payload, indent=4, ensure_ascii=False))
-        # print("=" * 50)
+        
         print(
             f"Webhook HelloAsso reçu : "
             f"event={payload.get('eventType')}"
@@ -731,7 +728,6 @@ if HELLOASSO_CARTE:
             return {"ok": True}
         
         await save_inscription(data)
-
         await send_confirmation_email(
             meta["email"],
             data,
@@ -742,9 +738,6 @@ if HELLOASSO_CARTE:
         places_cache = None
         print("Inscription Enregistrée")
         return {"ok": True}
-
-
-templates = Jinja2Templates(directory="userinterface/templates")
 
 @router.get("/paiement-ok")
 async def paiement_ok(request: Request):

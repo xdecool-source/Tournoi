@@ -54,11 +54,13 @@ def create_price_sheet(wb, data_joueurs, root_dir):
         total_valide_general += montant_valide
         total_attente_general += montant_attente
         
+        """
         print(
             infos.get("Nom"),
             infos.get("paiement"),
             infos.keys()
             )
+        """
         
         lignes_prix.append([
             dossard,
