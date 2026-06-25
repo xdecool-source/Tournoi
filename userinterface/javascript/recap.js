@@ -121,13 +121,13 @@ export async function showRecap(player, email, tableauxSel){
                 </b>
                 <br><br>
 
-                <b>${escapeHTML(player.prenom)} ${escapeHTML(player.nom)}</b><br>
+                <b>Pongiste ${escapeHTML(player.prenom)} ${escapeHTML(player.nom)}</b><br><br>
                 N° de Licence: <b>${escapeHTML(player.licence)}</b><br>
                 Licencié au Club: ${escapeHTML(player.club)}<br>
                 Ayant ${escapeHTML(player.points)} Points dans cette Phase<br>
-                Votre Adresse Mail: ${escapeHTML(email)}<br><br>
-                Plus aucun tableau sélectionné
-                <br>
+                E-mail: ${escapeHTML(email)}<br><br>
+                Nous avons supprimé tous vos tableaux
+                <br><br>
                 <b style="color:#007bff;">
                     Un mail va suivre afin de confirmer votre annulation
                 </b>

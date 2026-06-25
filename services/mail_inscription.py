@@ -46,7 +46,6 @@ DATE_TOURNOI_JOUR = os.getenv("DATE_TOURNOI_JOUR")
 NOM_TOURNOI = os.getenv("NOM_TOURNOI")
 HELLOASSO_CARTE = (os.getenv("HELLOASSO_CARTE", "true").lower() == "true")
 
-
 env = Environment(loader=FileSystemLoader("userinterface/templates"))
 
 #  Construction HTML email
@@ -56,11 +55,7 @@ async def build_email_html(data: dict, type_mail: str):
     reste_inscriptions = None
     
     if type_mail == "creation":
-        # print ("carte = ",HELLOASSO_CARTE )
-        if HELLOASSO_CARTE:
-            template_name = "email_creation_helloasso_carte.html"
-        else:
-            template_name = "email_creation.html"
+        template_name = "email_creation.html"
     elif type_mail == "modification":
         template_name = "email_modification.html"
     elif type_mail == "suppression":
@@ -86,7 +81,8 @@ async def build_email_html(data: dict, type_mail: str):
             DATE_TOURNOI_JOUR=DATE_TOURNOI_JOUR,
             reste_inscriptions=reste_inscriptions,
             FROM_EMAIL=FROM_EMAIL,
-            ORIGINE_EMAIL=ORIGINE_EMAIL   
+            ORIGINE_EMAIL=ORIGINE_EMAIL,
+            HELLOASSO_CARTE=HELLOASSO_CARTE  
         )
         return html_content
     
@@ -96,12 +92,10 @@ async def build_email_html(data: dict, type_mail: str):
     tableaux_str = ""   
     total_html = ""  
     
-
     # TOTAL GLOBAL (tous les jours)
     async with get_conn() as conn:
 
         event_id = data.get("event_id", 1)
-
         rows = await conn.fetch("""
             SELECT tableau, statut, event_id
             FROM inscription_tableaux
@@ -109,7 +103,6 @@ async def build_email_html(data: dict, type_mail: str):
         """, data["licence"])
 
         reste_inscriptions = len(rows) > 0
-
         total = sum(
             TABLEAUX.get(r["tableau"], {}).get("prix", 0)
             for r in rows
@@ -124,10 +117,8 @@ async def build_email_html(data: dict, type_mail: str):
         for t in data["tableaux"]:
 
             conf = TABLEAUX.get(t, {})
-
             min_pts = conf.get("min")
             max_pts = conf.get("max")
-
             statut = statuts.get(t)
 
             if statut == "OK":
@@ -146,7 +137,6 @@ async def build_email_html(data: dict, type_mail: str):
                 ligne = f"{t} ({nom}, {jour} à {heure}) — {prix}€ {statut_txt}"
             else:
                 ligne = f"{nom} ({min_pts}-{max_pts} pts, {jour} à {heure}) — {prix}€ {statut_txt}"
-
             tableaux_details.append(ligne)
 
         tableaux_str = "<br>".join(tableaux_details)
@@ -170,11 +160,12 @@ async def build_email_html(data: dict, type_mail: str):
             DATE_TOURNOI_JOUR=DATE_TOURNOI_JOUR,
             reste_inscriptions=reste_inscriptions,
             FROM_EMAIL=FROM_EMAIL,
-            ORIGINE_EMAIL=ORIGINE_EMAIL   
+            ORIGINE_EMAIL=ORIGINE_EMAIL,
+            HELLOASSO_CARTE=HELLOASSO_CARTE   
         )
         return html_content
 
-#  Envoi SMTP (Dev)
+#  Envoi SMTP Brevo(Dev)
 
 async def send_smtp_email(to_email: str, subject: str, html_content: str):
     
@@ -205,7 +196,7 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
     except Exception as e:
         print(" Erreur Smtp :", e)
 
-#  Envoi Brevo (Production)
+#  Envoi Brevo Api (Production)
 
 async def send_brevo_email(
     to_email: str,

@@ -10,7 +10,6 @@
 <tr>
 <td align="center">
 <table width="600" cellpadding="0" cellspacing="0" style="background:white; border-radius:10px; overflow:hidden; box-shadow:0 5px 20px rgba(0,0,0,0.1);">
-
 <tr>
 <td style="background:#ff9800; padding:20px; text-align:center; color:white;">
 <h2 style="margin:0;">✏️ Modification d'inscription : {{ NOM_TOURNOI }} ✏️</h2>
@@ -19,45 +18,64 @@
 
 <tr>
 <td style="padding:30px;">
-
-<h3 style="margin-top:0;">Vos informations ont été mises à jour</h3>
 <p>Bonjour <b>{{ prenom }} {{ nom }}</b>,</p>
+
+{% if HELLOASSO_CARTE %}
 <p>
 Votre inscription au tournoi a bien été mise à jour.
-Le montant de vos engagements sera finalisé directement sur place. 
-
+Si vous êtes en liste d'attente sur un ou plusieurs tableaux,<br>
+un e-mail de confirmation vous sera envoyé au fur et à mesure de l'évolution des tableaux.
+La misa à jour du montant de vos engagements sera calculé et réglé directement sur place.
 </p>
+{% else %}
+<p>
+Votre inscription au tournoi a bien été mise à jour.
+Si vous êtes en liste d'attente sur un ou plusieurs tableaux,<br>
+un e-mail de confirmation vous sera envoyé au fur et à mesure de l'évolution des tableaux.
+</p>
+{% endif %}
 
-<table width="100%" cellpadding="8" style="background:#f9f9f9; border-radius:6px;">
-<tr><td><b>Licence :</b></td><td>{{ licence }}</td></tr>
-<tr><td><b>Club :</b></td><td>{{ club }}</td></tr>
-<tr><td><b>Points :</b></td><td>{{ points }}</td></tr>
-<tr><td><b>Date du tournoi :</b></td><td>{{ DATE_TOURNOI_JOUR }} le {{ DATE_TOURNOI }}</td></tr>
-
-<tr><td><b>Tableaux actuels :</b></td><td>{{ tableaux | safe }}</td></tr>
+<table width="100%" cellpadding="8" style="background:#f9f9f9; border-radius:4px;">
+ <tr>
+        <td style="vertical-align:top;"><b>Licence :</b></td>
+        <td>{{ licence }}</td>
+    </tr>
+    <tr>
+        <td style="vertical-align:top;"><b>Club :</b></td>
+        <td>{{ club }}</td>
+    </tr>
+    <tr>
+        <td style="vertical-align:top;"><b>Points :</b></td>
+        <td>{{ points }}</td>
+    </tr>
+    <tr>
+        <td style="vertical-align:top;"><b>Date du tournoi :</b></td>
+        <td>{{ DATE_TOURNOI_JOUR }} le {{ DATE_TOURNOI }}</td>
+    </tr>
+    <tr>
+    <td width="180" style="width:180px; vertical-align:top;">
+        <b>Tableaux actuels :</b>
+    </td>
+    <td>{{ tableaux | safe }}</td>
+</tr>
 </table>
 
 <p style="margin-top:25px; color:#555;">
 Si cette modification n'est pas de votre fait, merci de contacter l'organisation
- a cette adresse : <a href="mailto:{{ ORIGINE_EMAIL }}" style="color:#007bff; text-decoration:none;">
+ à cette adresse : <a href="mailto:{{ ORIGINE_EMAIL }}" style="color:#007bff; text-decoration:none;">
 {{ ORIGINE_EMAIL }}
 </a>
 </p>
-
 </td>
 </tr>
 
 <tr>
 <td style="background:#f2f2f2; padding:15px; text-align:center; font-size:12px; color:#666;">
-Bon tournoi à vous le bureau : {{ NOM_TOURNOI }} : 
+Bon tournoi à vous !<br>
+L'équipe de {{ NOM_TOURNOI }}<br>
 <a href="mailto:{{ ORIGINE_EMAIL }}" style="color:#007bff; text-decoration:none;">
 {{ ORIGINE_EMAIL }}
 </a> 
-</td>
-</tr>
-
-</table>
-
 </td>
 </tr>
 </table>

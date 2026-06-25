@@ -32,13 +32,18 @@
     margin:20px 0;
     border-radius:6px;
 ">
-  Nous confirmons que votre inscription au tournoi <b>{{ NOM_TOURNOI }}</b> a bien été annulée.
-Toutefois si vous changez d'avis il vous suffit de relancer votre demande d'inscription..
+  {% if HELLOASSO_CARTE %}
+    Nous confirmons que votre inscription au tournoi
+    <b>{{ NOM_TOURNOI }}</b> a bien été annulée.
+    <br><br>
+    💳 Le montant de votre inscription vous sera remboursé dans les meilleurs délais..
+  {% else %}
+    Nous confirmons que votre inscription au tournoi
+    <b>{{ NOM_TOURNOI }}</b> a bien été annulée.
+  {% endif %}
+  <br><br>
+  Toutefois, si vous changez d'avis, il vous suffit de relancer votre demande d'inscription.
 </div>
-
-<p style="margin-top:30px;">
-Sportivement, le Bureau : {{ NOM_TOURNOI }} <br>
-</p>
 </td>
 </tr>
 

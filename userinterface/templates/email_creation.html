@@ -21,44 +21,79 @@
 <!-- Message -->
 <tr>
 <td style="padding:30px;">
+
+{% if HELLOASSO_CARTE  %}
+<h3 style="margin-top:0;">Inscription et paiement enregistrés : {{ NOM_TOURNOI }}</h3>
+{% else %}
 <h3 style="margin-top:0;">Confirmation d'inscription : {{ NOM_TOURNOI }}</h3>
-<p>Bonjour Mr. ou Mme. <b>{{ prenom }} {{ nom }}</b>,</p>
+{% endif %}
+<p>Bonjour <b>{{ prenom }} {{ nom }}</b>,</p>
+
+{% if HELLOASSO_CARTE %}
+<p>
+Votre inscription et votre paiement ont bien été enregistrés et nous vous en remercions.<br>
+Si vous êtes en liste d'attente sur un ou plusieurs tableaux,<br>
+un e-mail de confirmation vous sera envoyé au fur et à mesure de l'évolution des tableaux.
+</p>
+{% else %}
 <p>
 Votre inscription a bien été enregistrée et nous vous en remercions.<br>
 Si vous êtes en liste d'attente sur un ou plusieurs tableaux,<br>
-un mail de confirmation d'inscription vous sera envoyé<br>
-au fur et à mesure de l'évolution des tableaux.<br>
+un e-mail de confirmation vous sera envoyé au fur et à mesure de l'évolution des tableaux.
 </p>
+{% endif %}
 
-<table width="100%" cellpadding="8" style="background:#f9f9f9; border-radius:6px;">
-<tr><td><b>Licence :</b></td><td>{{ licence }}</td></tr>
-<tr><td><b>Club :</b></td><td>{{ club }}</td></tr>
-<tr><td><b>Points :</b></td><td>{{ points }}</td></tr>
-<tr><td><b>Date du tournoi :</b></td><td>{{ DATE_TOURNOI_JOUR }} le {{ DATE_TOURNOI }}</td></tr>
-<tr>
-<td><b>Tableaux :</b></td>
-<td>{{ tableaux | safe }}</td>
+<table width="100%" cellpadding="8" style="background:#f9f9f9; border-radius:4px;">
+ <tr>
+        <td style="vertical-align:top;"><b>Licence :</b></td>
+        <td>{{ licence }}</td>
+    </tr>
+    <tr>
+        <td style="vertical-align:top;"><b>Club :</b></td>
+        <td>{{ club }}</td>
+    </tr>
+    <tr>
+        <td style="vertical-align:top;"><b>Points :</b></td>
+        <td>{{ points }}</td>
+    </tr>
+    <tr>
+        <td style="vertical-align:top;"><b>Date du tournoi :</b></td>
+        <td>{{ DATE_TOURNOI_JOUR }} le {{ DATE_TOURNOI }}</td>
+    </tr>
+    <tr>
+    <td width="180" style="width:180px; vertical-align:top;">
+        <b>Tableaux actuels :</b>
+    </td>
+    <td>{{ tableaux | safe }}</td>
+</tr>
 </table>
 
 <p>
-En outre si il s'avère une erreur sur votre inscription<br>
-merci de nous retouner un e-mail a cette adresse : <b>{{ORIGINE_EMAIL}}</b> avec votre numéro de licence<br>
-
+Si vous constatez une erreur dans votre inscription<br>
+merci de nous retourner un e-mail à à l'adresse suivante : 
+<b>
+<a href="mailto:{{ ORIGINE_EMAIL }}" style="color:#007bff; text-decoration:none;">
+    {{ ORIGINE_EMAIL }}
+</a>
+</b>
 </p>
 
-
-<tr>
-<td colspan="2"
-    style="background:#f2f2f2; padding:15px; text-align:center; font-size:16px; color:#666;">
-    Paiement en espèces ou par chèque ou carte bancaire
-</td>
+{% if not HELLOASSO_CARTE %}
+<table width="100%" cellpadding="8" style="margin-top:20px;">
+    <tr>
+        <td style="background:#f2f2f2; padding:15px; text-align:center; font-size:16px; color:#666;">
+            Paiement en espèces, chèque ou carte bancaire
+        </td>
+    </tr>
 </table>
+{% endif %}
 
 
 <!-- Pied -->
 <tr>
 <td style="background:#f2f2f2; padding:15px; text-align:center; font-size:12px; color:#666;">
-Bon tournoi à vous le bureau : {{ NOM_TOURNOI }} : 
+Bon tournoi à vous !<br>
+L'équipe de {{ NOM_TOURNOI }}<br>
 <a href="mailto:{{ ORIGINE_EMAIL }}" style="color:#007bff; text-decoration:none;">
 {{ ORIGINE_EMAIL }}
 </a>
