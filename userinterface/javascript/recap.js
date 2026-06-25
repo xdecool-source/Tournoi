@@ -11,7 +11,7 @@ function escapeHTML(str){
 }
 
 export async function showRecap(player, email, tableauxSel, typeMail = "creation") {
-    
+
     //  0 sécurité
 
     if(!player){
@@ -34,7 +34,6 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
     const conf = await fetch("/tableaux").then(r => r.json());
     const { helloasso_carte: helloassoCarte } =
         await fetch("/config").then(r => r.json());
-    const typeMail = window.typeMail; // recuperationde backend du type de mail 
     // console.log("helloassoCarte =", helloassoCarte);
     const placesNow = await fetch("/places").then(r => r.json());
 
