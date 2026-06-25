@@ -82,7 +82,8 @@ async def build_email_html(data: dict, type_mail: str):
             reste_inscriptions=reste_inscriptions,
             FROM_EMAIL=FROM_EMAIL,
             ORIGINE_EMAIL=ORIGINE_EMAIL,
-            HELLOASSO_CARTE=HELLOASSO_CARTE  
+            HELLOASSO_CARTE=HELLOASSO_CARTE,
+            type_mail=type_mail  
         )
         return html_content
     
@@ -161,7 +162,8 @@ async def build_email_html(data: dict, type_mail: str):
             reste_inscriptions=reste_inscriptions,
             FROM_EMAIL=FROM_EMAIL,
             ORIGINE_EMAIL=ORIGINE_EMAIL,
-            HELLOASSO_CARTE=HELLOASSO_CARTE   
+            HELLOASSO_CARTE=HELLOASSO_CARTE,
+            type_mail=type_mail   
         )
         return html_content
 

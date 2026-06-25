@@ -179,5 +179,10 @@ export async function sendInscription(){
     // console.log("REFUSED:", data.refused);
     // console.log("VALID:", validSelection);
     
-await showRecap(currentPlayer, email, validSelection);
+await showRecap(
+    currentPlayer,
+    email,
+    validSelection,
+    currentPlayer.already_inscrit ? "modification" : "creation"
+);
 }

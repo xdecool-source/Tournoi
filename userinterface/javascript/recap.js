@@ -10,8 +10,8 @@ function escapeHTML(str){
         .replaceAll("'", "&#039;");
 }
 
-export async function showRecap(player, email, tableauxSel){
-
+export async function showRecap(player, email, tableauxSel, typeMail = "creation") {
+    
     //  0 sécurité
 
     if(!player){
@@ -34,7 +34,8 @@ export async function showRecap(player, email, tableauxSel){
     const conf = await fetch("/tableaux").then(r => r.json());
     const { helloasso_carte: helloassoCarte } =
         await fetch("/config").then(r => r.json());
-    console.log("helloassoCarte =", helloassoCarte);
+    const typeMail = window.typeMail; // recuperationde backend du type de mail 
+    // console.log("helloassoCarte =", helloassoCarte);
     const placesNow = await fetch("/places").then(r => r.json());
 
     let tableauxHTML = "";
@@ -150,7 +151,7 @@ export async function showRecap(player, email, tableauxSel){
                 </b>
                 <br><br>
 
-                ${helloassoCarte ? `
+                ${helloassoCarte && typeMail === "creation" ? `
                     <b style="color:#007bff;">
                         Votre inscription sera confirmée après validation du paiement.
                         <br>
@@ -183,7 +184,7 @@ export async function showRecap(player, email, tableauxSel){
             `;
 
            
-            if (helloassoCarte) {
+            if (helloassoCarte && typeMail === "creation") {
 
                 const btnHelloAsso = document.getElementById("btnHelloAsso");
                 if (btnHelloAsso && window.helloassoPaymentUrl) {
