@@ -107,5 +107,3 @@ def creer_excel(comparatif, stats, fichier):
             ws.cell(l, 2).number_format = '#,##0.00 €'
 
     wb.save(fichier)
-
-

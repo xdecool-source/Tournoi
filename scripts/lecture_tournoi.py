@@ -1,6 +1,6 @@
 """
-lecture_tournoi.py
 Lecture du fichier Inscriptions Tournoi.
+
 """
 
 from openpyxl import load_workbook
@@ -85,4 +85,3 @@ def lire_tournoi(fichier):
         f"{len(tournoi)} joueurs chargés."
     )
     return tournoi
-

@@ -1,7 +1,7 @@
 """
-utils.py
 Fonctions utilitaires du comparatif
 Tournoi / HelloAsso
+
 """
 
 import re
@@ -11,7 +11,6 @@ from openpyxl.utils import get_column_letter
 
 def chercher_entetes(ws, nom_colonne):
     
-
     for row in ws.iter_rows():
         headers = []
         for cell in row:
@@ -45,7 +44,6 @@ def convertir_montant(valeur):
         return 0.0
 
 # Extraction numéro licence
-
 
 def extraire_licence(designation):
     
@@ -113,7 +111,6 @@ def tableaux_manquants(tableaux_tournoi, tableaux_hello):
     return sorted(
         tableaux_tournoi - tableaux_hello
     )
-
 
 def tableaux_en_trop(tableaux_tournoi, tableaux_hello):
     

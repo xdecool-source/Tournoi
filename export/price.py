@@ -1,5 +1,33 @@
-# Prix dans config.py
-# Calcul des prix pour la feuille Prix de l'excel
+"""
+1. Calcule les montants
+les inscriptions validées (OK) ;
+les inscriptions en attente (ATTENTE).
+Les prix sont lus dans config.py
+TABLEAUX
+
+2. Calcule les totaux
+le montant total encaissé ;
+le montant des inscriptions en attente.
+
+3. Crée la feuille Prix
+génère un tableau contenant :
+le dossard ;
+le nom ;
+la licence ;
+les tableaux ;
+le mode de paiement ;
+le montant validé ;
+le montant en attente.
+ajoute également le logo du tournoi.
+
+4. Met en forme
+applique :
+les formats monétaires (€) ;
+les lignes alternées ;
+les colonnes ajustées automatiquement ;
+le gel de l'en-tête (freeze_panes).
+
+"""
 
 from openpyxl.styles import PatternFill, Font, Alignment
 from openpyxl.drawing.image import Image

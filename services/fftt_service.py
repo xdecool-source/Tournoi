@@ -1,20 +1,17 @@
-# appeler l’API de la FFTT
-# récupérer les informations d’un joueur
-# générer les paramètres de sécurité (tm, tmc, série)
-# fournir un mode mock (imiter , simuler )pour le développement
+""""
+appeler l’API de la FFTT
+récupérer les informations d’un joueur
+générer les paramètres de sécurité (tm, tmc, série)
+fournir un mode mock (imiter , simuler )pour le développement
+"""
 
-import os
-import urllib.parse
-import httpx
-import hashlib
-import hmac
-import random
-import string
+import os, urllib.parse, httpx, hashlib
+import hmac, random, string
 
 from datetime import datetime, timezone
 from core.config import BASE_URL, APP_ID, MOT_DE_PASSE, MOCK_FFTT
 
-# ce numéro est calculé une seule fois au démarrage de l'APP
+# ce numéro de série est calculé une seule fois au démarrage de l'APP
 
 if not BASE_URL:
     raise RuntimeError("BASE_URL manquant")

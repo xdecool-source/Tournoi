@@ -1,4 +1,13 @@
-#  cherche toutes les inscriptions par exemple pour générer l’Excel des inscrits
+"""
+cherche toutes les inscriptions par exemple pour générer l’Excel des inscrits
+
+récupére :
+les joueurs ; leurs tableaux ; leur paiement ; leur classement ; leur email.
+
+Génére l'Excel ;
+et afficher la liste des inscrits.
+
+"""
 
 import os
 import psycopg2

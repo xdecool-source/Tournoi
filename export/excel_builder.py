@@ -1,5 +1,19 @@
-# Export Excel 
-# Preparation Feuille
+"""
+1. Prépare les données
+build_data()
+Transforme les données venant de PostgreSQL en deux structures :
+par joueur ; par tableau.
+
+2. Crée les feuilles Excel
+Joueurs, Tableaux A, B, C... (une feuille par tableau), Suppression
+
+3. Met en forme
+couleurs des en-têtes ; bordures ; centrage ; largeur automatique des colonnes.
+
+4. Sécurise les données
+utilisation : de sanitize_excel()
+
+"""
 
 from collections import defaultdict
 from openpyxl.styles import PatternFill, Font, Border, Side, Alignment

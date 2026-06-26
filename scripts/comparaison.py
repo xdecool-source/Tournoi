@@ -1,8 +1,7 @@
 """
-comparaison.py
 Comparaison des données Tournoi / HelloAsso
-"""
 
+"""
 
 def comparer(tournoi, hello):
     """
@@ -32,7 +31,6 @@ def comparer(tournoi, hello):
 
         # Présent dans les deux fichiers
         if t and h:
-
             manquants = sorted(t["tableaux"] - h["tableaux"])
             en_trop = sorted(h["tableaux"] - t["tableaux"])
 

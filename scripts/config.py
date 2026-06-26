@@ -1,4 +1,6 @@
-# Configuration générale du comparatif Tournoi / HelloAsso
+"""
+Configuration générale du comparatif Tournoi / HelloAsso
+"""
 
 import os
 

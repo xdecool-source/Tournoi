@@ -1,6 +1,36 @@
-# Génération du fichier Excel des Inscriptions 
-# Sauvegarde en memoire du fichier Excel
-# Pour un envoi par mail selon l'algo suivant  
+"""
+1. Récupère dans la base  :
+
+inscriptions ;  suppressions.
+rows = fetch_inscriptions()
+deleted_rows = get_deleted_inscriptions()
+
+2. Prépare les données
+build_data(rows)
+Organise les joueurs et les tableaux pour l'export.
+
+3. Construit le classeur Excel
+Je crée toutes les feuilles :
+Joueurs
+Tableaux
+Une feuille par tableau
+Prix
+Suppression
+
+4. Génère le fichier en mémoire
+stream = BytesIO()
+wb.save(stream)
+Aucun fichier .xlsx n'est créé sur le disque.
+Je garde Le classeur en mémoire dans un objet BytesIO.
+
+5. Retourne le flux
+Il renvoie :return stream
+et je peux par la suite 
+téléchargé par FastAPI ;
+ou envoyé en pièce jointe d'un email ;
+ou sauvegardé si besoin.
+
+"""
 
 from openpyxl import Workbook
 from export.db import fetch_inscriptions, get_deleted_inscriptions

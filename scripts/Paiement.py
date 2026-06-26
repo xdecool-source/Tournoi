@@ -1,6 +1,6 @@
 """
-comparatif.py
 Programme principal du comparatif Tournoi / HelloAsso
+
 """
 
 import os

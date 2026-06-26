@@ -1,16 +1,18 @@
-# connexion PostgreSQL
-# création des tables multi-jour
-# gestion des inscriptions
-# gestion des tableaux et listes d’attente
-# déclenchement des exports / mails admin
+"""
+connexion PostgreSQL
+création des tables multi-jour
+gestion des inscriptions
+gestion des tableaux et listes d’attente
+déclenchement des exports / mails admin
 
-import asyncpg, os
+"""
+
+import asyncpg, os, time
 
 from datetime import datetime, date, timezone
 from core.config import TABLEAUX
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
-import time 
 
 load_dotenv(".env", override=False)
         
@@ -22,7 +24,6 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
     
-
 # Gestion de le concordance des places Valide/Attente en fonction modification de Config.py
     
 async def reaffectation_tableau(t):
@@ -30,7 +31,6 @@ async def reaffectation_tableau(t):
     async with pool.acquire() as conn:
         conf = TABLEAUX[t]
         while True:
-
             ok_count = await conn.fetchval("""
                 SELECT COUNT(*)
                 FROM inscription_tableaux
@@ -70,14 +70,13 @@ async def reaffectation_all():
 
 # fin de cette gestion 
     
-    
 pool = None
 
 #  init pool
 
 async def init_db_pool():
+    
     global pool
-
     if DATABASE_URL and "localhost" in DATABASE_URL:
         # Local (pas de SSL)
         pool = await asyncpg.create_pool(
@@ -95,7 +94,6 @@ async def init_db_pool():
             ssl="require"
         )
 # print(" Creation tables si besoin")
-
 #  init DB
 
 async def init_db():
@@ -240,18 +238,10 @@ async def tableau_status(t):
         return "ATTENTE"
     return "FULL"
 
-
 #  sauvegarde inscription
     
 async def save_inscription(data):
     start = time.time() # xxxx
-    """
-    print(
-       "SAVE_INSCRIPTION =",
-       round((time.time()-start)*1000),
-       "ms"
-    )
-    """
     
     async with pool.acquire() as conn:
         async with conn.transaction():   # transaction globale
@@ -277,7 +267,6 @@ async def save_inscription(data):
                 raise ValueError("Licence déjà inscrite")  
 
             # print("INSERT INSCRIPTION =", round((time.time()-t0)*1000), "ms")
-        
             # 2 insertion tableaux avec verrouillage
             
             for t in data["tableaux"]:
@@ -287,20 +276,9 @@ async def save_inscription(data):
                 await conn.execute(
                 "SELECT pg_advisory_xact_lock(hashtext($1))",
                 t
-                )
-                
-                """  
-                print(
-                    f"LOCK {t} =",
-                    round((time.time()-t0)*1000),
-                    "ms"
-                )
-                """
-                
+                )                
                 t0 = time.time()
-
                 conf = TABLEAUX[t]
-
                 counts = await conn.fetchrow("""
                     SELECT
                         COUNT(*) FILTER (WHERE statut='OK') AS ok_count,
@@ -308,17 +286,8 @@ async def save_inscription(data):
                     FROM inscription_tableaux
                     WHERE tableau=$1
                 """, t)
-
                 used_ok = counts["ok_count"]
                 used_att = counts["attente_count"]
-
-                """
-                print(
-                    f"COUNTS {t} =",
-                    round((time.time()-t0)*1000),
-                    "ms"
-                )
-                """
 
                 if used_ok < conf["capacite"]:
                     status = "OK"
@@ -326,10 +295,7 @@ async def save_inscription(data):
                     status = "ATTENTE"
                 else:
                     raise ValueError(f"{t} complet")
-                    
-                    
-            
-                
+    
                 t0 = time.time()
                 await conn.execute("""
                 INSERT INTO inscription_tableaux
@@ -342,14 +308,6 @@ async def save_inscription(data):
                 ) 
                 # print(f"INSERT_TABLEAU {t} =", round((time.time()-t0)*1000), "ms")
             
-            """
-            print(
-                "SAVE_INSCRIPTION TOTAL =",
-                round((time.time()-start)*1000),
-                "ms"
-            ) 
-            """ 
-
 #  promotion attente
 
 async def promote_attente(t):
@@ -393,7 +351,6 @@ async def get_conn():
     finally:
         await pool.release(conn)
 
-
 #  Check Envoi 
 
 async def should_send_admin_mail(conn, current_count):
@@ -403,6 +360,7 @@ async def should_send_admin_mail(conn, current_count):
         FROM mail_control
         WHERE id=1
     """)
+    
     # premier envoi si la ligne n'existe pas
     
     if not row:
@@ -428,7 +386,6 @@ async def update_admin_mail_status(conn, current_count):
 async def init_archive_trigger():
 
     async with pool.acquire() as conn:
-
         trigger_exists = await conn.fetchval("""
             SELECT EXISTS (
                 SELECT 1
@@ -440,11 +397,9 @@ async def init_archive_trigger():
         if not trigger_exists:
 
             await conn.execute("""
-
             CREATE OR REPLACE FUNCTION archive_inscription()
             RETURNS TRIGGER AS $func$
             BEGIN
-
                 INSERT INTO delete_inscrit (dossard, licence, nom, prenom, club, points, paiement,
                 mail, date_inscription, date_suppression)
                 VALUES (OLD.dossard, OLD.licence, OLD.nom, OLD.prenom, OLD.club,OLD.points,OLD.paiement,
@@ -459,7 +414,6 @@ async def init_archive_trigger():
             BEFORE DELETE ON inscriptions
             FOR EACH ROW
             EXECUTE FUNCTION archive_inscription();
-
             """)
 
             print(" Trigger créé")
@@ -478,7 +432,7 @@ async def log_email(
  
 # reveil de la base             
 async def wake_db():
+    
     async with pool.acquire() as conn:
         await conn.execute("SELECT 1")
-        
-            
+              

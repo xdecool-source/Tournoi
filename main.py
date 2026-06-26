@@ -1,3 +1,11 @@
+"""
+démarre l'application, initialise la base  et affiche la configuration.
+Création de  l'application FastAPI, 
+enregistre les routes, les fichiers statiques
+GET (/ping) pour railway et neon
+
+"""
+
 from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
 from contextlib import asynccontextmanager
@@ -8,8 +16,6 @@ from services.db import wake_db
 
 import asyncio
 import os
-
-
 
 from dotenv import load_dotenv
 load_dotenv()    

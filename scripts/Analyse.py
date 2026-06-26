@@ -1,7 +1,6 @@
 """
-comparatif.py
-
 Programme principal du comparatif Tournoi / HelloAsso
+
 """
 
 import os
@@ -12,7 +11,6 @@ from lecture_tournoi import lire_tournoi
 from lecture_helloasso import lire_helloasso
 from comparaison import comparer
 from excel import creer_excel
-
 
 def choisir_fichier(titre):
     downloads = os.path.join(
@@ -31,7 +29,6 @@ def choisir_fichier(titre):
 
     return fichier
 
-
 def main():
 
     root = Tk()
@@ -40,7 +37,6 @@ def main():
     print("=" * 60)
     print("COMPARATIF TOURNOI / HELLOASSO")
     print("=" * 60)
-
     print()
     print("Sélection du fichier Inscription_Tournoi...date")
 
@@ -49,7 +45,6 @@ def main():
     )
 
     print(f"Fichier sélectionné : {os.path.basename(fichier_tournoi)}")
-
     print()
     print("Sélection du fichier export-paiements... date : de HelloAsso")
     print()
@@ -98,5 +93,3 @@ if __name__ == "__main__":
         print()
         print("ERREUR :", e)
         input("Appuyez sur Entrée pour quitter...")
-
-

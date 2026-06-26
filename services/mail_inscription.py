@@ -1,11 +1,20 @@
-# envoie un mail de confirmation d’inscription.
-# charge un template Jinja2
-# récupère les tableaux choisis
-# vérifie leur statut en base de données (OK / attente / refus)
-# Choisit comment envoyer le mail
-# SMTP en dev/local
-# API Brevo en production
-# Envoie le mail au joueur
+"""
+envoie un mail de confirmation d’inscription.
+ccharge le bon template Jinja2 ;
+remplit les informations du joueur ;
+ajoute les tableaux, les statuts (OK, ATTENTE, etc.) ;
+calcule le montant total.
+
+Selon le type de mail :
+création ; modification ; suppression.
+
+Mode d'envoi
+En développement : SMTP Brevo
+En production : API Brevo
+
+Après envoi, on écrit un enregistrement en base :
+mail a été envoyé ; quel type de mail ; quand ;  messageId Brevo (ou SMTP_DEV).
+"""
 
 import os
 import httpx

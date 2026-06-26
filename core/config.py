@@ -1,11 +1,13 @@
-# Config de L"Appli : Parametres
-######  Si chgt des ses parametres : Arret server et reload ceci pour le mode local ou distant FFTT
-######  python -m uvicorn main:app --reload
-# "T7": {"min": 500, "max": 1999, "capacite": 8, "attente": 2, "prix": 8, "jour": {
-#         "id": 2,
-#         "label": "Lundi"
-#     }},
-# "id": 1 = Dimanche "id": 2 = lundi etc
+"""
+Config de L"Appli : Parametres
+  Si chgt des ses parametres : Arret server et reload ceci pour le mode local ou distant FFTT
+  python -m uvicorn main:app --reload
+"T7": {"min": 500, "max": 1999, "capacite": 8, "attente": 2, "prix": 8, "jour": {
+        "id": 2,
+        "label": "Lundi"
+    }},
+"id": 1 = Dimanche "id": 2 = lundi etc
+"""
 
 import os
 from dotenv import load_dotenv

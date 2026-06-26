@@ -1,4 +1,11 @@
-# envoie un code aléatoire pour inscription par mail 
+"""
+envoie un code aléatoire pour inscription par mail 
+Produit un code aléatoire à 6 chiffres.
+associe le code à une adresse email ;
+Garde en vie 5 minutes ;
+interdit de renvoyer un nouveau code avant expiration.
+
+"""
 
 import os
 import random

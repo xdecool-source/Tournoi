@@ -1,3 +1,23 @@
+"""
+get_token()
+authentifie auprès de HelloAsso avec
+HELLOASSO_CLIENT_ID
+HELLOASSO_CLIENT_SECRET
+et récupère un jeton OAuth2 (access_token).
+
+create_checkout()
+fonction construit une demande de paiement.
+envoie à HelloAsso :
+
+le montant 
+le nom du joueur 
+son email 
+sa licence 
+ses tableaux 
+les URL de retour (backUrl, returnUrl, errorUrl).
+
+"""
+
 import os
 import httpx
 
@@ -84,4 +104,3 @@ async def create_checkout(montant, data):
     checkout = response.json()
     # print("HelloAsso Réponse =", checkout)
     return checkout
-
