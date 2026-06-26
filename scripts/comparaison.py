@@ -1,6 +1,5 @@
 """
 comparaison.py
-
 Comparaison des données Tournoi / HelloAsso
 """
 
@@ -8,7 +7,6 @@ Comparaison des données Tournoi / HelloAsso
 def comparer(tournoi, hello):
     """
     Compare les inscriptions tournoi et les paiements HelloAsso.
-
     Retourne :
         comparatif : liste de dictionnaires
         stats : statistiques globales

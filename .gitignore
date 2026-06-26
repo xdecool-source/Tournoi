@@ -1,9 +1,6 @@
 *.pyc
 .env
-.env_smtp
-.env_brevo
-serie.txt
-Database/
-DB/
+DB_export/export/*
 A_Info/
 __pycache__/
+scripts_Database/*

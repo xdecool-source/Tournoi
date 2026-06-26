@@ -1,6 +1,5 @@
 """
 excel.py
-
 Création du fichier Excel de comparaison.
 """
 
@@ -8,12 +7,11 @@ from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Font
 from utils import ajuster_largeur_colonnes
 
-
-VERT = PatternFill(fill_type="solid", fgColor="C6EFCE")
-ORANGE = PatternFill(fill_type="solid", fgColor="FFE699")
-ROUGE = PatternFill(fill_type="solid", fgColor="FFC7CE")
-BLEU = PatternFill(fill_type="solid", fgColor="D9EAD3")
-ENTETE = PatternFill(fill_type="solid", fgColor="4472C4")
+VERT = PatternFill(fill_type="solid", fgColor="34EB57")
+ORANGE = PatternFill(fill_type="solid", fgColor="CFAD1F")
+ROUGE = PatternFill(fill_type="solid", fgColor="EB132E")
+BLEU = PatternFill(fill_type="solid", fgColor="5207F7")
+ENTETE = PatternFill(fill_type="solid", fgColor="0E3C8F")
 
 
 def creer_excel(comparatif, stats, fichier):

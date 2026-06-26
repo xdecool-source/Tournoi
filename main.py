@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
-from api.routes import router
 from contextlib import asynccontextmanager
 from services.db import init_db_pool, init_db, init_archive_trigger, reaffectation_all
 from fastapi.staticfiles import StaticFiles
@@ -9,6 +8,8 @@ from services.db import wake_db
 
 import asyncio
 import os
+
+
 
 from dotenv import load_dotenv
 load_dotenv()    
@@ -44,7 +45,24 @@ async def lifespan(app: FastAPI):
     print(" Application arrêt")
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(router)
+
+from api import (
+    home,
+    licence,
+    inscription,
+    admin,
+    export,
+    verification,
+    helloasso,
+)
+
+app.include_router(home.router)
+app.include_router(licence.router)
+app.include_router(inscription.router)
+app.include_router(admin.router)
+app.include_router(export.router)
+app.include_router(verification.router)
+app.include_router(helloasso.router)
 app.mount("/static", StaticFiles(directory="userinterface"), name="static")
 
 # Reveil Railway et Neon
