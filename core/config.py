@@ -24,54 +24,31 @@ ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 TABLEAUX = {
     "T1": {"min": 500, "max": 799,"label": "T 500-799", "capacite": 48,
-        "attente": 3, "prix": 8, "jour": 
-        { "id": 1,
-        "label": "Dimanche",
-        "hour": "11h00"
-        }
+        "attente": 3, "prix": 8, "Comptage": True, 
+        "jour":  { "id": 1, "label": "Dimanche", "hour": "11h00" }
         },
     "T2": {"min": 500, "max": 999,"label": "T 500-999", "capacite": 48,
-        "attente": 3, "prix": 8, "jour": 
-        {"id": 1,
-        "label": "Dimanche",
-        "hour": "8h30"
-        }
+        "attente": 3, "prix": 8, "Comptage": True, 
+        "jour": { "id": 1,"label": "Dimanche","hour": "8h30" }
         },
     "T3": {"min": 500, "max": 1299,"label": "T 500-1299", "capacite": 48,
-        "attente": 3, "prix": 8, "jour": 
-        {"id": 1,
-        "label": "Dimanche",
-        "hour": "14h30"
-        }
+        "attente": 3, "prix": 8, "Comptage": True,
+        "jour": { "id": 1,"label": "Dimanche","hour": "14h30" }
         },
     "T4": {"min": 700, "max": 1599,"label": "T 700-1599", "capacite": 48,
-        "attente": 3, "prix": 8, "jour": 
-        {"id": 1,
-        "label": "Dimanche",
-        "hour": "9h45"
-        }
+        "attente": 3, "prix": 8, "Comptage": True, 
+        "jour": { "id": 1,"label": "Dimanche","hour": "9h45" }
         },
     "T5": {"min": 800, "max": 1999, "label": "T 800-1999", "capacite": 48,
-        "attente": 3, "prix": 9, "jour":
-        {"id": 1,
-        "label": "Dimanche",
-        "hour": "12h00"
-        }
-        },
+        "attente": 3, "prix": 9, "Comptage": True,
+        "jour":{ "id": 1,"label": "Dimanche","hour": "12h00" },
+        },   
     "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 50,
-        "attente": 5, "prix": 10, "jour": 
-        {"id": 1,
-        "label": "Dimanche",
-        "hour": "13h00"
-        }
+        "attente": 5, "prix": 10, "Comptage": True, 
+        "jour": { "id": 1,"label": "Dimanche","hour": "13h00" }
         },
     "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 48,
-        "attente": 5, "prix": 9, "jour": 
-        {"id": 1,
-        "label": "Dimanche",
-        "hour": "14h00"
-        }
+        "attente": 5, "prix": 9, "Comptage": False,
+        "jour": { "id": 1,"label": "Dimanche","hour": "14h00"}
         },
-    
 }
-

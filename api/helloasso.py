@@ -111,19 +111,6 @@ if HELLOASSO_CARTE:
 
         )
 
-        # invalider le cache des places
-        #
-        # IMPORTANT :
-        # si tu gardes places_cache dans
-        # api.inscription il faudra faire :
-        #
-        # import api.inscription as inscription
-        # inscription.places_cache = None
-        #
-        # ou mieux :
-        # déplacer le cache dans un module
-        # api/cache.py
-
         print(
             "Inscription enregistrée"
         )

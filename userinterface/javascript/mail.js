@@ -98,6 +98,7 @@ export async function verifyCode(){
         if(emailRow) emailRow.style.display="none";
         if(codeRow) codeRow.style.display="none";
 
+        document.getElementById("selectionTitre").classList.remove("hidden");
         document.getElementById("tableauxContainer").classList.remove("hidden");
 
         const btnValider = document.getElementById("btnValider");
@@ -133,9 +134,8 @@ export async function verifyCode(){
         if(emailRow) emailRow.style.display="none";
         if(codeRow) codeRow.style.display="none";
 
-        document
-          .getElementById("tableauxContainer")
-          .classList.remove("hidden");
+        document.getElementById("selectionTitre").classList.remove("hidden");
+        document.getElementById("tableauxContainer").classList.remove("hidden");
 
         const btnValider = document.getElementById("btnValider");
         if(btnValider) btnValider.style.display="block";

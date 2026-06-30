@@ -48,6 +48,11 @@ if(res) res.textContent = "";
     if(emailRow) emailRow.style.display = "flex";
     if(codeRow) codeRow.style.display = "flex";
 
+    // cacher titre sélection
+
+    const titre = document.getElementById("selectionTitre");
+    if (titre) titre.classList.add("hidden");
+
     // cacher tableaux
 
     const tableaux = document.getElementById("tableauxContainer");

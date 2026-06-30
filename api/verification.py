@@ -82,6 +82,7 @@ async def send_code(
 
 async def verify_code_api(data: dict):
 
+    # print("ENVCODE =", ENVCODE)
     # bypass en développement
     if ENVCODE == "dev":
         return {

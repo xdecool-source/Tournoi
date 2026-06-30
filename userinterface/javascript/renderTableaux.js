@@ -1,5 +1,7 @@
 // Génère l’interface des tableaux
 //  (avec règles, états, sélection limitée et visuel dynamique).
+// limitSelection : selection de tableau
+// renderTableaux : gestion tableau
 
 function escapeHTML(str){
     return String(str)
@@ -130,21 +132,28 @@ export function limitSelection(e){
     const current = e.target;
     const checked = Array.from(
         document.querySelectorAll("#tableauxContainer input:checked")
-    );
-    // console.log("CHECKED =", checked.length);
-    const counts = {};
-    const grouped = {}; // en plus sinon bug si nbre tableau
-    checked.forEach(cb => {
-        // const c = window.TABLEAUX_GLOBAL?.[cb.value];
-        const c = tableauxGlobal?.[cb.value];
-        const jour = c?.jour?.label?.toLowerCase();
-        // console.log("JOUR =", jour);
-        if(!jour) return;
-        counts[jour] = (counts[jour] || 0) + 1;
-        
-        if(!grouped[jour]) grouped[jour] = [];
-        grouped[jour].push(cb);
-    });
+        );
+
+        const counts = {};
+        const grouped = {};
+
+        checked.forEach(cb => {
+
+            const c = tableauxGlobal?.[cb.value];
+
+            // Ne compte pas les tableaux exclus du quota
+            if (c?.Comptage === false) {
+                return;
+            }
+
+            const jour = c?.jour?.label?.toLowerCase();
+            if (!jour) return;
+
+            counts[jour] = (counts[jour] || 0) + 1;
+
+            if (!grouped[jour]) grouped[jour] = [];
+            grouped[jour].push(cb);
+        });
 
     // console.log("COUNTS =", counts);
     // console.log("LIMIT =", NBRE_TABLEAU);
@@ -156,7 +165,6 @@ export function limitSelection(e){
     }
 }
 }
-
 
 window.limitSelection = limitSelection;
 

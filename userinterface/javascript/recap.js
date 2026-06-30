@@ -87,7 +87,6 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
                 background:#f8f8f8;
                 border-radius:8px;
             ">
-
                 <div style="margin-bottom:4px;">
                     <b>${escapeHTML(t)}</b>
                     ${escapeHTML(range)}
@@ -98,7 +97,6 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
                 <div style="color:${color}; font-weight:bold;">
                     ${escapeHTML(txt)}
                 </div>
-
             </div>
         `;
     });
@@ -120,16 +118,15 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
                     ❌ Annulation Inscription
                 </b>
                 <br><br>
-
                 <b>Pongiste ${escapeHTML(player.prenom)} ${escapeHTML(player.nom)}</b><br><br>
                 N° de Licence: <b>${escapeHTML(player.licence)}</b><br>
                 Licencié au Club: ${escapeHTML(player.club)}<br>
                 Ayant ${escapeHTML(player.points)} Points dans cette Phase<br>
                 E-mail: ${escapeHTML(email)}<br><br>
-                Nous avons supprimé tous vos tableaux
+                A votre demande nous avons supprimé tous vos tableaux
                 <br><br>
                 <b style="color:#007bff;">
-                    Un mail va suivre afin de confirmer votre annulation
+                    Un e-mail de confirmation d'annulation vient de vous être envoyé.
                 </b>
             `;
 
@@ -137,27 +134,23 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
 
             recapContent.innerHTML = `
                 <b>${escapeHTML(player.prenom)} ${escapeHTML(player.nom)}</b><br>
-                N° de Licence: <b>${escapeHTML(player.licence)}</b><br>
-                Licencié au Club: ${escapeHTML(player.club)}<br>
+                N° de Licence : <b>${escapeHTML(player.licence)}</b><br>
+                Licencié au Club : ${escapeHTML(player.club)}<br>
                 Ayant ${escapeHTML(player.points)} Points dans cette Phase<br>
-                Votre Adresse Mail: ${escapeHTML(email)}<br><br>
-
+                E-mail : ${escapeHTML(email)}<br><br>
                 <b>Liste des tableaux validés</b><br><br>
                 ${tableauxHTML}
-
                 <b style="font-size:18px; color:#28a745;">
                     Total : ${total}€
                 </b>
                 <br><br>
-
                 ${helloassoCarte && typeMail === "creation" ? `
                     <b style="color:#007bff;">
                         Votre inscription sera confirmée après validation du paiement.
-                        <br>
+                        <br><br>
                         Le paiement s'ouvrira dans un nouvel onglet HelloAsso.
                     </b>
                     <br><br>
-
                     <button
                         id="btnHelloAsso"
                         style="
@@ -176,12 +169,11 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
                 ` : `
                     <b style="color:#28a745;">
                         Votre inscription est enregistrée.
-                        <br>
-                        Vous recevrez un email de confirmation.
+                        <br><br>
+                        Un e-mail de confirmation vient de vous être envoyé.
                     </b>
                 `}
             `;
-
            
             if (helloassoCarte && typeMail === "creation") {
 
@@ -217,5 +209,4 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
         recapCard.style.overflow = "visible";
         recapCard.scrollIntoView({ behavior: "smooth" }); 
     }
-
 }

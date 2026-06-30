@@ -162,8 +162,9 @@ async function check(){
                 }
                 // masquer tableaux
 
-                document.getElementById("tableauxContainer").innerHTML="";
-
+                // xx document.getElementById("tableauxContainer").innerHTML="";
+                document.getElementById("selectionTitre").classList.remove("hidden");
+                document.getElementById("tableauxContainer").classList.remove("hidden");
                 // masquer inscription
 
                 const card = document.getElementById("inscriptionCard");
@@ -276,8 +277,8 @@ async function check(){
         }
     }, 250);
 }
-window.check = check;
 
+window.check = check;
 async function updateAdminButtons(){
 
     const res = await fetch("/me", {
