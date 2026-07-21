@@ -39,8 +39,8 @@ async def send_code(
 
     html = f"""
     <h2>
-        Voici votre code de vérification
-        pour valider votre mail
+        Voici votre code de vérification 
+        pour valider votre connexion
         <h1>{code}</h1>
     </h2>
     <p>

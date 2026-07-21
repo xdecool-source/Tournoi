@@ -1,6 +1,6 @@
 *.pyc
 .env
-DB_export/*
+DB/*
 A_Info/
 __pycache__/
 scripts_Database/*

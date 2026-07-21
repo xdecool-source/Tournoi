@@ -46,9 +46,6 @@ async function init(){
 
      // focus automatique licence
 
-    setTimeout(()=>{
-        document.getElementById("licence")?.focus();
-    },200);
 
     // déclenche check quand on appuie sur Entrée
 
@@ -184,17 +181,23 @@ async function check(){
             const card = document.getElementById("inscriptionCard");
             if(card){
                 card.classList.remove("hidden");
-                card.style.display="block";
             }
+            
             const mailInput = document.getElementById("email");
             if(mailInput){
                 mailInput.value = data.mail || "";
 
                 // focus automatique email
 
-                setTimeout(()=>{
-                    mailInput.focus();
-                },120);
+                requestAnimationFrame(() => {
+
+                    try{
+                        mailInput.focus({preventScroll:true});
+                    }catch(e){
+                        mailInput.focus();
+                    }
+
+                });
             }
     
             await loadPlaces();
