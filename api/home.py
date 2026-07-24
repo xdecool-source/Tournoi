@@ -54,6 +54,7 @@ async def home(request: Request):
             "NOM_TOURNOI": NOM_TOURNOI,
             "FROM_EMAIL": FROM_EMAIL,
             "ORIGINE_EMAIL": ORIGINE_EMAIL,
+            "HELLOASSO_CARTE": HELLOASSO_CARTE
         },
     )
 

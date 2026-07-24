@@ -75,7 +75,7 @@ def generate():
     #  libere memoire
         
         wb.close()  
-        print(" Excel généré en mémoire")
+        # print("Excel Généré en mémoire")
         return stream
 
     except Exception as e:

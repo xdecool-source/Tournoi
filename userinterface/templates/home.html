@@ -12,7 +12,8 @@
             NBRE_TABLEAU: "{{ NBRE_TABLEAU }}",
             DATE_TOURNOI: "{{ DATE_TOURNOI }}",
             DATE_TOURNOI_JOUR: "{{ DATE_TOURNOI_JOUR }}",
-            NOM_TOURNOI: "{{ NOM_TOURNOI}}"
+            NOM_TOURNOI: "{{ NOM_TOURNOI}}",
+            HELLOASSO_CARTE: "{{ HELLOASSO_CARTE}}"
         };
     </script>
     <link rel="stylesheet" href="/static/css/style.css?v=136">
@@ -31,14 +32,23 @@
                     id="licenceCard"
                     class="card"
                 >
-                    <h2 style="color:red;">
-                        Verifie tes e-mails dans les courriers indésirables
+                    <h2 style="color:rgb(219, 110, 110);">
+                        ⚠️ Verifie tes e-mails dans les courriers indésirables
                     </h2>
-                    <h2>
-                        Inscription Tournoi {{ NOM_TOURNOI }}
+                    <h2 style="color:rgb(70, 10, 148);">
+                        🏓 Inscription Tournoi {{ NOM_TOURNOI }}
                     </h2>
+                    {% if HELLOASSO_CARTE %}
+                    <p style="color:#2e7d32;font-weight:bold;">
+                        💳 Paiement uniquement en ligne par carte bancaire.
+                    </p>
+                    {% else %}
+                    <p style="color:#d97706;font-weight:bold;">
+                        💶 Paiement sur place.
+                    </p>
+                    {% endif %}
                     <p>
-                        Du {{ DATE_TOURNOI_JOUR }}
+                        📅 Du {{ DATE_TOURNOI_JOUR }} 
                         <span
                             style="
                                 color:#2e7d32;
@@ -108,13 +118,13 @@
                     <div class="code-row">
                         <input
                             id="verificationCode"
-                            placeholder="Saisir le Code du mail"
+                            placeholder="Code reçu de ton mail"
                         >
                         <button
                             class="btn-code"
                             onclick="verifyCode()"
                         >
-                            Vérifie le code
+                            Valide le code
                         </button>
                     </div>
                     <div id="selectionTitre" class="hidden">

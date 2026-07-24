@@ -47,17 +47,14 @@ async def send_code(
         Ce code expire dans 5 minutes.
     </p>
     <p>
-        Avec le mot de passe ci-dessous,
-        vous pouvez consulter la liste
-        des inscrits :
+        Une fois votre inscription validée
+        et avec ce mot de passe <b>{INSCRIT_PASS}</b>
+        vous pourrez consulter la liste
+        des joueurs inscrits :
     </p>
-    <p>
-        <b>{INSCRIT_PASS}</b>
-    </p>
-    <p>
-        Il suffit de saisir votre licence
-        puis de cliquer sur
-        "Liste des inscrits".
+    <p> 
+        Pour cela relancer l'application Inscription et saissez votre licence
+        puis cliquer sur "Liste des inscrits" en bas à droite
     </p>
     <p>
         Si vous n'êtes pas à l'origine

@@ -15,6 +15,7 @@ load_dotenv()    # si existe .env et pas de variable globale alors .env
 
 MOCK_FFTT = os.getenv("MOCK_FFTT", "true").lower() == "true"
 ENV = os.getenv("ENV", "prod").lower() == "prod"
+ENVCODE = os.getenv("ENVCODE", "dev").lower() == "dev"
 HELLOASSO_CARTE= os.getenv("HELLOASSO_CARTE", "true").lower() == "true"
 BASE_URL = os.getenv("BASE_URL", "")
 APP_ID = os.getenv("APP_ID", "")

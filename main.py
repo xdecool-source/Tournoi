@@ -11,7 +11,7 @@ from fastapi.templating import Jinja2Templates
 from contextlib import asynccontextmanager
 from services.db import init_db_pool, init_db, init_archive_trigger, reaffectation_all
 from fastapi.staticfiles import StaticFiles
-from core.config import MOCK_FFTT, ENV, HELLOASSO_CARTE
+from core.config import MOCK_FFTT, ENV, HELLOASSO_CARTE, ENVCODE
 from services.db import wake_db
 
 import asyncio
@@ -26,17 +26,20 @@ load_dotenv()
 async def lifespan(app: FastAPI):
     
     print("")
-    print(" Application démarrage")
+    print(" Gestion Tournoi : Startup")
     print("")
     
     if MOCK_FFTT: {print( " Mode simulation licence : MOCK_FFTT = ", os.getenv("MOCK_FFTT"))}
     else: { print ( " Connexion FFTT : MOCK_FFTT = ", os.getenv("MOCK_FFTT"))}
     
+    if HELLOASSO_CARTE: {print( " Paiement par carte avec helloAsso Impossible en local car mode HTTP : HELLOASSO_CARTE = ", os.getenv("HELLOASSO_CARTE"))}
+    else: { print ( " Pas de paiement avec HelloAsso : HELLOASSO_CARTE = ", os.getenv("HELLOASSO_CARTE"))}
+    
     if ENV: {print( " On utilise Messagerie APi Brevo : ENV = ", os.getenv("ENV"))}
     else: { print ( " On utilise Messagerie SMTP Mail de Brevo : ENV = ", os.getenv("ENV"))}
     
-    if HELLOASSO_CARTE: {print( " Paiement par carte avec helloAsso : HELLOASSO_CARTE = ", os.getenv("HELLOASSO_CARTE"))}
-    else: { print ( " Pas de paiement avec HelloAsso : HELLOASSO_CARTE = ", os.getenv("HELLOASSO_CARTE"))}
+    if ENVCODE: {print( " Bypass validation code = ", os.getenv("ENVCODE"))}
+    else: { print ( " On utilise la Validation du code = ", os.getenv("ENVCODE"))}
     
     print("")
        
