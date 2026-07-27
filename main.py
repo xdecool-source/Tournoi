@@ -26,7 +26,7 @@ load_dotenv()
 async def lifespan(app: FastAPI):
     
     print("")
-    print(" Gestion Tournoi : Startup")
+    print(" 🟢 Gestion Tournoi : Startup")
     print("")
     
     if MOCK_FFTT: {print( " Mode simulation licence : MOCK_FFTT = ", os.getenv("MOCK_FFTT"))}
@@ -51,7 +51,7 @@ async def lifespan(app: FastAPI):
     yield
     
     # arrêt propre
-    print(" Application arrêt")
+    print(" 🔴 Application arrêt")
 
 app = FastAPI(lifespan=lifespan)
 
