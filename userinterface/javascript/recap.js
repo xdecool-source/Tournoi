@@ -146,9 +146,10 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
                 <br><br>
                 ${helloassoCarte && typeMail === "creation" ? `
                     <b style="color:#007bff;">
-                        Votre inscription sera confirmée après validation du paiement.
+                        Le paiement s'effectue en cliquant sur le bouton jaune Payer.
                         <br><br>
-                        Le paiement s'ouvrira dans un nouvel onglet HelloAsso.
+                        Votre inscription ne sera enregistrée qu'après la validation de votre paiement.
+                        
                     </b>
                     <br><br>
                     <button
