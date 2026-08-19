@@ -38,10 +38,14 @@ async def send_code(
         }
 
     html = f"""
+    <div style="text-align: center; margin-bottom: 20px;">
+        <img src="https://pub-f311e14cef6c4ce2a75755ef8328c651.r2.dev/doc/Tournoi.jpg"
+            alt="Logo"
+            style="max-width: 600px; height: auto;">
+    </div>
+    
     <h2>
-        Voici votre code de vérification 
-        pour valider votre connexion
-        <h1>{code}</h1>
+        Votre code de connexion est : {code}
     </h2>
     <p>
         Ce code expire dans 5 minutes.
@@ -57,9 +61,7 @@ async def send_code(
         puis cliquer sur "Liste des inscrits" en bas à droite
     </p>
     <p>
-        Si vous n'êtes pas à l'origine
-        de cette demande,
-        ignorez simplement cet email.
+        Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer ce message.
     </p>
     """
 
