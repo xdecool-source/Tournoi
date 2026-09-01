@@ -238,7 +238,7 @@ async function check(){
                     // variable FROM_EMAIL initiliser dans config.js
                     if (!isAdmin) {
                         msg.innerHTML = `
-                            <h2 style="font-size: 0.9rem;">Vous êtes déjà inscrit.</h2>
+                            <h2 style="font-size: 0.9rem;">Vous êtes inscrit.</h2>
                             Vérifiez vos choix comme suit :  
                             <span style="color:#007bff;">☑️</span> 
                             <br>

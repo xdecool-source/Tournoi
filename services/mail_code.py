@@ -143,14 +143,14 @@ async def send_brevo_email(to_email, subject, html):
         )
 
     duration = round((time.time() - start) * 1000)
-    print(f"BREVO API {duration} ms - status={r.status_code}")
+    # print(f"BREVO API {duration} ms - status={r.status_code}")
     r.raise_for_status()
 
 # Routeur Mail 
 
 async def send_email(to_email, subject, html):
     
-    print("Mode Mail =", "Api brevo " if ENV == "prod" else "smtp brevo")
+    # print("Mode Mail =", "Api brevo " if ENV == "prod" else "smtp brevo")
     if ENV == "prod":
         await send_brevo_email(to_email, subject, html)
     else:
