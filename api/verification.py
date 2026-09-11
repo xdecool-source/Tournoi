@@ -45,20 +45,10 @@ async def send_code(
     </div>
     
     <h2>
-        Votre code de connexion est : {code}
+        Votre code de connexion pour votre inscription est : {code}
     </h2>
     <p>
         Ce code expire dans 5 minutes.
-    </p>
-    <p>
-        Une fois votre inscription validée
-        et avec ce mot de passe <b>{INSCRIT_PASS}</b>
-        vous pourrez consulter la liste
-        des joueurs inscrits :
-    </p>
-    <p> 
-        Pour cela relancer l'application Inscription et saissez votre licence
-        puis cliquer sur "Liste des inscrits" en bas à droite
     </p>
     <p>
         Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer ce message.

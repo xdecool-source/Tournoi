@@ -64,7 +64,8 @@ async def home(request: Request):
 
 async def get_config():
     return {
-        "helloasso_carte": HELLOASSO_CARTE
+        "helloasso_carte": HELLOASSO_CARTE,
+        "INSCRIT_PASS": os.getenv("INSCRIT_PASS", "")
     }
 
 # Tableaux

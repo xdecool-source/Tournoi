@@ -32,8 +32,9 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
     // 2 reload config et places temps réel
 
     const conf = await fetch("/tableaux").then(r => r.json());
-    const { helloasso_carte: helloassoCarte } =
-        await fetch("/config").then(r => r.json());
+    const { helloasso_carte: helloassoCarte,
+            INSCRIT_PASS: inscritPass
+    } = await fetch("/config").then(r => r.json());
     // console.log("helloassoCarte =", helloassoCarte);
     const placesNow = await fetch("/places").then(r => r.json());
 
@@ -169,9 +170,9 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
                     </button>
                 ` : `
                     <b style="color:#28a745;">
-                        Votre inscription est enregistrée.
-                        <br><br>
-                        Un e-mail de confirmation vient de vous être envoyé.
+                        Votre inscription est enregistrée.<br>
+                        Un e-mail de confirmation vient de vous être envoyé.<br>
+                        Liste des inscrits : Mot de passe <b>${escapeHTML(inscritPass || "")}</b>.<br>
                     </b>
                 `}
             `;

@@ -56,6 +56,7 @@ router = APIRouter()
 # Variables
 
 HELLOASSO_CARTE = (os.getenv("HELLOASSO_CARTE", "true").lower() == "true")
+INSCRIT_PASS = os.getenv("INSCRIT_PASS")
 
 # Cache Places
 

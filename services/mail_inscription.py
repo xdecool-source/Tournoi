@@ -54,6 +54,7 @@ DATE_TOURNOI = os.getenv("DATE_TOURNOI")
 DATE_TOURNOI_JOUR = os.getenv("DATE_TOURNOI_JOUR")
 NOM_TOURNOI = os.getenv("NOM_TOURNOI")
 HELLOASSO_CARTE = (os.getenv("HELLOASSO_CARTE", "true").lower() == "true")
+INSCRIT_PASS = os.getenv("INSCRIT_PASS")
 
 env = Environment(loader=FileSystemLoader("userinterface/templates"))
 
@@ -91,7 +92,8 @@ async def build_email_html(data: dict, type_mail: str):
             reste_inscriptions=reste_inscriptions,
             FROM_EMAIL=FROM_EMAIL,
             ORIGINE_EMAIL=ORIGINE_EMAIL,
-            HELLOASSO_CARTE=HELLOASSO_CARTE,
+            HELLOASSO_CARTE=HELLOASSO_CARTE,    
+            INSCRIT_PASS=INSCRIT_PASS, 
             type_mail=type_mail  
         )
         return html_content
@@ -143,10 +145,17 @@ async def build_email_html(data: dict, type_mail: str):
             jour = conf.get("jour", {}).get("label", "")
             heure = conf.get("jour", {}).get("hour", "")
 
+           # if min_pts is None and max_pts is None:
+            #    ligne = f"{t} ({nom}, {jour} à {heure}) — {prix}€ {statut_txt}"
+           # else:
+           #     ligne = f"{nom} ({min_pts}-{max_pts} pts, {jour} à {heure}) — {prix}€ {statut_txt}"
+                
+        
             if min_pts is None and max_pts is None:
-                ligne = f"{t} ({nom}, {jour} à {heure}) — {prix}€ {statut_txt}"
+                ligne = f"<b>{t}</b> ({conf.get('label', t)}) — {prix}€ {statut_txt}"
             else:
-                ligne = f"{nom} ({min_pts}-{max_pts} pts, {jour} à {heure}) — {prix}€ {statut_txt}"
+                ligne = f"<b>{t}</b> ({min_pts}-{max_pts} pts) — {prix}€ {statut_txt}"
+
             tableaux_details.append(ligne)
 
         tableaux_str = "<br>".join(tableaux_details)
@@ -172,6 +181,7 @@ async def build_email_html(data: dict, type_mail: str):
             FROM_EMAIL=FROM_EMAIL,
             ORIGINE_EMAIL=ORIGINE_EMAIL,
             HELLOASSO_CARTE=HELLOASSO_CARTE,
+            INSCRIT_PASS=INSCRIT_PASS,
             type_mail=type_mail   
         )
         return html_content
