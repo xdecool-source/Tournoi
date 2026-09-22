@@ -79,3 +79,19 @@ app.mount("/static", StaticFiles(directory="userinterface"), name="static")
 async def ping():
     await wake_db()
     return {"status": "ok"}
+
+from services.helloasso import helloasso
+
+@app.get("/test-helloasso")
+async def test_helloasso_endpoint():
+    token = await helloasso.get_token()
+
+    return {
+        "success": True,
+        "token_present": bool(token),
+        "token_expire": helloasso.token_expire,
+        "refresh_token_present": bool(
+            helloasso.refresh_token
+        )
+    }
+    

@@ -198,3 +198,4 @@ def create_price_sheet(wb, data_joueurs, root_dir):
                 )
 
         ws.column_dimensions[col_letter].width = max_length + 2
+        

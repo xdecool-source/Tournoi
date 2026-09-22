@@ -9,8 +9,8 @@ from utils import ajuster_largeur_colonnes
 
 VERT = PatternFill(fill_type="solid", fgColor="34EB57")
 ORANGE = PatternFill(fill_type="solid", fgColor="CFAD1F")
-ROUGE = PatternFill(fill_type="solid", fgColor="EB132E")
-BLEU = PatternFill(fill_type="solid", fgColor="5207F7")
+BLANC = PatternFill(fill_type="solid", fgColor="F7F5F5") # Blanc
+BLEU = PatternFill(fill_type="solid", fgColor="A3C9F0")
 ENTETE = PatternFill(fill_type="solid", fgColor="0E3C8F")
 
 
@@ -63,7 +63,7 @@ def creer_excel(comparatif, stats, fichier):
         if statut == "OK":
             couleur = VERT
         elif statut == "Pas de paiement":
-            couleur = ROUGE
+            couleur = BLANC
         elif statut == "Paiement sans inscription":
             couleur = BLEU
         else:

@@ -155,3 +155,4 @@ async def send_email(to_email, subject, html):
         await send_brevo_email(to_email, subject, html)
     else:
         await send_smtp_email(to_email, subject, html)
+        

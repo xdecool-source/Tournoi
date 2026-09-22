@@ -140,3 +140,4 @@ async def get_licence(licence: str):
         "mail": mail,
         "fftt": True
     }
+    

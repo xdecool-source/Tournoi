@@ -338,4 +338,3 @@ async def send_email(to_email: str, subject: str, html_content: str):
             html_content
         )
         
-    

@@ -60,9 +60,9 @@ INSCRIT_PASS = os.getenv("INSCRIT_PASS")
 
 # Cache Places
 
-places_cache = None
-places_cache_time = 0
-CACHE_TTL = 3
+#places_cache = None
+#places_cache_time = 0
+#CACHE_TTL = 3
 
 # Liste des inscriptions
 

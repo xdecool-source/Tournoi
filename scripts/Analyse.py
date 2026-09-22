@@ -1,5 +1,8 @@
 """
 Programme principal du comparatif Tournoi / HelloAsso
+Il faut un fichier Inscriptions_Tournoi_.............. 
+et un fichier export de HelloAsso export-paiement.............
+et lancer ce pgm Analyse.py
 
 """
 

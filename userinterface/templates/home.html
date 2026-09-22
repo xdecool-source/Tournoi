@@ -32,21 +32,10 @@
                     id="licenceCard"
                     class="card"
                 >
-                    <h2 style="color:rgb(219, 110, 110);">
-                        Verifie tes e-mails dans les courriers indésirables
-                    </h2>
                     <h2 style="color:rgb(70, 10, 148);">
                         Inscription Tournoi {{ NOM_TOURNOI }}
                     </h2>
-                    {% if HELLOASSO_CARTE %}
-                    <p style="color:#2e7d32;font-weight:bold;">
-                        Paiement obligatoire en ligne par carte bancaire pour valider l'inscription.
-                    </p>
-                    {% else %}
-                    <p style="color:#d97706;font-weight:bold;">
-                        Paiement sur place.
-                    </p>
-                    {% endif %}
+                    
                     <p>
                         Du {{ DATE_TOURNOI_JOUR }} 
                         <span
@@ -58,6 +47,16 @@
                             {{ DATE_TOURNOI }}
                         </span>
                     </p>
+
+                    {% if HELLOASSO_CARTE %}
+                    <p style="color:#7751e8;font-weight:bold;">
+                    Pour participer au tournoi, il faudra régler votre inscription par CB via HelloAsso.
+                    Un lien de paiement vous sera proposé afin de finaliser et valider votre inscription.                    </p>
+                    {% else %}
+                    <p style="color:#d97706;font-weight:bold;">
+                        Paiement sur place : carte bancaire, espèces ou chèque.
+                    </p>
+                    {% endif %}
                     <!-- NUMERO LICENCE -->
                     <div class="licence-input">
                         <input
@@ -76,6 +75,9 @@
                         </button>
                         <span class="licence-icon"></span>
                     </div>
+
+                   
+
                     <div
                         id="licenceError"
                         class="licence-error hidden"
@@ -118,7 +120,7 @@
                     <div class="code-row">
                         <input
                             id="verificationCode"
-                            placeholder="Code reçu de ton mail"
+                            placeholder="Code reçu par e-mail"
                         >
                         <button
                             class="btn-code"
@@ -127,6 +129,11 @@
                             Connexion
                         </button>
                     </div>
+                    <!--     
+                        <p style="color:rgb(219, 110, 110);">
+                        Au cas où  ! Verifie tes e-mails dans les courriers indésirables
+                        </p>
+                    -->
                     <div id="selectionTitre" class="hidden">
                         <h2>
                             Votre sélection des tableaux : 🏓<br>
@@ -271,7 +278,7 @@
             color:white;
         "
     >
-        Tennis de Table Thuirinois XDC Version : v5.6
+        Tennis de Table Thuirinois XDC Version : v5.7
     </div>
 </body>
 </html>

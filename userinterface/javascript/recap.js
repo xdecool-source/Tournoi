@@ -147,10 +147,9 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
                 <br><br>
                 ${helloassoCarte && typeMail === "creation" ? `
                     <b style="color:#007bff;">
-                        Le paiement s'effectue en cliquant sur le bouton jaune Payer.
-                        <br><br>
-                        Votre inscription ne sera enregistrée qu'après la validation de votre paiement.
-                        
+                        Pour finaliser votre inscription et confirmer votre participation au tournoi,
+                        il vous suffit de cliquer sur le bouton jaune « Payer »
+                        et de régler votre inscription via HelloAsso. À très bientôt ! 
                     </b>
                     <br><br>
                     <button
