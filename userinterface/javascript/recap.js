@@ -146,10 +146,12 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
                 </b>
                 <br><br>
                 ${helloassoCarte && typeMail === "creation" ? `
-                    <b style="color:#007bff;">
-                        Pour finaliser votre inscription et confirmer votre participation au tournoi,
+                    <b 
+                    id="messageHelloAsso"
+                    style="color:#007bff;">
+                    Pour finaliser votre inscription et confirmer votre participation au tournoi,
                         il vous suffit de cliquer sur le bouton jaune « Payer »
-                        et de régler votre inscription via HelloAsso. À très bientôt ! 
+                        afin de régler votre inscription via HelloAsso. À très bientôt ! 
                     </b>
                     <br><br>
                     <button
@@ -181,11 +183,26 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
                 const btnHelloAsso = document.getElementById("btnHelloAsso");
                 if (btnHelloAsso && window.helloassoPaymentUrl) {
                     btnHelloAsso.onclick = () => {
+
+
+                        // Supprimer le message bleu
+                        const messageHelloAsso =
+                            document.getElementById("messageHelloAsso");
+
+                        if (messageHelloAsso) {
+                            messageHelloAsso.remove();
+                        }
+                         // Modifier le bouton
                         btnHelloAsso.outerHTML = `
                             <b style="color:#28a745;">
-                                ✓ Fenêtre de paiement ouverte
+                                Fenêtre de paiement ouverte
+                                <br>
+                                Liste des inscrits : Mot de passe <b>${escapeHTML(inscritPass || "")}</b>.<br>
                             </b>
                         `;
+                        
+
+                        // Ouvrir HelloAsso
                         window.open(
                             window.helloassoPaymentUrl,
                             "_blank",
