@@ -194,11 +194,14 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
                         }
                          // Modifier le bouton
                         btnHelloAsso.outerHTML = `
-                            <b style="color:#28a745;">
-                                Fenêtre de paiement ouverte
-                                <br>
-                                Liste des inscrits : Mot de passe <b>${escapeHTML(inscritPass || "")}</b>.<br>
-                            </b>
+                           b style="color:#28a745;">
+                            Votre inscription est enregistrée.<br>
+                            Un e-mail de confirmation vient de vous être envoyé.<br>
+                            <span style="color:#007bff;">
+                                Liste des inscrits
+                            </span>
+                            : Mot de passe <b>${escapeHTML(inscritPass || "")}</b>.<br>
+                        </b>
                         `;
                         
 
