@@ -93,6 +93,7 @@ export async function sendInscription(){
         mail: email,
         tableaux: selection
     };
+    const isModification = currentPlayer.already_inscrit === true;
     const method = currentPlayer.already_inscrit ? "PUT" : "POST";
     const url = currentPlayer.already_inscrit
         ? `/inscription/${currentPlayer.licence}`
@@ -183,6 +184,6 @@ await showRecap(
     currentPlayer,
     email,
     validSelection,
-    currentPlayer.already_inscrit ? "modification" : "creation"
+    isModification ? "modification" : "creation"
 );
 }

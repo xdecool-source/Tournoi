@@ -15,12 +15,9 @@ utilisation : de sanitize_excel()
 
 """
 
-import json 
-
 from collections import defaultdict
 from openpyxl.styles import PatternFill, Font, Border, Side, Alignment
 from core.config import TABLEAUX
-from openpyxl.utils import get_column_letter
 
 def sanitize_excel(value):
     if isinstance(value, str):
@@ -253,97 +250,4 @@ def create_deleted_sheet(wb, deleted_rows):
         ])
 
     format_sheet(ws)
-
-
-def create_modifications_sheet(wb, rows):
-    ws = wb.create_sheet("Modifications")
-
-    headers = [
-        "ID",
-        "Licence",
-        "Nom",
-        "Prénom",
-        "Date modification",
-        "Tableaux avant",
-        "Tableaux après",
-        "Tableaux ajoutés",
-        "Tableaux supprimés",
-        "Montant avant",
-        "Montant après",
-        "Différence"
-    ]
-
-    ws.append(headers)
     
-    # Première ligne en jaune
-    yellow_fill = PatternFill(
-        fill_type="solid",
-        fgColor="FFFF00"
-    )
-
-    for cell in ws[1]:
-        cell.fill = yellow_fill
-        cell.font = Font(bold=True)
-
-    for row in rows:
-        def format_tableaux(value):
-            if value is None:
-                return ""
-
-            if isinstance(value, str):
-                try:
-                    value = json.loads(value)
-                except json.JSONDecodeError:
-                    return value
-
-            if isinstance(value, list):
-                return ", ".join(str(x) for x in value)
-
-            return str(value)
-
-        ws.append([
-            row["id"],
-            row["licence"],
-            row["nom"],
-            row["prenom"],
-            row["date_modification"].replace(tzinfo=None)
-                if row["date_modification"]
-                else None,
-            format_tableaux(row["tableaux_avant"]),
-            format_tableaux(row["tableaux_apres"]),
-            format_tableaux(row["tableaux_ajoutes"]),
-            format_tableaux(row["tableaux_supprimes"]),
-            row["montant_avant"],
-            row["montant_apres"],
-            row["difference_montant"],
-        ])
-
-    # Format date
-    for cell in ws["E"][1:]:
-        cell.number_format = "dd/mm/yyyy hh:mm"
-
-    # Format montants
-    for row in ws.iter_rows(min_row=2, min_col=10, max_col=12):
-        for cell in row:
-            cell.number_format = '0.00" €"'
-
-    # Largeur des colonnes
-    # Ajustement automatique de la largeur des colonnes
-    for column_cells in ws.columns:
-        max_length = 0
-        column_letter = get_column_letter(column_cells[0].column)
-
-        for cell in column_cells:
-            if cell.value is not None:
-                value = str(cell.value)
-                max_length = max(max_length, len(value))
-
-        # +2 pour laisser un peu d'espace autour du texte
-        ws.column_dimensions[column_letter].width = max_length + 2
-
-        # Largeur spécifique pour Date modification
-        ws.column_dimensions["E"].width = 19
-        ws.freeze_panes = "A2"
-
-        if rows:
-            ws.auto_filter.ref = ws.dimensions

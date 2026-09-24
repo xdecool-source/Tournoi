@@ -133,27 +133,78 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
 
         }else{
 
+            let messageFinal = "";
+
+            if(typeMail === "creation"){
+                messageFinal = `
+                    <b style="color:#28a745;">
+                        Votre inscription est enregistrée.<br>
+                        Un e-mail de confirmation vient de vous être envoyé.<br>
+                        <span style="color:#007bff;">
+                            Liste des inscrits
+                        </span>
+                        : Mot de passe <b>${escapeHTML(inscritPass || "")}</b>.<br>
+                    </b>
+                `;
+            }
+            else if(typeMail === "modification"){
+                messageFinal = `
+                    <b style="color:#28a745;">
+                        Votre inscription a bien été modifiée.<br>
+                        Un e-mail de confirmation vient de vous être envoyé.<br>
+                        <span style="color:#007bff;">
+                            Liste des inscrits
+                        </span>
+                        : Mot de passe <b>${escapeHTML(inscritPass || "")}</b>.<br>
+                    </b>
+                `;
+            }
+            else if(typeMail === "annulation"){
+                messageFinal = `
+                    <b style="color:#28a745;">
+                        Votre inscription a bien été annulée.<br>
+                        Un e-mail de confirmation vient de vous être envoyé.
+                    </b>
+                `;
+            }
+            else{
+                messageFinal = `
+                    <b style="color:#28a745;">
+                        Votre inscription a été traitée.<br>
+                        Un e-mail de confirmation vient de vous être envoyé.
+                    </b>
+                `;
+            }
+
             recapContent.innerHTML = `
                 <b>${escapeHTML(player.prenom)} ${escapeHTML(player.nom)}</b><br>
                 N° de Licence : <b>${escapeHTML(player.licence)}</b><br>
                 Licencié au Club : ${escapeHTML(player.club)}<br>
                 Ayant ${escapeHTML(player.points)} Points dans cette Phase<br>
                 E-mail : ${escapeHTML(email)}<br><br>
+
                 <b>Liste des tableaux validés</b><br><br>
+
                 ${tableauxHTML}
+
                 <b style="font-size:18px; color:#28a745;">
                     Total : ${total}€
                 </b>
+
                 <br><br>
+
                 ${helloassoCarte && typeMail === "creation" ? `
                     <b 
-                    id="messageHelloAsso"
-                    style="color:#007bff;">
-                    Pour finaliser votre inscription et confirmer votre participation au tournoi,
+                        id="messageHelloAsso"
+                        style="color:#007bff;">
+                        Pour finaliser votre inscription et confirmer votre participation au tournoi,
                         il vous suffit de cliquer sur le bouton jaune « Payer »
-                        afin de régler votre inscription via HelloAsso. À très bientôt ! 
+                        afin de régler votre inscription via HelloAsso.
+                        À très bientôt !
                     </b>
+
                     <br><br>
+
                     <button
                         id="btnHelloAsso"
                         style="
@@ -169,13 +220,7 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
                     >
                         💳 Payer
                     </button>
-                ` : `
-                    <b style="color:#28a745;">
-                        Votre inscription est enregistrée.<br>
-                        Un e-mail de confirmation vient de vous être envoyé.<br>
-                        Liste des inscrits : Mot de passe <b>${escapeHTML(inscritPass || "")}</b>.<br>
-                    </b>
-                `}
+                ` : messageFinal}
             `;
            
             if (helloassoCarte && typeMail === "creation") {
@@ -194,7 +239,7 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
                         }
                          // Modifier le bouton
                         btnHelloAsso.outerHTML = `
-                           b style="color:#28a745;">
+                           <b style="color:#28a745;">
                             Votre inscription est enregistrée.<br>
                             Un e-mail de confirmation vient de vous être envoyé.<br>
                             <span style="color:#007bff;">

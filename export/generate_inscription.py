@@ -33,13 +33,14 @@ ou sauvegardé si besoin.
 """
 
 from openpyxl import Workbook
-from export.db import fetch_inscriptions, get_deleted_inscriptions
+from export.db import fetch_inscriptions, get_deleted_inscriptions, get_modifications_inscriptions
 from export.excel_builder import (
     build_data,
     create_players_sheet,
     create_table_sheets,
     create_tableaux_sheet,
-    create_deleted_sheet
+    create_deleted_sheet,
+    create_modifications_sheet
 )
 from export.price import create_price_sheet
 from io import BytesIO
@@ -52,8 +53,9 @@ def generate():
     try:
         rows = fetch_inscriptions()
         deleted_rows =  get_deleted_inscriptions()
+        modification_rows = get_modifications_inscriptions()
         
-        if not rows:
+        if not rows and not deleted_rows and not modification_rows:
             print("Aucune donnée.")
             return None
 
@@ -65,7 +67,8 @@ def generate():
         create_tableaux_sheet(wb, data_by_table)
         create_price_sheet(wb, data_joueurs,root_dir)
         create_deleted_sheet(wb, deleted_rows)
-
+        create_modifications_sheet(wb, modification_rows)
+        
     #  génération en mémoire
 
         stream = BytesIO()

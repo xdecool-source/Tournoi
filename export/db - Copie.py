@@ -1,15 +1,12 @@
 """
 cherche toutes les inscriptions par exemple pour générer l’Excel des inscrits
+
 récupére :
 les joueurs ; leurs tableaux ; leur paiement ; leur classement ; leur email.
+
 Génére l'Excel ;
 et afficher la liste des inscrits.
 
-les fonctions en place sont : 
-
-fetch_inscriptions() → inscriptions actuelles
-get_deleted_inscriptions() → suppressions
-get_modifications_inscriptions() → historique des modifications
 """
 
 import os
@@ -73,33 +70,3 @@ def get_deleted_inscriptions():
     conn.close()
 
     return rows
-
-def get_modifications_inscriptions():
-    database_url = os.getenv("DATABASE_URL")
-    if not database_url:
-        raise ValueError("DATABASE_URL manquante")
-
-    with psycopg2.connect(database_url) as conn:
-        with conn.cursor(cursor_factory=DictCursor) as cursor:
-            cursor.execute("""
-                SELECT
-                    id,
-                    licence,
-                    nom,
-                    prenom,
-                    date_modification,
-                    tableaux_avant,
-                    tableaux_apres,
-                    tableaux_ajoutes,
-                    tableaux_supprimes,
-                    montant_avant,
-                    montant_apres,
-                    difference_montant
-                FROM modifications_inscriptions
-                ORDER BY date_modification DESC
-            """)
-
-            rows = cursor.fetchall()
-
-    return rows
-

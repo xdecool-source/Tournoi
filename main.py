@@ -62,7 +62,7 @@ from api import (
     admin,
     export,
     verification,
-    helloasso,
+    helloassoWebhook,
 )
 
 app.include_router(home.router)
@@ -71,7 +71,7 @@ app.include_router(inscription.router)
 app.include_router(admin.router)
 app.include_router(export.router)
 app.include_router(verification.router)
-app.include_router(helloasso.router)
+app.include_router(helloassoWebhook.router)
 app.mount("/static", StaticFiles(directory="userinterface"), name="static")
 
 # Reveil Railway et Neon
@@ -80,7 +80,7 @@ async def ping():
     await wake_db()
     return {"status": "ok"}
 
-from services.helloasso import helloasso
+from services.helloassoClient  import helloasso
 
 @app.get("/test-helloasso")
 async def test_helloasso_endpoint():

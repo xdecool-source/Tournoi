@@ -99,6 +99,7 @@ async def init_db_pool():
 async def init_db():
     async with pool.acquire() as conn:
         
+        
         # créer la séquence
         await conn.execute("""
         CREATE SEQUENCE IF NOT EXISTS dossard_seq START 1;
@@ -157,25 +158,18 @@ async def init_db():
         """)
         
         await conn.execute("""
-        CREATE TABLE IF NOT EXISTS modification_paiement (
-        id SERIAL PRIMARY KEY, licence TEXT NOT NULL, mail TEXT NOT NULL, anciens_tableaux JSONB NOT NULL,
-        nouveaux_tableaux JSONB NOT NULL, montant NUMERIC(10,2) NOT NULL, paiement_id TEXT, 
-        statut TEXT NOT NULL DEFAULT 'ATTENTE', created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-        paid_at TIMESTAMP, expires_at TIMESTAMP
+        CREATE TABLE IF NOT EXISTS modifications_inscriptions (
+        id BIGSERIAL PRIMARY KEY,
+        licence TEXT NOT NULL,
+        nom TEXT NOT NULL,
+        prenom TEXT NOT NULL,
+        date_modification TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        tableaux_avant JSONB NOT NULL DEFAULT '[]',
+        tableaux_apres JSONB NOT NULL DEFAULT '[]',
+        tableaux_ajoutes JSONB NOT NULL DEFAULT '[]',
+        tableaux_supprimes JSONB NOT NULL DEFAULT '[]'
         );
-        """)
-        
-        await conn.execute("""
-        CREATE INDEX IF NOT EXISTS
-        idx_modification_paiement_paiement
-        ON modification_paiement(paiement_id);
-        """)
-        
-        await conn.execute("""
-        CREATE INDEX IF NOT EXISTS
-        idx_modification_paiement_licence
-        ON modification_paiement(licence);
-        """)    
+        """) 
         
         #  Initialisation si vide
         
