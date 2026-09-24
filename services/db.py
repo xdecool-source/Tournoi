@@ -159,15 +159,13 @@ async def init_db():
         
         await conn.execute("""
         CREATE TABLE IF NOT EXISTS modifications_inscriptions (
-        id BIGSERIAL PRIMARY KEY,
-        licence TEXT NOT NULL,
-        nom TEXT NOT NULL,
-        prenom TEXT NOT NULL,
+        id BIGSERIAL PRIMARY KEY, licence TEXT NOT NULL, nom TEXT NOT NULL, prenom TEXT NOT NULL,
         date_modification TIMESTAMPTZ NOT NULL DEFAULT NOW(),
         tableaux_avant JSONB NOT NULL DEFAULT '[]',
         tableaux_apres JSONB NOT NULL DEFAULT '[]',
         tableaux_ajoutes JSONB NOT NULL DEFAULT '[]',
-        tableaux_supprimes JSONB NOT NULL DEFAULT '[]'
+        tableaux_supprimes JSONB NOT NULL DEFAULT '[]',
+        montant_avant NUMERIC(10,2), montant_apres NUMERIC(10,2), difference_montant NUMERIC(10,2)
         );
         """) 
         
