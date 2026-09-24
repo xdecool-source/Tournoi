@@ -29,6 +29,7 @@ DATE_TOURNOI = os.getenv("DATE_TOURNOI")
 DATE_TOURNOI_JOUR = os.getenv("DATE_TOURNOI_JOUR")
 NOM_TOURNOI = os.getenv("NOM_TOURNOI")
 HELLOASSO_CARTE = (os.getenv("HELLOASSO_CARTE", "true").lower() == "true")
+NBRE_JOUR_AVANT_REMB = os.getenv("NBRE_JOUR_AVANT_REMB")
 
 # Page d'accueil
 
@@ -54,7 +55,8 @@ async def home(request: Request):
             "NOM_TOURNOI": NOM_TOURNOI,
             "FROM_EMAIL": FROM_EMAIL,
             "ORIGINE_EMAIL": ORIGINE_EMAIL,
-            "HELLOASSO_CARTE": HELLOASSO_CARTE
+            "HELLOASSO_CARTE": HELLOASSO_CARTE,
+            "NBRE_JOUR_AVANT_REMB": NBRE_JOUR_AVANT_REMB
         },
     )
 
