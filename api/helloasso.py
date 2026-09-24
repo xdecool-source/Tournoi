@@ -7,6 +7,7 @@ GET /paiement-ok",response_class=HTMLResponse
 """
 
 import os
+import json
 
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
@@ -56,10 +57,23 @@ if HELLOASSO_CARTE:
         request: Request
     ):
         payload = await request.json()
+        
+        print(
+            "WEBHOOK HELLOASSO :",
+            json.dumps(
+                payload,
+                indent=2,
+                ensure_ascii=False,
+            ),
+        )
+
+        
         print(
             "Webhook HelloAsso reçu : "
             f"event={payload.get('eventType')}"
         )
+        
+        
         if payload["eventType"] != "Order":
 
             return {

@@ -42,7 +42,8 @@ from api.admin import get_current_admin
 from api.cache import (
     places_cache,
     places_cache_time,
-    CACHE_TTL
+    CACHE_TTL,
+    invalidate_places_cache,
 )
 
 import xml.etree.ElementTree as ET
@@ -136,84 +137,18 @@ async def get_places(
     response.headers["ETag"] = etag
     return res
 
-# Modification d'une inscription
 
-@router.put("/inscription/{licence}")
-
-async def update_inscription(
+async def appliquer_modification(
     licence: str,
     data: dict,
-    background_tasks: BackgroundTasks,
-    admin=Depends(get_current_admin)
+    old_tableaux: set,
+    new_tableaux: set,
 ):
-
-    global places_cache
-    if (
-        not data.get("tableaux")
-        and not admin
-    ):
-        return {
-            "success": False,
-            "error": "Suppression réservée admin"
-        }
-
     async with get_conn() as conn:
+
         async with conn.transaction():
 
-            old_rows = await conn.fetch(
-                """
-                SELECT tableau
-                FROM inscription_tableaux
-                WHERE licence=$1
-                """,
-                licence,
-            )
-            old_tableaux = {
-                r["tableau"]
-                for r in old_rows
-            }
-            new_tableaux = set(
-                data["tableaux"]
-            )
-            
-            # Suppression complète
-            if len(
-                data.get(
-                    "tableaux",
-                    [],
-                )
-            ) == 0:
-                await conn.execute(
-                    """
-                    DELETE FROM inscription_tableaux
-                    WHERE licence=$1
-                    """,
-                    licence,
-                )
-                await conn.execute(
-                    """
-                    DELETE FROM inscriptions
-                    WHERE licence=$1
-                    """,
-                    licence,
-                )
-                for t in old_tableaux:
-
-                    await promote_attente(
-                        t
-                    )
-                places_cache = None
-                background_tasks.add_task(
-                    send_confirmation_email,
-                    data["mail"],
-                    data,
-                    "suppression",
-                )
-                return {
-                    "success": True
-                }
-                
-            # Mise à jour mail
+            # Email
             await conn.execute(
                 """
                 UPDATE inscriptions
@@ -223,7 +158,7 @@ async def update_inscription(
                 data["mail"],
                 licence,
             )
-            
+
             # Suppression anciens tableaux
             await conn.execute(
                 """
@@ -232,47 +167,351 @@ async def update_inscription(
                 """,
                 licence,
             )
-            
-            # Réinsertion tableaux
-            for t in new_tableaux:
-                status = await tableau_status(
-                    t
-                )
-                if status == "FULL":
 
+            # Ajout nouveaux tableaux
+            for tableau in new_tableaux:
+
+                status = await tableau_status(
+                    tableau
+                )
+
+                if status == "FULL":
                     status = "ATTENTE"
+
                 await conn.execute(
                     """
                     INSERT INTO inscription_tableaux
-                    (licence,tableau,statut)
-                    VALUES($1,$2,$3)
+                    (
+                        licence,
+                        tableau,
+                        statut
+                    )
+                    VALUES ($1, $2, $3)
                     ON CONFLICT
-                    (licence,tableau,event_id)
+                    (
+                        licence,
+                        tableau,
+                        event_id
+                    )
                     DO NOTHING
                     """,
                     licence,
-                    t,
+                    tableau,
                     status,
                 )
-        background_tasks.add_task(
-            send_confirmation_email,
-            data["mail"],
-            data,
-            "modification",
-        )
-        tableaux_quittes = (
-            old_tableaux
-            - new_tableaux
-        )
-        for t in tableaux_quittes:
 
-            await promote_attente(
-                t
+            # Tableaux supprimés
+            tableaux_quittes = (
+                old_tableaux
+                - new_tableaux
             )
-        places_cache = None
+
+            for tableau in tableaux_quittes:
+
+                await promote_attente(
+                    tableau
+                )
+                
+                
+
+
+
+# Modification d'une inscription
+
+@router.put("/inscription/{licence}")
+async def update_inscription(
+    licence: str,
+    data: dict,
+    background_tasks: BackgroundTasks,
+    admin=Depends(get_current_admin),
+):
+    # -----------------------------------------
+    # Tableaux demandés
+    # -----------------------------------------
+
+    new_tableaux = set(
+        data.get(
+            "tableaux",
+            [],
+        )
+    )
+
+    # -----------------------------------------
+    # Suppression complète
+    # -----------------------------------------
+
+    if not new_tableaux:
+
+        if not admin:
+
+            return {
+                "success": False,
+                "error":
+                    "Suppression réservée admin",
+            }
+
+    # -----------------------------------------
+    # Anciens tableaux
+    # -----------------------------------------
+
+    async with get_conn() as conn:
+
+        rows = await conn.fetch(
+            """
+            SELECT tableau
+            FROM inscription_tableaux
+            WHERE licence=$1
+            """,
+            licence,
+        )
+
+    old_tableaux = {
+        row["tableau"]
+        for row in rows
+    }
+
+    # -----------------------------------------
+    # Calcul ancien montant
+    # -----------------------------------------
+
+    ancien_total = sum(
+        TABLEAUX
+        .get(tableau, {})
+        .get("prix", 0)
+        for tableau in old_tableaux
+    )
+
+    # -----------------------------------------
+    # Calcul nouveau montant
+    # -----------------------------------------
+
+    nouveau_total = sum(
+        TABLEAUX
+        .get(tableau, {})
+        .get("prix", 0)
+        for tableau in new_tableaux
+    )
+
+    difference = round(
+        nouveau_total - ancien_total,
+        2,
+    )
+
+    # -----------------------------------------
+    # Aucun changement
+    # -----------------------------------------
+
+    if old_tableaux == new_tableaux:
+
         return {
-            "success": True
+            "success": True,
+            "payment_required": False,
+            "montant": 0,
         }
+
+    # =========================================
+    # PAIEMENT SUPPLÉMENTAIRE
+    # =========================================
+
+    if (
+        difference > 0
+        and HELLOASSO_CARTE
+    ):
+
+        # -------------------------------------
+        # Création de la modification en attente
+        # -------------------------------------
+
+        async with get_conn() as conn:
+
+            row = await conn.fetchrow(
+                """
+                INSERT INTO modification_paiement
+                (
+                    licence,
+                    mail,
+                    anciens_tableaux,
+                    nouveaux_tableaux,
+                    montant,
+                    statut,
+                    expires_at
+                )
+                VALUES
+                (
+                    $1,
+                    $2,
+                    $3::jsonb,
+                    $4::jsonb,
+                    $5,
+                    'ATTENTE',
+                    NOW() + INTERVAL '20 minutes'
+                )
+                RETURNING id
+                """,
+                licence,
+                data["mail"],
+                json.dumps(
+                    list(old_tableaux)
+                ),
+                json.dumps(
+                    list(new_tableaux)
+                ),
+                difference,
+            )
+
+            modification_id = row["id"]
+
+        # -------------------------------------
+        # Préparation HelloAsso
+        # -------------------------------------
+
+        checkout_data = {
+            **data,
+
+            "licence":
+                licence,
+
+            "tableaux":
+                list(new_tableaux),
+
+            "type":
+                "modification",
+
+            "modification_id":
+                modification_id,
+        }
+
+        # -------------------------------------
+        # Création paiement
+        # -------------------------------------
+
+        try:
+
+            checkout = await create_checkout(
+                montant=difference,
+                data=checkout_data,
+            )
+
+        except Exception as e:
+
+            print(
+                "Erreur HelloAsso :",
+                e,
+            )
+
+            async with get_conn() as conn:
+
+                await conn.execute(
+                    """
+                    DELETE FROM modification_paiement
+                    WHERE id=$1
+                    """,
+                    modification_id,
+                )
+
+            return {
+                "success": False,
+                "error":
+                    "Erreur HelloAsso",
+            }
+
+        # -------------------------------------
+        # Vérification réponse
+        # -------------------------------------
+
+        if "redirectUrl" not in checkout:
+
+            print(
+                "HelloAsso KO =",
+                checkout,
+            )
+
+            async with get_conn() as conn:
+
+                await conn.execute(
+                    """
+                    DELETE FROM modification_paiement
+                    WHERE id=$1
+                    """,
+                    modification_id,
+                )
+
+            return {
+                "success": False,
+                "error":
+                    "Erreur HelloAsso",
+            }
+
+        # -------------------------------------
+        # ID du paiement
+        # -------------------------------------
+
+        paiement_id = (
+            checkout.get("id")
+            or checkout.get(
+                "checkoutIntentId"
+            )
+        )
+
+        if paiement_id:
+
+            async with get_conn() as conn:
+
+                await conn.execute(
+                    """
+                    UPDATE modification_paiement
+                    SET paiement_id=$1
+                    WHERE id=$2
+                    """,
+                    str(paiement_id),
+                    modification_id,
+                )
+
+        # -------------------------------------
+        # On NE modifie PAS encore la BDD
+        # -------------------------------------
+
+        return {
+            "success": True,
+            "payment_required": True,
+            "montant": difference,
+            "payment_url":
+                checkout["redirectUrl"],
+            "modification_id":
+                modification_id,
+        }
+
+    # =========================================
+    # PAS DE PAIEMENT
+    # =========================================
+
+    await appliquer_modification(
+        licence=licence,
+        data=data,
+        old_tableaux=old_tableaux,
+        new_tableaux=new_tableaux,
+    )
+
+    invalidate_places_cache()
+
+    # -----------------------------------------
+    # Email
+    # -----------------------------------------
+
+    background_tasks.add_task(
+        send_confirmation_email,
+        data["mail"],
+        data,
+        "modification",
+    )
+
+    return {
+        "success": True,
+        "payment_required": False,
+        "montant": difference,
+    }
+    
+    
 
 # Création d'une inscription
 
@@ -357,6 +596,7 @@ async def inscription(
                 []
             )
         )
+        data["type"] = "inscription"
         checkout = await create_checkout(
             montant=total,
             data=data
@@ -383,3 +623,70 @@ async def inscription(
             "error": str(e)
         } 
         
+        
+async def appliquer_modification(
+    licence: str,
+    data: dict,
+    old_tableaux: set,
+    new_tableaux: set,
+):
+    async with get_conn() as conn:
+        async with conn.transaction():
+
+            # Mise à jour de l'email
+            await conn.execute(
+                """
+                UPDATE inscriptions
+                SET mail=$1
+                WHERE licence=$2
+                """,
+                data["mail"],
+                licence,
+            )
+
+            # Suppression des anciens tableaux
+            await conn.execute(
+                """
+                DELETE FROM inscription_tableaux
+                WHERE licence=$1
+                """,
+                licence,
+            )
+
+            # Ajout des nouveaux tableaux
+            for t in new_tableaux:
+
+                status = await tableau_status(t)
+
+                if status == "FULL":
+                    status = "ATTENTE"
+
+                await conn.execute(
+                    """
+                    INSERT INTO inscription_tableaux
+                    (
+                        licence,
+                        tableau,
+                        statut
+                    )
+                    VALUES ($1, $2, $3)
+                    ON CONFLICT
+                    (
+                        licence,
+                        tableau,
+                        event_id
+                    )
+                    DO NOTHING
+                    """,
+                    licence,
+                    t,
+                    status,
+                )
+
+            # Les tableaux abandonnés libèrent une place
+            tableaux_quittes = (
+                old_tableaux - new_tableaux
+            )
+
+            for t in tableaux_quittes:
+                await promote_attente(t)

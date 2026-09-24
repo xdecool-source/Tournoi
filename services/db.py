@@ -156,6 +156,27 @@ async def init_db():
         )
         """)
         
+        await conn.execute("""
+        CREATE TABLE IF NOT EXISTS modification_paiement (
+        id SERIAL PRIMARY KEY, licence TEXT NOT NULL, mail TEXT NOT NULL, anciens_tableaux JSONB NOT NULL,
+        nouveaux_tableaux JSONB NOT NULL, montant NUMERIC(10,2) NOT NULL, paiement_id TEXT, 
+        statut TEXT NOT NULL DEFAULT 'ATTENTE', created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        paid_at TIMESTAMP, expires_at TIMESTAMP
+        );
+        """)
+        
+        await conn.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_modification_paiement_paiement
+        ON modification_paiement(paiement_id);
+        """)
+        
+        await conn.execute("""
+        CREATE INDEX IF NOT EXISTS
+        idx_modification_paiement_licence
+        ON modification_paiement(licence);
+        """)    
+        
         #  Initialisation si vide
         
         await conn.execute("""
