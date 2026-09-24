@@ -55,6 +55,7 @@ DATE_TOURNOI_JOUR = os.getenv("DATE_TOURNOI_JOUR")
 NOM_TOURNOI = os.getenv("NOM_TOURNOI")
 HELLOASSO_CARTE = (os.getenv("HELLOASSO_CARTE", "true").lower() == "true")
 INSCRIT_PASS = os.getenv("INSCRIT_PASS")
+NBRE_JOUR_AVANT_REMB = os.getenv("NBRE_JOUR_AVANT_REMB")
 
 env = Environment(loader=FileSystemLoader("userinterface/templates"))
 
@@ -94,6 +95,7 @@ async def build_email_html(data: dict, type_mail: str):
             ORIGINE_EMAIL=ORIGINE_EMAIL,
             HELLOASSO_CARTE=HELLOASSO_CARTE,    
             INSCRIT_PASS=INSCRIT_PASS, 
+            NBRE_JOUR_AVANT_REMB=NBRE_JOUR_AVANT_REMB,
             type_mail=type_mail  
         )
         return html_content
