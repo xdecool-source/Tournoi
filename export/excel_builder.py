@@ -118,6 +118,14 @@ def create_players_sheet(wb, data_joueurs):
             sanitize_excel(infos["Mail"]),
             ", ".join([f"{t} ({s})" for t, s in infos["Inscriptions"]])
         ])
+        
+    for row in ws.iter_rows():
+        for cell in row:
+            cell.alignment = Alignment(
+                horizontal="center",
+                vertical="center"
+            )
+            
     format_sheet(ws)
 
 #  Création de la feuille Tableaux 
@@ -251,6 +259,13 @@ def create_deleted_sheet(wb, deleted_rows):
             str(r.get("date_inscription")),
             str(r.get("date_suppression"))
         ])
+        
+        for row in ws.iter_rows():
+            for cell in row:
+                cell.alignment = Alignment(
+                    horizontal="center",
+                    vertical="center"
+                )
 
     format_sheet(ws)
 
@@ -259,7 +274,7 @@ def create_modifications_sheet(wb, rows):
     ws = wb.create_sheet("Modifications")
 
     headers = [
-        "ID",
+        "dossard",
         "Licence",
         "Nom",
         "Prénom",
@@ -302,7 +317,7 @@ def create_modifications_sheet(wb, rows):
             return str(value)
 
         ws.append([
-            row["id"],
+            row["dossard"],
             row["licence"],
             row["nom"],
             row["prenom"],
@@ -343,7 +358,19 @@ def create_modifications_sheet(wb, rows):
 
         # Largeur spécifique pour Date modification
         ws.column_dimensions["E"].width = 19
+        
+        for row in ws.iter_rows():
+            for cell in row:
+                cell.alignment = Alignment(
+                    horizontal="center",
+                    vertical="center"
+                )
+        
+        
+        
         ws.freeze_panes = "A2"
+        
+        
 
         if rows:
             ws.auto_filter.ref = ws.dimensions

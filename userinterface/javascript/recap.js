@@ -240,8 +240,8 @@ export async function showRecap(player, email, tableauxSel, typeMail = "creation
                          // Modifier le bouton
                         btnHelloAsso.outerHTML = `
                            <b style="color:#28a745;">
-                            Votre inscription est enregistrée.<br>
-                            Un e-mail de confirmation vient de vous être envoyé.<br>
+                            Votre inscription ne sera enregistrée qu'après votre réglement.<br>
+                            Un e-mail de confirmation vous sera envoyé ultérieurement.<br>
                             <span style="color:#007bff;">
                                 Liste des inscrits
                             </span>

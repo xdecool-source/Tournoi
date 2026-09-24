@@ -198,6 +198,35 @@ async def update_inscription(
             }
 
             # =================================================
+            # 1.1 Récupérer le dossard actuel
+            # =================================================
+
+            inscription = await conn.fetchrow(
+                """
+                SELECT dossard, nom, prenom
+                FROM inscriptions
+                WHERE licence=$1
+                """,
+                licence,
+            )
+
+            if not inscription:
+                return {
+                    "success": False,
+                    "error": "Inscription introuvable"
+                }
+
+            dossard = inscription["dossard"]
+            
+            print(
+                "MODIFICATION :",
+                "licence =", licence,
+                "dossard =", dossard,
+                "nom =", inscription["nom"],
+                "prenom =", inscription["prenom"]
+            )
+        
+            # =================================================
             # 2. Nouveaux tableaux
             # =================================================
 
@@ -247,9 +276,11 @@ async def update_inscription(
                 or tableaux_supprimes
             ):
 
+
                 await conn.execute(
                     """
                     INSERT INTO modifications_inscriptions (
+                        dossard,
                         licence,
                         nom,
                         prenom,
@@ -265,15 +296,17 @@ async def update_inscription(
                         $1,
                         $2,
                         $3,
-                        $4::jsonb,
+                        $4,
                         $5::jsonb,
                         $6::jsonb,
                         $7::jsonb,
-                        $8,
+                        $8::jsonb,
                         $9,
-                        $10
+                        $10,
+                        $11
                     )
                     """,
+                    dossard,
                     licence,
                     data.get("nom", ""),
                     data.get("prenom", ""),

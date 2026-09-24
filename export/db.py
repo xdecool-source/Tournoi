@@ -83,7 +83,7 @@ def get_modifications_inscriptions():
         with conn.cursor(cursor_factory=DictCursor) as cursor:
             cursor.execute("""
                 SELECT
-                    id,
+                    dossard,
                     licence,
                     nom,
                     prenom,
