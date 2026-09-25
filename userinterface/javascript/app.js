@@ -30,6 +30,7 @@ window.openListeInscrits = function () {
 }
 
 // reveil database 
+
 document.addEventListener("DOMContentLoaded", () => {
     fetch("/wake-db").catch(() => {});
 });
@@ -38,15 +39,13 @@ let tableauxGlobal = null;
 window.updateAdminButtons = updateAdminButtons;
 
 async function init(){
+
     // console.log("INIT RUN");
     updateAdminButtons();
     tableauxGlobal  = await loadTableaux()
     await loadPlaces()
     renderTableaux(tableauxGlobal, places, null, false, [], false)
-
      // focus automatique licence
-
-
     // déclenche check quand on appuie sur Entrée
 
     document.getElementById("licence").addEventListener("keydown", e=>{
@@ -60,6 +59,7 @@ async function init(){
     if(licenceInput){
         licenceInput.addEventListener("click", () => {
             // console.log("CLICK OK"); // test
+
             resetInterface();
             licenceInput.select();
         });
@@ -75,12 +75,13 @@ async function check(){
 
     resetInterface();   
     // const isAdmin = localStorage.getItem("isAdmin") === "1";
+
     const input = document.getElementById("licence");
     if(!input) return;
     const lic = input.value.trim();
     if(!lic) return;
-
     // cacher bouton liste inscrits et admin 
+
     const btnListe = document.getElementById("btnListeInscrits");
     if(btnListe){
         btnListe.style.display = "inline-block";
@@ -98,6 +99,7 @@ async function check(){
 
         const dataAdmin = await resAdmin.json();
         // console.log("ADMIN BACK:", dataAdmin);
+
         setIsAdmin(dataAdmin.admin);
         const isAdmin = dataAdmin.admin; 
 
@@ -125,6 +127,7 @@ async function check(){
                     adminBtn.style.display = "block";
                 }
                 // openModal("Mode administrateur détecté");
+
                 return;
             }
 
@@ -143,14 +146,12 @@ async function check(){
             }
             setCurrentPlayer(data);
             const errBox = document.getElementById("licenceError");
-
             // cacher message si licence valide
 
             if(errBox){
                 errBox.classList.add("hidden");
             }
             if(!data.fftt){
-
                 // message inline
 
                 if(errBox){
@@ -158,8 +159,8 @@ async function check(){
                     errBox.classList.remove("hidden");
                 }
                 // masquer tableaux
-
                 // xx document.getElementById("tableauxContainer").innerHTML="";
+
                 document.getElementById("selectionTitre").classList.remove("hidden");
                 document.getElementById("tableauxContainer").classList.remove("hidden");
                 // masquer inscription
@@ -182,15 +183,12 @@ async function check(){
             if(card){
                 card.classList.remove("hidden");
             }
-            
             const mailInput = document.getElementById("email");
             if(mailInput){
                 mailInput.value = data.mail || "";
-
                 // focus automatique email
 
                 requestAnimationFrame(() => {
-
                     try{
                         mailInput.focus({preventScroll:true});
                     }catch(e){
@@ -214,22 +212,18 @@ async function check(){
                     cb.disabled = false;
                 });
             }
-
             if(data.already_inscrit){
-
                 // cacher verification email
 
                 const emailRow = document.querySelector(".email-row");
                 const codeRow = document.querySelector(".code-row");
                 if(emailRow) emailRow.style.display = "none";
                 if(codeRow) codeRow.style.display = "none";
-
                 // afficher tableaux
 
                 document
                 .getElementById("tableauxContainer")
                 .classList.remove("hidden");
-
                 const msg = document.getElementById("alreadyMsg");
 
                 if (msg) {
@@ -255,9 +249,9 @@ async function check(){
                         msg.innerHTML = "";
                     }
                 }
-  
                 const btn = document.querySelector("button[onclick='sendInscription()']");
                 // const adminBtn = document.getElementById("adminBtn");
+
                 if(btn){
                     if(!isAdmin){
                         btn.disabled = true;
@@ -270,31 +264,28 @@ async function check(){
                     }
                 }
             }
-   
         }
         catch(e){
 
             console.error("CHECK ERROR =", e);
-
             openModal("Erreur serveur licence");
         }
     }, 250);
 }
 
 window.check = check;
+
 async function updateAdminButtons(){
 
     const res = await fetch("/me", {
         credentials: "include"   
     });
-
     const data = await res.json();
     const isAdmin = data.admin;
-
     // const adminBtn  = document.querySelector("button[onclick='loginAdmin()']");
+
     const adminBtn = document.getElementById("adminBtn");
     const logoutBtn = document.getElementById("logoutBtn");
-
     if(isAdmin){
         if(adminBtn) adminBtn.style.display = "none";
         if(logoutBtn) logoutBtn.style.display = "block";

@@ -9,7 +9,6 @@ Les modifications des templates HTML sont prises en compte immédiatement, sans 
 
 3. Création des constantes
 MOIS_FR = [...]
-
 """
 
 from fastapi.templating import Jinja2Templates

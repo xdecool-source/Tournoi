@@ -4,7 +4,6 @@ Produit un code aléatoire à 6 chiffres.
 associe le code à une adresse email ;
 Garde en vie 5 minutes ;
 interdit de renvoyer un nouveau code avant expiration.
-
 """
 
 import os
@@ -62,7 +61,7 @@ def store_verification_code(email):
     code = generate_code()
     verification_codes[email] = {
         "code": code,
-        "expire": now + 300
+        "expire": now + 300  # 300 secondes = 5 minutes.
     }
     # import asyncio
     start = time.time()

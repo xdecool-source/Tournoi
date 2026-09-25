@@ -4,7 +4,6 @@ création des tables multi-jour
 gestion des inscriptions
 gestion des tableaux et listes d’attente
 déclenchement des exports / mails admin
-
 """
 
 import asyncpg, os, time

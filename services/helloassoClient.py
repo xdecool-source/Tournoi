@@ -2,7 +2,6 @@
 Création des paiements avec API de HelloAsso
 """
 
-
 import os
 import time
 import asyncio
@@ -235,7 +234,7 @@ class HelloAssoClient:
 # Instance unique pour toute l'application FastAPI
 helloasso = HelloAssoClient()
 
-# Compatibilité avec ton ancien code
+# Compatibilité avec ancien code
 async def create_checkout(montant, data):
     return await helloasso.create_checkout(
         montant=montant,

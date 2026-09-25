@@ -11,7 +11,6 @@ import { resetInterface } from "./reset.js";
 import { openModal } from "./modal.js";
 import { currentPlayer } from "./state.js";
 
-
 export async function loginAdmin(){
     // console.log("LOGIN FRONT CALLED "); 
 

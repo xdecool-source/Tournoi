@@ -26,7 +26,6 @@ les formats monétaires (€) ;
 les lignes alternées ;
 les colonnes ajustées automatiquement ;
 le gel de l'en-tête (freeze_panes).
-
 """
 
 from openpyxl.styles import PatternFill, Font, Alignment
@@ -34,14 +33,12 @@ from openpyxl.drawing.image import Image
 from core.config import TABLEAUX
 from pathlib import Path
 
-
 def sanitize_excel(value):
     if isinstance(value, str):
         value = value.strip()
         if value.startswith(("=", "+", "-", "@")):
             return "'" + value
     return value
-
 
 def create_price_sheet(wb, data_joueurs, root_dir):
 
@@ -75,7 +72,6 @@ def create_price_sheet(wb, data_joueurs, root_dir):
 
             if statut == "OK":
                 montant_valide += prix
-
             elif statut == "ATTENTE":
                 montant_attente += prix
 
@@ -108,19 +104,14 @@ def create_price_sheet(wb, data_joueurs, root_dir):
 
     ws[f"A{start_row}"] = "Montants par joueur"
     ws[f"A{start_row}"].font = Font(bold=True, size=14)
-
     ws[f"A{start_row+1}"] = "Total encaissé (validés) :"
     ws[f"A{start_row+2}"] = "Total en attente :"
-
     ws[f"F{start_row+1}"] = total_valide_general
     ws[f"G{start_row+2}"] = total_attente_general
-
     ws[f"F{start_row+1}"].number_format = '#,##0.00 €'
     ws[f"G{start_row+2}"].number_format = '#,##0.00 €'
-
     ws[f"F{start_row+1}"].font = Font(bold=True)
     ws[f"G{start_row+2}"].font = Font(bold=True)
-
     ws[f"A{start_row+1}"].font = Font(bold=True)
     ws[f"A{start_row+2}"].font = Font(bold=True)
 
@@ -162,10 +153,8 @@ def create_price_sheet(wb, data_joueurs, root_dir):
             )
 
         ws[f"B{data_row}"].font = Font(bold=True)
-
         ws[f"F{data_row}"].number_format = '#,##0.00 €'
         ws[f"G{data_row}"].number_format = '#,##0.00 €'
-
         ws[f"F{data_row}"].font = Font(bold=True)
 
         if index % 2 == 0:
@@ -174,11 +163,9 @@ def create_price_sheet(wb, data_joueurs, root_dir):
                     row=data_row,
                     column=col
                 ).fill = light_gray
-
         ws[f"A{data_row}"].alignment = Alignment(
             horizontal="center"
         )
-
         data_row += 1
 
     ws.freeze_panes = f"A{header_row+1}"

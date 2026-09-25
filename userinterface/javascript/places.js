@@ -2,7 +2,6 @@
 // Mise à jour les données côté client.
 // ETAG = identifiant de version d’une ressource côté serveur
 // evite le renvoi de données
-
 //  Load Places   
 
 import { places } from "./state.js";

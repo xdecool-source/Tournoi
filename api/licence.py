@@ -8,11 +8,7 @@ GET /licence/{licence}
 from fastapi import APIRouter, HTTPException
 from core.config import MOCK_FFTT
 from services.fftt_service import appel_fftt
-from services.db import (
-    licence_exists,
-    get_tableaux_by_licence,
-    get_conn
-)
+from services.db import (licence_exists,get_tableaux_by_licence,get_conn)
 
 import xml.etree.ElementTree as ET
 
@@ -83,12 +79,8 @@ async def get_licence(licence: str):
     # Appel FFTT
 
     try:
-        xml_data = await appel_fftt(
-            "xml_joueur.php",
-            {
-                "licence": licence
-            }
-        )
+        xml_data = await appel_fftt("xml_joueur.php",{"licence": licence})
+        
     except Exception:
         raise HTTPException(
             status_code=503,
@@ -117,14 +109,7 @@ async def get_licence(licence: str):
         )
     try:
 
-        points = int(
-            float(
-                joueur.findtext(
-                    "valcla",
-                    "0"
-                )
-            )
-        )
+        points = int(float(joueur.findtext("valcla","0")))
     except (ValueError, TypeError):
         points = 0
     return {

@@ -8,10 +8,8 @@ export function resetInterface(){
     setCurrentPlayer(null);
     setJoueurPoints(null);
     setEmailVerified(false);
-
     const btnValider = document.getElementById("btnValider");
     if(btnValider) btnValider.style.display = "none";
-
     // remettre affichage cartes
 
     document.getElementById("licenceCard")?.classList.remove("hidden");
@@ -22,42 +20,34 @@ export function resetInterface(){
 
 const recapContent = document.getElementById("recapContent");
 if(recapContent) recapContent.textContent = "";
-
 const res = document.getElementById("result");
 if(res) res.textContent = "";
-    
     // vider email
 
     const mail = document.getElementById("email");
     if(mail){
         mail.value = "";
         mail.disabled = false;   
-        
         // réactive le champ email
     }
-
     // vider code
 
     const code = document.getElementById("verificationCode");
     if(code) code.value = "";
-
     // réafficher email + code
 
     const emailRow = document.querySelector(".email-row");
     const codeRow = document.querySelector(".code-row");
     if(emailRow) emailRow.style.display = "flex";
     if(codeRow) codeRow.style.display = "flex";
-
     // cacher titre sélection
 
     const titre = document.getElementById("selectionTitre");
     if (titre) titre.classList.add("hidden");
-
     // cacher tableaux
 
     const tableaux = document.getElementById("tableauxContainer");
     if(tableaux) tableaux.classList.add("hidden");
-
     // masquer message déjà inscrit
 
     const msg = document.getElementById("alreadyMsg");
@@ -69,6 +59,7 @@ if(res) res.textContent = "";
 
     const btn = document.querySelector("button[onclick='sendInscription()']");
     // const btn = document.getElementById("btnValider");
+
     if(btn){
         btn.disabled = false;
         btn.innerText = "Valider";
@@ -78,8 +69,8 @@ if(res) res.textContent = "";
 
     const sendBtn = document.querySelector("button[onclick='sendCode()']");
     // const sendBtn = document.getElementById("sendCodeBtn");
-    if(sendBtn) sendBtn.disabled = false;
 
+    if(sendBtn) sendBtn.disabled = false;
     // décocher tableaux
     
     document.querySelectorAll("#tableauxContainer input").forEach(el=>{

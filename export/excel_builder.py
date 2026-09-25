@@ -366,11 +366,7 @@ def create_modifications_sheet(wb, rows):
                     vertical="center"
                 )
         
-        
-        
         ws.freeze_panes = "A2"
         
-        
-
         if rows:
             ws.auto_filter.ref = ws.dimensions

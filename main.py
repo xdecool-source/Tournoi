@@ -3,7 +3,6 @@ démarre l'application, initialise la base  et affiche la configuration.
 Création de  l'application FastAPI, 
 enregistre les routes, les fichiers statiques
 GET (/ping) pour railway et neon
-
 """
 
 from fastapi import FastAPI

@@ -22,7 +22,6 @@ if not APP_ID:
 if not MOT_DE_PASSE:
     raise RuntimeError("MOT_DE_PASSE manquant")
 
-
 # Calculé une seule fois au démarrage
 CLE_FFTT = hashlib.md5(MOT_DE_PASSE.encode()).hexdigest()
 
@@ -44,7 +43,6 @@ def tmc(tm):
         hashlib.sha1
     ).hexdigest()
     
-    
 async def appel_fftt(endpoint, params_metier):
     
 #   Mock Dev 
@@ -63,7 +61,7 @@ async def appel_fftt(endpoint, params_metier):
 
         nom, prenom, club, point = joueurs.get(
             licence,
-            ("Le Joueur", "Xavier", "Perpignan La Rayonnante", 1000)
+            ("Dumoulin", "Jean", "Perpignan La Rayonnante", 1000)
         )
 
         return f"""

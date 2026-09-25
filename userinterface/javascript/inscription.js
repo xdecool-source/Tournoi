@@ -152,14 +152,11 @@ export async function sendInscription(){
         openModal(data.error || "Erreur");
         return;
     }
-    
     if (data.payment_url) {
 
         window.helloassoPaymentUrl = data.payment_url;
         window.helloassoMontant = data.montant;
-
     }
-
     // tableaux refusés
 
     if(data.refused && data.refused.length){
@@ -169,7 +166,6 @@ export async function sendInscription(){
         );
     }
     closeModal();
-
     //  filtrer tableaux refusés backend
     
     const validSelection = data.refused?.length

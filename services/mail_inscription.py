@@ -151,8 +151,7 @@ async def build_email_html(data: dict, type_mail: str):
             #    ligne = f"{t} ({nom}, {jour} à {heure}) — {prix}€ {statut_txt}"
            # else:
            #     ligne = f"{nom} ({min_pts}-{max_pts} pts, {jour} à {heure}) — {prix}€ {statut_txt}"
-                
-        
+             
             if min_pts is None and max_pts is None:
                 ligne = f"<b>{t}</b> ({conf.get('label', t)}) — {prix}€ {statut_txt}"
             else:
@@ -264,9 +263,7 @@ async def send_brevo_email(
 async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
 
     html_content = await build_email_html(data, type_mail)
-    
     if type_mail == "creation":
-        
         # print("HELLOASSO_CARTE =", HELLOASSO_CARTE)
         # print("TYPE_MAIL =", type_mail)
         if HELLOASSO_CARTE:
@@ -287,13 +284,11 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
         subject = f"Tournoi {NOM_TOURNOI}"
             
     if ENV == "prod":
-
         message_id = await send_brevo_email(
             to_email,
             subject,
             html_content
         )
-
         await log_email(
             licence=data["licence"],
             email=to_email,
@@ -302,14 +297,12 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
             subject=subject,
             brevo_message_id=message_id
         )
-
     else:
         await send_smtp_email(
             to_email,
             subject,
             html_content
         )
-        
         await log_email(
             licence=data["licence"],
             email=to_email,
@@ -318,8 +311,7 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
             subject=subject,
             brevo_message_id="SMTP_DEV"
         )
-        
-                        
+                      
 #  Fonction générique envoi de mail
 
 async def send_email(to_email: str, subject: str, html_content: str):

@@ -27,11 +27,12 @@ export function renderTableaux(
     isAdmin = false  
 ) { tableauxGlobal = TABLEAUX;
   
-
     // window.TABLEAUX_GLOBAL = TABLEAUX; 
     // const isAdmin = document.cookie.includes("admin=1");
+
     const box = document.getElementById("tableauxContainer");
     // console.log("IS ADMIN RENDER:", isAdmin);
+
     if(!box || !TABLEAUX) return;
     const points = Number(joueurPoints);
     box.innerHTML = Object.keys(TABLEAUX).map(key => {
@@ -120,8 +121,8 @@ export function renderTableaux(
         </div>
     </div>`;
 }).join("");
-
 // après le render complet
+
 box.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
     cb.addEventListener("change", limitSelection);
 });
@@ -133,30 +134,25 @@ export function limitSelection(e){
     const checked = Array.from(
         document.querySelectorAll("#tableauxContainer input:checked")
         );
-
         const counts = {};
         const grouped = {};
-
         checked.forEach(cb => {
-
             const c = tableauxGlobal?.[cb.value];
-
             // Ne compte pas les tableaux exclus du quota
+
             if (c?.Comptage === false) {
                 return;
             }
-
             const jour = c?.jour?.label?.toLowerCase();
             if (!jour) return;
-
             counts[jour] = (counts[jour] || 0) + 1;
-
             if (!grouped[jour]) grouped[jour] = [];
             grouped[jour].push(cb);
         });
 
     // console.log("COUNTS =", counts);
     // console.log("LIMIT =", NBRE_TABLEAU);
+
     for (const jour in counts) {
     if (counts[jour] > NBRE_TABLEAU) {
         current.checked = false;
@@ -169,13 +165,11 @@ export function limitSelection(e){
 window.limitSelection = limitSelection;
 
 // gestion visuelle sélection
-
 document.addEventListener("change", function(e){
 
     if(!e.target.matches('#tableauxContainer input[type="checkbox"]')){
         return;
     }
-
     let total = 0;
     document.querySelectorAll(
         "#tableauxContainer input:checked"
@@ -188,4 +182,5 @@ document.addEventListener("change", function(e){
         el.innerText = "Total : " + total + "€";
     }
     // console.log("TOTAL =", total); 
+    
 });

@@ -43,7 +43,6 @@ async def send_code(
             alt="Logo"
             style="max-width: 600px; height: auto;">
     </div>
-    
     <h2>
         Votre code de connexion pour votre inscription est : {code}
     </h2>
