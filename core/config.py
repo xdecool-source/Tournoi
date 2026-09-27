@@ -44,12 +44,12 @@ TABLEAUX = {
         "attente": 3, "prix": 9, "Comptage": True,
         "jour":{ "id": 1,"label": "Dimanche","hour": "12h00" },
         },   
-    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 50,
-        "attente": 5, "prix": 10, "Comptage": True, 
+    "TS": {"min": None, "max": None, "label": "Toutes Séries", "capacite": 48,
+        "attente": 3, "prix": 10, "Comptage": True, 
         "jour": { "id": 1,"label": "Dimanche","hour": "13h00" }
         },
     "TH": {"min": None, "max": None, "label": "Handicap", "capacite": 48,
-        "attente": 5, "prix": 9, "Comptage": False,
+        "attente": 3, "prix": 9, "Comptage": False,
         "jour": { "id": 1,"label": "Dimanche","hour": "14h00"}
         },
 }
