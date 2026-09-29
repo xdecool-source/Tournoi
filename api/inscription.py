@@ -32,7 +32,7 @@ from services.fftt_service import appel_fftt
 from services.mail_inscription import send_confirmation_email
 from services.helloassoClient  import create_checkout
 
-from core.config import (TABLEAUX,MOCK_FFTT)
+from core.config import (TABLEAUX,FFTT_API)
 from api.admin import get_current_admin
 from api.cache import (places_cache,places_cache_time,CACHE_TTL)
 
@@ -385,7 +385,8 @@ async def inscription(
 
     # Vérification FFTT
 
-    if not MOCK_FFTT:
+    # if  not FFTT_API:
+    if  FFTT_API:
         try:
 
             xml_data = await appel_fftt(

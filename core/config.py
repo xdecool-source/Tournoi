@@ -13,7 +13,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()    # si existe .env et pas de variable globale alors .env
 
-MOCK_FFTT = os.getenv("MOCK_FFTT", "true").lower() == "true"
+FFTT_API = os.getenv("FFTT_API", "true").lower() == "true"
 ENV = os.getenv("ENV", "prod").lower() == "prod"
 ENVCODE = os.getenv("ENVCODE", "dev").lower() == "dev"
 HELLOASSO_CARTE= os.getenv("HELLOASSO_CARTE", "true").lower() == "true"

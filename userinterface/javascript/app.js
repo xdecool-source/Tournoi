@@ -175,9 +175,9 @@ async function check(){
             setJoueurPoints(data.points ? Number(data.points) : 9999);
             const res = document.getElementById("result");
             if(res){
-                res.innerText = `${data.prenom || ""} ${data.nom || ""}
-            Club: ${data.club || ""}
-            Points: ${data.points || ""}`;
+                res.innerHTML = `<strong>${data.prenom || ""} ${data.nom || ""}</strong><br>
+                Club: ${data.club || ""}<br>
+                Points: ${data.points || ""}`;
             }
             const card = document.getElementById("inscriptionCard");
             if(card){

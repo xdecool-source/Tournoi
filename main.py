@@ -10,7 +10,7 @@ from fastapi.templating import Jinja2Templates
 from contextlib import asynccontextmanager
 from services.db import init_db_pool, init_db, init_archive_trigger, reaffectation_all
 from fastapi.staticfiles import StaticFiles
-from core.config import MOCK_FFTT, ENV, HELLOASSO_CARTE, ENVCODE
+from core.config import FFTT_API, ENV, HELLOASSO_CARTE, ENVCODE
 from services.db import wake_db
 
 import asyncio
@@ -28,8 +28,8 @@ async def lifespan(app: FastAPI):
     print(" 🟢 Gestion Tournoi : Startup")
     print("")
     
-    if MOCK_FFTT: {print( " Mode simulation licence : MOCK_FFTT = ", os.getenv("MOCK_FFTT"))}
-    else: { print ( " Connexion FFTT : MOCK_FFTT = ", os.getenv("MOCK_FFTT"))}
+    if FFTT_API: {print( " Connexion licence FFTT : FFTT_API = ", os.getenv("FFTT_API"))}
+    else: { print ( " Pas de connexion FFTT : FFTT_API = ", os.getenv("FFTT_API"))}
     
     if HELLOASSO_CARTE: {print( " Paiement par carte avec helloAsso Impossible en local car mode HTTP : HELLOASSO_CARTE = ", os.getenv("HELLOASSO_CARTE"))}
     else: { print ( " Pas de paiement avec HelloAsso : HELLOASSO_CARTE = ", os.getenv("HELLOASSO_CARTE"))}

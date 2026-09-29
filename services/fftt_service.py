@@ -9,7 +9,7 @@ import os, urllib.parse, httpx, hashlib
 import hmac, random, string
 
 from datetime import datetime, timezone
-from core.config import BASE_URL, APP_ID, MOT_DE_PASSE, MOCK_FFTT
+from core.config import BASE_URL, APP_ID, MOT_DE_PASSE, FFTT_API
 
 # ce numéro de série est calculé une seule fois au démarrage de l'APP
 
@@ -48,9 +48,9 @@ async def appel_fftt(endpoint, params_metier):
 #   Mock Dev 
 #   Simule un retour xml
     
-    if MOCK_FFTT:
-        licence = params_metier.get("licence", "000000")
-
+    if not FFTT_API: 
+           
+        licence = str(params_metier.get("licence", "000000")).strip()
         joueurs = {
             "111": ("Dupond", "Xavier", "Perpignan TT", 850),
             "222": ("Durand", "Paul", "Montpellier TT", 1450),
@@ -58,7 +58,6 @@ async def appel_fftt(endpoint, params_metier):
             "444": ("Albert", "loic", "Foix TT", 1250),
             "555": ("Foix", "Samuel", "Cac TT", 620)
         }
-
         nom, prenom, club, point = joueurs.get(
             licence,
             ("Dumoulin", "Jean", "Perpignan La Rayonnante", 1000)
