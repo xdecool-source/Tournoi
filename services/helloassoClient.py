@@ -72,19 +72,14 @@ class HelloAssoClient:
                         # Première authentification
                         if not self.refresh_token:
                             """
-                            print(
-                               "Authentification HelloAsso..."
-                            )
+                            print("Authentification HelloAsso...")
                             """
                             response = await client.post(
                                 HELLOASSO_AUTH,
                                 data={
-                                    "grant_type":
-                                        "client_credentials",
-                                    "client_id":
-                                        CLIENT_ID,
-                                    "client_secret":
-                                        CLIENT_SECRET,
+                                    "grant_type":"client_credentials",
+                                    "client_id":CLIENT_ID,
+                                    "client_secret":CLIENT_SECRET,
                                 },
                             )
                         # Renouvellement
@@ -113,14 +108,9 @@ class HelloAssoClient:
                     if data.get("refresh_token"):
                         self.refresh_token = data["refresh_token"]
 
-                    expires_in = int(
-                        data.get("expires_in", 1800) # 30 minutes 
-                    )
-                    
+                    expires_in = int(data.get("expires_in", 1800)) # 30 minutes 
                     # expires_in = 10 pour un test avec 10 sec et pas 30 minutes 
-                    self.token_expire = (
-                        time.time() + expires_in
-                    )
+                    self.token_expire = (time.time() + expires_in)
 
                     """
                     print(
@@ -186,8 +176,7 @@ class HelloAssoClient:
                     response = await client.post(
                         f"{HELLOASSO_API}/v5/organizations/"
                         f"{ORGANIZATION}/checkout-intents",
-                        headers={
-                            "Authorization":
+                        headers={"Authorization":
                                 f"Bearer {token}"
                         },
                         json=payload,

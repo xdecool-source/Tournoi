@@ -59,10 +59,7 @@ def store_verification_code(email):
         if now < data["expire"]:
             raise ValueError("Un code est déjà envoyé. Attendez 5 minutes.")
     code = generate_code()
-    verification_codes[email] = {
-        "code": code,
-        "expire": now + 300  # 300 secondes = 5 minutes.
-    }
+    verification_codes[email] = {"code": code,"expire": now + 300 } # 300 secondes = 5 minutes.
     # import asyncio
     start = time.time()
     return code
@@ -113,17 +110,9 @@ async def send_smtp_email(to_email, subject, html):
 async def send_brevo_email(to_email, subject, html):
 
     payload = {
-        "sender": {
-            "name": "Tournoi",
-            "email": FROM_EMAIL
-        },
-        "to": [
-            {"email": to_email}
-        ],
-        "replyTo": {
-            "email": REPLY_TO_EMAIL,
-            "name": "Tournoi"
-        },
+        "sender": {"name": "Tournoi","email": FROM_EMAIL},
+        "to": [{"email": to_email}],
+        "replyTo": {"email": REPLY_TO_EMAIL,"name": "Tournoi"},
         "subject": subject,
         "htmlContent": html
     }
@@ -154,4 +143,4 @@ async def send_email(to_email, subject, html):
         await send_brevo_email(to_email, subject, html)
     else:
         await send_smtp_email(to_email, subject, html)
-        
+    

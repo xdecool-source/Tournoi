@@ -24,18 +24,12 @@ INSCRIT_PASS = os.getenv("INSCRIT_PASS")
 
 @router.post("/send-code")
 
-async def send_code(
-    data: dict,
-    background_tasks: BackgroundTasks
-):
+async def send_code(data: dict,background_tasks: BackgroundTasks):
     email = data["email"].strip().lower()
     try:
         code = store_verification_code(email)
     except ValueError as e:
-        return {
-            "success": False,
-            "error": str(e)
-        }
+        return {"success": False,"error": str(e)}
 
     html = f"""
     <div style="text-align: center; margin-bottom: 20px;">
@@ -54,15 +48,8 @@ async def send_code(
     </p>
     """
 
-    background_tasks.add_task(
-        send_email,
-        email,
-        "Code de vérification du Tournoi",
-        html
-    )
-    return {
-        "success": True
-    }
+    background_tasks.add_task(send_email,email,"Code de vérification du Tournoi",html)
+    return {"success": True}
 
 # Vérification du code
 
@@ -73,18 +60,11 @@ async def verify_code_api(data: dict):
     # print("ENVCODE =", ENVCODE)
     # bypass en développement
     if ENVCODE == "dev":
-        return {
-            "success": True
-        }
+        return {"success": True}
     email = data["email"].strip().lower()
     code = data["code"]
-    valid = verify_code(
-        email,
-        code
-    )
-    return {
-        "success": valid
-    }
+    valid = verify_code(email,code)
+    return {"success": valid}
 
 # Vérification mot de passe
 # liste des inscrits
@@ -95,10 +75,5 @@ async def check_liste_password(data: dict):
 
     pwd = data.get("pwd")
     if pwd == INSCRIT_PASS:
-        return {
-            "success": True
-        }
-    return {
-        "success": False
-    }
-    
+        return {"success": True}
+    return {"success": False}

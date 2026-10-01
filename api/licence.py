@@ -25,17 +25,7 @@ router = APIRouter()
 async def get_licence(licence: str):
 
     licence = licence.strip()
-    # Mode administrateur
-
-    if licence == "999999":
-        return {
-            "licence": "999999",
-            "nom": "MODE",
-            "prenom": "ADMIN",
-            "mail": "",
-            "fftt": True,
-            "admin": True
-        }
+   
     # Validation du format
 
     if not licence.isdigit() or not (3 <= len(licence) <= 8):
@@ -49,9 +39,7 @@ async def get_licence(licence: str):
     tableaux_inscrits = []
     mail = ""
     if already:
-        tableaux_inscrits = await get_tableaux_by_licence(
-            licence
-        )
+        tableaux_inscrits = await get_tableaux_by_licence(licence)
         async with get_conn() as conn:
             mail = await conn.fetchval(
                 """
@@ -67,44 +55,26 @@ async def get_licence(licence: str):
     # - l'API FFTT réelle
 
     try:
-        xml_data = await appel_fftt(
-            "xml_joueur.php",
-            {"licence": licence})
-
+        xml_data = await appel_fftt("xml_joueur.php",{"licence": licence})
     except Exception as e:
         print("ERREUR FFTT :", e)
-        raise HTTPException(
-            status_code=503,
-            detail=(
-                "Service FFTT indisponible. "
-                "Réessayez dans quelques instants."
-            )
-        )
+        raise HTTPException(status_code=503,detail=("Service FFTT indisponible. ""Réessayez dans quelques instants."))
     # Vérification réponse
 
     if not xml_data or not xml_data.strip():
-        raise HTTPException(
-            status_code=503,
-            detail="Réponse FFTT vide."
-        )
+        raise HTTPException(status_code=503,detail="Réponse FFTT vide.")
     # Parsing XML
     
     try:
         root = ET.fromstring(xml_data)
     except ET.ParseError as e:
         print("ERREUR XML :", e)
-        raise HTTPException(
-            status_code=503,
-            detail="Réponse FFTT invalide."
-        )
+        raise HTTPException(status_code=503,detail="Réponse FFTT invalide.")
     # Recherche du joueur
 
     joueur = root.find(".//joueur")
     if joueur is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Licence introuvable à la FFTT."
-        )
+        raise HTTPException(status_code=404,detail="Licence introuvable à la FFTT.")
     # Récupération des points
     
     try:
@@ -122,17 +92,8 @@ async def get_licence(licence: str):
     # Réponse API
 
     return {
-        "licence": licence_xml,
-        "nom": nom,
-        "prenom": prenom,
-        "club": club,
-        "points": points,
-        "classement": classement,
-        "categorie": categorie,
-        "already_inscrit": already,
-        "tableaux_inscrits": tableaux_inscrits,
-        "mail": mail,
-        "fftt": True
+        "licence": licence_xml,"nom": nom,"prenom": prenom,"club": club,"points": points,"classement": classement,
+        "categorie": categorie,"already_inscrit": already,"tableaux_inscrits": tableaux_inscrits,
+        "mail": mail,"fftt": True
     }
-    
     

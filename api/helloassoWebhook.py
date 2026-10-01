@@ -25,6 +25,7 @@ HELLOASSO_CARTE = ( os.getenv("HELLOASSO_CARTE","true").lower() == "true")
 # Callback HelloAsso
 
 if HELLOASSO_CARTE:
+    
     @router.get("/helloasso/callback")
     async def helloasso_callback():
         return {"status": "ok"}
@@ -44,27 +45,15 @@ if HELLOASSO_CARTE:
             return {"ok": True}
         meta = payload["metadata"]
         data = {
-            "licence":
-                meta["licence"],
-            "nom":
-                meta["nom"],
-            "prenom":
-                meta["prenom"],
-            "club":
-                meta["club"],
-            "points":
-                int(meta["points"]),
-            "mail":
-                meta["email"],
-            "tableaux":
-                meta["tableaux"].split(","),
-            "paiement":
-                "HelloAsso",
-            "helloasso_order_id":
-                payload.get(
-                    "data",
-                    {}
-                ).get("id")
+            "licence":meta["licence"],
+            "nom":meta["nom"],
+            "prenom":meta["prenom"],
+            "club":meta["club"],
+            "points":int(meta["points"]),
+            "mail":meta["email"],
+            "tableaux":meta["tableaux"].split(","),
+            "paiement":"HelloAsso",
+            "helloasso_order_id":payload.get("data",{}).get("id")
         }
 
         already = await licence_exists(meta["licence"])

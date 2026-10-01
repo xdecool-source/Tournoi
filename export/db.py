@@ -26,15 +26,8 @@ load_dotenv(".env", override=False)
 
 QUERY = """
 SELECT 
-    i.dossard,
-    i.nom || ' ' || i.prenom AS "Nom Prénom",
-    i.club AS "Club",
-    i.points AS "Classement",
-    i.licence AS "Licence",
-    i.mail AS "Mail",
-    i.paiement,
-    it.tableau,
-    it.statut
+    i.dossard,i.nom || ' ' || i.prenom AS "Nom Prénom",i.club AS "Club",i.points AS "Classement",
+    i.licence AS "Licence",i.mail AS "Mail",i.paiement,it.tableau,it.statut
 FROM inscriptions i
 JOIN inscription_tableaux it 
     ON i.licence = it.licence
@@ -68,10 +61,8 @@ def get_deleted_inscriptions():
     """)
 
     rows = cursor.fetchall()
-
     cursor.close()
     conn.close()
-
     return rows
 
 def get_modifications_inscriptions():
@@ -83,23 +74,11 @@ def get_modifications_inscriptions():
         with conn.cursor(cursor_factory=DictCursor) as cursor:
             cursor.execute("""
                 SELECT
-                    dossard,
-                    licence,
-                    nom,
-                    prenom,
-                    date_modification,
-                    tableaux_avant,
-                    tableaux_apres,
-                    tableaux_ajoutes,
-                    tableaux_supprimes,
-                    montant_avant,
-                    montant_apres,
-                    difference_montant
+                    dossard,licence,nom,prenom,date_modification,tableaux_avant,tableaux_apres,tableaux_ajoutes,
+                    tableaux_supprimes,montant_avant,montant_apres,difference_montant
                 FROM modifications_inscriptions
                 ORDER BY date_modification DESC
             """)
-
             rows = cursor.fetchall()
-
     return rows
 

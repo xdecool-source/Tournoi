@@ -41,10 +41,12 @@ window.updateAdminButtons = updateAdminButtons;
 async function init(){
 
     // console.log("INIT RUN");
+
     updateAdminButtons();
     tableauxGlobal  = await loadTableaux()
     await loadPlaces()
     renderTableaux(tableauxGlobal, places, null, false, [], false)
+
      // focus automatique licence
     // déclenche check quand on appuie sur Entrée
 
@@ -81,15 +83,71 @@ async function check(){
     const lic = input.value.trim();
     if(!lic) return;
     // cacher bouton liste inscrits et admin 
+    // mode ADMIN : licence 000
 
     const btnListe = document.getElementById("btnListeInscrits");
-    if(btnListe){
-        btnListe.style.display = "inline-block";
-    }
     const adminBtn = document.getElementById("adminBtn");
-    if(adminBtn && window.innerWidth > 600){
-        adminBtn.style.display = "block";
+    const emailRow = document.querySelector(".email-row");
+    const codeRow = document.querySelector(".code-row");
+    const inscriptionCard = document.getElementById("inscriptionCard");
+    const selectionTitre = document.getElementById("selectionTitre");
+    const tableauxContainer = document.getElementById("tableauxContainer");
+    const totalPrix = document.getElementById("totalPrix");
+    const licence = input.value.trim();
+
+    // Licence spéciale ADMIN = 000
+    if(licence === "000"){
+        // Afficher Admin uniquement sur grand écran
+
+        if(adminBtn){
+            if(window.innerWidth > 600)
+                {adminBtn.style.display = "block";}
+            else{adminBtn.style.display = "none";}
+        }
+        // Masquer complètement la partie inscription
+
+        if(inscriptionCard){
+            inscriptionCard.classList.add("hidden");
+            inscriptionCard.style.display = "none";
+        }
+        // Masquer email
+
+        if(emailRow){emailRow.style.display = "none";}
+        // Masquer code
+
+        if(codeRow){codeRow.style.display = "none";}
+        // Masquer les tableaux
+
+        if(selectionTitre){
+            selectionTitre.classList.add("hidden");
+            selectionTitre.style.display = "none";
+        }
+        if(tableauxContainer){
+            tableauxContainer.classList.add("hidden");
+            tableauxContainer.style.display = "none";
+        }
+        if(totalPrix){
+            totalPrix.classList.add("hidden");
+            totalPrix.style.display = "none";
+        }
+        // Ne pas afficher la liste des inscrits ici
+        if(btnListe){btnListe.style.display = "none";}
+        // Annuler un éventuel ancien timer
+
+        clearTimeout(checkTimer);
+        // IMPORTANT :
+        // ne surtout pas continuer vers /licence/000
+
+        return;
     }
+    // Licence normale
+    if(adminBtn){adminBtn.style.display = "none";}
+    if(emailRow){emailRow.style.display = "";}
+    if(codeRow){codeRow.style.display = "";}
+    if(inscriptionCard){inscriptionCard.style.display = "";}
+    if(selectionTitre){selectionTitre.style.display = "";}
+    if(tableauxContainer){tableauxContainer.style.display = "";}
+    if(totalPrix){totalPrix.style.display = "";}
 
     clearTimeout(checkTimer);
     checkTimer = setTimeout(async ()=>{
@@ -120,14 +178,9 @@ async function check(){
                 return;
             }
             const data = await r.json();
-            if (data.admin) {
-
-                const adminBtn = document.getElementById("adminBtn");
-                if (adminBtn) {
-                    adminBtn.style.display = "block";
-                }
+            if (data.admin) {const adminBtn = document.getElementById("adminBtn");
+                if (adminBtn) {adminBtn.style.display = "block";}
                 // openModal("Mode administrateur détecté");
-
                 return;
             }
 
@@ -148,12 +201,10 @@ async function check(){
             const errBox = document.getElementById("licenceError");
             // cacher message si licence valide
 
-            if(errBox){
-                errBox.classList.add("hidden");
-            }
+            if(errBox){errBox.classList.add("hidden");}
             if(!data.fftt){
                 // message inline
-
+                
                 if(errBox){
                     errBox.innerText = "Licence inconnue FFTT";
                     errBox.classList.remove("hidden");
@@ -194,7 +245,6 @@ async function check(){
                     }catch(e){
                         mailInput.focus();
                     }
-
                 });
             }
     
@@ -296,3 +346,15 @@ async function updateAdminButtons(){
 }
 
 window.addEventListener("load", init)
+
+// positionne le cursur dans la zone de saisie du N° de licence 
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        const licence = document.getElementById("licence");
+        if (licence) {
+            licence.focus();
+            licence.select();
+        }
+    }, 100);
+});
+

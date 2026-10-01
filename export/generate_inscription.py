@@ -85,3 +85,4 @@ def generate():
         # log propre ici
         print(f"Erreur génération Excel: {e}")
         return None
+    

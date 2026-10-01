@@ -35,10 +35,7 @@ HELLOASSO_CARTE = (os.getenv("HELLOASSO_CARTE", "true").lower() == "true")
 @router.get("/", response_class=HTMLResponse)
 
 async def home(request: Request):
-    date_obj = datetime.strptime(
-        DATE_TOURNOI,
-        "%d/%m/%Y"
-    )
+    date_obj = datetime.strptime(DATE_TOURNOI,"%d/%m/%Y")
     date_formatee = (
         f"{date_obj.day} "
         f"{MOIS_FR[date_obj.month]} "
@@ -75,8 +72,5 @@ async def get_config():
 async def get_tableaux():
     result = {}
     for key, conf in TABLEAUX.items():
-        result[key] = {
-            **conf,
-            "prix": conf.get("prix", 0)
-        }
+        result[key] = {**conf,"prix": conf.get("prix", 0)}
     return result

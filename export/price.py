@@ -61,20 +61,15 @@ def create_price_sheet(wb, data_joueurs, root_dir):
     # Calcul des montants
 
     for dossard, infos in sorted(data_joueurs.items()):
-
         montant_valide = 0
         montant_attente = 0
-
         for tableau, statut in infos["Inscriptions"]:
-
             prix = TABLEAUX.get(tableau, {}).get("prix", 0)
             statut = (statut or "").upper()
-
             if statut == "OK":
                 montant_valide += prix
             elif statut == "ATTENTE":
                 montant_attente += prix
-
         total_valide_general += montant_valide
         total_attente_general += montant_attente
         
@@ -90,11 +85,7 @@ def create_price_sheet(wb, data_joueurs, root_dir):
             dossard,
             sanitize_excel(infos["Nom"]),
             sanitize_excel(infos.get("Licence", "")),
-            sanitize_excel(
-                ", ".join(
-                    [f"{t} ({s})" for t, s in infos["Inscriptions"]]
-                )
-            ),
+            sanitize_excel(", ".join([f"{t} ({s})" for t, s in infos["Inscriptions"]])),
             sanitize_excel(infos.get("paiement", "")),
             montant_valide,
             montant_attente
@@ -120,38 +111,17 @@ def create_price_sheet(wb, data_joueurs, root_dir):
     header_row = start_row + 4
 
     headers = [
-        "Dossard",
-        "Nom Prénom",
-        "N° Licence",
-        "Tableaux",
-        "Paiement",
-        "Montant validé (€)",
-        "Montant en attente (€)"
+        "Dossard","Nom Prénom","N° Licence","Tableaux",
+        "Paiement","Montant validé (€)","Montant en attente (€)"
     ]
 
     for col_index, value in enumerate(headers, 1):
-        ws.cell(
-            row=header_row,
-            column=col_index,
-            value=value
-        ).font = Font(bold=True)
-
+        ws.cell(row=header_row,column=col_index,value=value).font = Font(bold=True)
     data_row = header_row + 1
-
-    light_gray = PatternFill(
-        start_color="F2F2F2",
-        fill_type="solid"
-    )
-
+    light_gray = PatternFill(start_color="F2F2F2",fill_type="solid")
     for index, ligne in enumerate(lignes_prix):
-
         for col_index, value in enumerate(ligne, 1):
-            ws.cell(
-                row=data_row,
-                column=col_index,
-                value=value
-            )
-
+            ws.cell(row=data_row,column=col_index,value=value)
         ws[f"B{data_row}"].font = Font(bold=True)
         ws[f"F{data_row}"].number_format = '#,##0.00 €'
         ws[f"G{data_row}"].number_format = '#,##0.00 €'
@@ -159,30 +129,18 @@ def create_price_sheet(wb, data_joueurs, root_dir):
 
         if index % 2 == 0:
             for col in range(1, 8):
-                ws.cell(
-                    row=data_row,
-                    column=col
-                ).fill = light_gray
-        ws[f"A{data_row}"].alignment = Alignment(
-            horizontal="center"
-        )
+                ws.cell(row=data_row,column=col).fill = light_gray
+        ws[f"A{data_row}"].alignment = Alignment(horizontal="center")
         data_row += 1
-
     ws.freeze_panes = f"A{header_row+1}"
 
     # Auto largeur
 
     for col in ws.columns:
-
         max_length = 0
         col_letter = col[0].column_letter
-
         for cell in col:
             if cell.value:
-                max_length = max(
-                    max_length,
-                    len(str(cell.value))
-                )
-
+                max_length = max(max_length,len(str(cell.value)))
         ws.column_dimensions[col_letter].width = max_length + 2
         

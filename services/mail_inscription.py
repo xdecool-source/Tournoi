@@ -121,27 +121,22 @@ async def build_email_html(data: dict, type_mail: str):
             TABLEAUX.get(r["tableau"], {}).get("prix", 0)
             for r in rows
         )
-
         statuts = {
             r["tableau"]: r["statut"]
             for r in rows
             if r["event_id"] == event_id
         }
-
         for t in data["tableaux"]:
-
             conf = TABLEAUX.get(t, {})
             min_pts = conf.get("min")
             max_pts = conf.get("max")
             statut = statuts.get(t)
-
             if statut == "OK":
                 statut_txt = "✅ Confirmé"
             elif statut == "ATTENTE":
                 statut_txt = "⏳ Liste d'attente"
             else:
                 statut_txt = "🔒 Non validé"
-
             nom = conf.get("label", t)
             prix = conf.get("prix", 0)
             jour = conf.get("jour", {}).get("label", "")
@@ -220,24 +215,12 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
 
 #  Envoi Brevo Api (Production)
 
-async def send_brevo_email(
-    to_email: str,
-    subject: str,
-    html_content: str
-):
+async def send_brevo_email(to_email: str,subject: str,html_content: str):
     
     payload = {
-        "sender": {
-            "name": "Tournoi",
-            "email": FROM_EMAIL
-        },
-        "to": [
-            {"email": to_email}
-        ],
-        "replyTo": {
-            "email": REPLY_TO_EMAIL,
-            "name": "Tournoi"
-        },
+        "sender": {"name": "Tournoi","email": FROM_EMAIL},
+        "to": [{"email": to_email}],
+        "replyTo": {"email": REPLY_TO_EMAIL,"name": "Tournoi"},
         "subject": subject,
         "htmlContent": html_content,
     }
@@ -256,7 +239,6 @@ async def send_brevo_email(
         response.raise_for_status()
         result = response.json()
         return result.get("messageId")
-
 
 #  Fonction principale
 
@@ -284,33 +266,13 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
         subject = f"Tournoi {NOM_TOURNOI}"
             
     if ENV == "prod":
-        message_id = await send_brevo_email(
-            to_email,
-            subject,
-            html_content
-        )
-        await log_email(
-            licence=data["licence"],
-            email=to_email,
-            type_mail=type_mail,
-            event_id=data.get("event_id", 1),
-            subject=subject,
-            brevo_message_id=message_id
-        )
+        message_id = await send_brevo_email(to_email,subject,html_content)
+        await log_email(licence=data["licence"],email=to_email,type_mail=type_mail,
+            event_id=data.get("event_id", 1),subject=subject,brevo_message_id=message_id)
     else:
-        await send_smtp_email(
-            to_email,
-            subject,
-            html_content
-        )
-        await log_email(
-            licence=data["licence"],
-            email=to_email,
-            type_mail=type_mail,
-            event_id=data.get("event_id", 1),
-            subject=subject,
-            brevo_message_id="SMTP_DEV"
-        )
+        await send_smtp_email(to_email,subject,html_content)
+        await log_email(licence=data["licence"],email=to_email,type_mail=type_mail,
+            event_id=data.get("event_id", 1),subject=subject,brevo_message_id="SMTP_DEV")
                       
 #  Fonction générique envoi de mail
 
@@ -319,16 +281,7 @@ async def send_email(to_email: str, subject: str, html_content: str):
     # print("Mode Mail =", "Smtp" if ENV == "dev" else "Brevo")
     
     if ENV == "prod":
-    # if ENV != "dev":
-        await send_brevo_email(
-            to_email,
-            subject,
-            html_content
-        )
+        await send_brevo_email(to_email,subject,html_content)
     else:
-        await send_smtp_email(
-            to_email,
-            subject,
-            html_content
-        )
+        await send_smtp_email(to_email,subject,html_content)
         

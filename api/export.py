@@ -27,6 +27,7 @@ templates = Jinja2Templates(
 
 # Export Excel
 
+"""
 @router.get("/export-excel")
 
 async def export_excel(
@@ -50,6 +51,8 @@ async def export_excel(
             f'attachment; filename="Inscriptions_Tournoi_{now}.xlsx"'
         }
     )
+    
+"""
 
 # Export Excel Admin
 
@@ -61,17 +64,10 @@ async def download_excel(
     excel_stream = generate()
     if not excel_stream:
 
-        raise HTTPException(
-            status_code=500,
-            detail="Erreur génération Excel"
-        )
+        raise HTTPException(status_code=500,detail="Erreur génération Excel")
     excel_stream.seek(0)
-    filename = datetime.now(
-        ZoneInfo("Europe/Paris")
-    ).strftime(
-
-        "Inscriptions_Tournoi_%d-%m-%Y_%Hh%M.xlsx"
-    )
+    filename = datetime.now(ZoneInfo("Europe/Paris")).strftime(
+        "Inscriptions_Tournoi_%d-%m-%Y_%Hh%M.xlsx")
     return StreamingResponse(
         excel_stream,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -81,6 +77,7 @@ async def download_excel(
         }
     )
 
+
 # Liste des inscrits
 
 @router.get("/inscrits")
@@ -89,7 +86,6 @@ async def get_inscrits():
     try:
         async with get_conn() as conn:
             rows = await conn.fetch("""
-
                 -- JOUEURS ACTIFS
                 SELECT i.dossard, i.licence, i.nom, i.prenom, i.club, i.points, i.paiement,
                     COALESCE (array_agg (CASE
@@ -115,29 +111,15 @@ async def get_inscrits():
             inscrits = []
             for r in rows:
                 inscrits.append({
-                    "dossard": r["dossard"],
-                    "licence": r["licence"],
-                    "nom": r["nom"],
-                    "prenom": r["prenom"],
-                    "club": r["club"],
-                    "points": r["points"],
-                    "tableaux": r["tableaux"],
-                    "annule": r["annule"]
+                    "dossard": r["dossard"],"licence": r["licence"],"nom": r["nom"],"prenom": r["prenom"],
+                    "club": r["club"],"points": r["points"],"tableaux": r["tableaux"],"annule": r["annule"]
                 })
-        return {
-            "success": True,
-            "inscrits": inscrits
-        }
+        return {"success": True,"inscrits": inscrits}
 
     except Exception as e:
         print(
-            "ERREUR EXPORT INSCRITS :",
-            e
-        )
-        return {
-            "success": False,
-            "error": "Erreur serveur"
-        }
+            "ERREUR EXPORT INSCRITS :",e)
+        return {"success": False,"error": "Erreur serveur"}
 
 # Page export inscrits
 
@@ -147,10 +129,5 @@ async def export_inscrits_page(
     request: Request
 ):
     return templates.TemplateResponse(
-        "exportInscrits.html",
-        {
-
-            "request": request
-        }
-    )
-    
+        "exportInscrits.html",{"request": request}
+        )

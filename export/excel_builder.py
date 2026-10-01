@@ -52,35 +52,22 @@ def format_sheet(ws):
     for row in ws.iter_rows():
         for cell in row:
             cell.border = thin_border
-            cell.alignment = Alignment(
-                horizontal=cell.alignment.horizontal,
-                vertical="center"
-            )
+            cell.alignment = Alignment(horizontal=cell.alignment.horizontal,vertical="center")
     auto_adjust_width(ws)
 
 def build_data(rows):
     data_by_table = defaultdict(list)
     data_joueurs = defaultdict(lambda: {
-        "Licence": "",
-        "Nom": "",
-        "Classement": "",
-        "Club": "",
-        "Mail": "",
-        "paiement": "",
-        "Inscriptions": []
+        "Licence": "","Nom": "","Classement": "","Club": "",
+        "Mail": "","paiement": "","Inscriptions": []
     })
 
     for row in rows:
         r = dict(row)
 
         data_by_table[r["tableau"]].append({
-            "Dossard": r["dossard"],
-            "Licence": r["Licence"],
-            "Nom": r["Nom Prénom"],
-            "Classement": r["Classement"],
-            "Club": r["Club"],
-            "Mail": r["Mail"],
-            "Statut": r["statut"]
+            "Dossard": r["dossard"],"Licence": r["Licence"],"Nom": r["Nom Prénom"],"Classement": r["Classement"],
+            "Club": r["Club"],"Mail": r["Mail"],"Statut": r["statut"]
         })
 
         joueur = data_joueurs[r["dossard"]]
@@ -121,10 +108,7 @@ def create_players_sheet(wb, data_joueurs):
         
     for row in ws.iter_rows():
         for cell in row:
-            cell.alignment = Alignment(
-                horizontal="center",
-                vertical="center"
-            )
+            cell.alignment = Alignment(horizontal="center",vertical="center")
             
     format_sheet(ws)
 
@@ -133,7 +117,6 @@ def create_players_sheet(wb, data_joueurs):
 def create_table_sheets(wb, data_by_table):
     for tableau, joueurs in sorted(data_by_table.items()):
         ws = wb.create_sheet(tableau)
-
         joueurs_sorted = sorted(joueurs, key=lambda x: x["Dossard"])
         ws["A1"] = f"Total joueurs : {len(joueurs_sorted)}"
         ws.append([])
@@ -162,15 +145,8 @@ def create_table_sheets(wb, data_by_table):
 def create_tableaux_sheet(wb, data_by_table):
     ws = wb.create_sheet("Tableaux")
     headers = [
-        "Tableau",
-        "Points min",
-        "Points max",
-        "Capacité",
-        "Liste attente max",
-        "Prix (€)",
-        "Nb inscrits",
-        "Nb validés",
-        "Nb attente"
+        "Tableau","Points min","Points max","Capacité","Liste attente max",
+        "Prix (€)","Nb inscrits","Nb validés","Nb attente"
     ]
 
 #  En-têtes
@@ -226,15 +202,8 @@ def create_deleted_sheet(wb, deleted_rows):
     ws.append([])
 
     headers = [
-        "Dossard",
-        "Licence",
-        "Nom",
-        "Prénom",
-        "Club",
-        "Points",
-        "Mail",
-        "Date inscription",
-        "Date suppression"
+        "Dossard","Licence","Nom","Prénom","Club",
+        "Points","Mail","Date inscription","Date suppression"
     ]
 
     ws.append(headers)
@@ -262,30 +231,16 @@ def create_deleted_sheet(wb, deleted_rows):
         
         for row in ws.iter_rows():
             for cell in row:
-                cell.alignment = Alignment(
-                    horizontal="center",
-                    vertical="center"
-                )
-
+                cell.alignment = Alignment(horizontal="center",vertical="center")
     format_sheet(ws)
-
 
 def create_modifications_sheet(wb, rows):
     ws = wb.create_sheet("Modifications")
 
     headers = [
-        "dossard",
-        "Licence",
-        "Nom",
-        "Prénom",
-        "Date modification",
-        "Tableaux avant",
-        "Tableaux après",
-        "Tableaux ajoutés",
-        "Tableaux supprimés",
-        "Montant avant",
-        "Montant après",
-        "Différence"
+        "dossard","Licence","Nom","Prénom","Date modification",
+        "Tableaux avant","Tableaux après","Tableaux ajoutés","Tableaux supprimés","Montant avant",
+        "Montant après","Différence"
     ]
 
     ws.append(headers)
@@ -304,16 +259,13 @@ def create_modifications_sheet(wb, rows):
         def format_tableaux(value):
             if value is None:
                 return ""
-
             if isinstance(value, str):
                 try:
                     value = json.loads(value)
                 except json.JSONDecodeError:
                     return value
-
             if isinstance(value, list):
                 return ", ".join(str(x) for x in value)
-
             return str(value)
 
         ws.append([
@@ -322,8 +274,7 @@ def create_modifications_sheet(wb, rows):
             row["nom"],
             row["prenom"],
             row["date_modification"].replace(tzinfo=None)
-                if row["date_modification"]
-                else None,
+                if row["date_modification"] else None,
             format_tableaux(row["tableaux_avant"]),
             format_tableaux(row["tableaux_apres"]),
             format_tableaux(row["tableaux_ajoutes"]),
@@ -347,7 +298,6 @@ def create_modifications_sheet(wb, rows):
     for column_cells in ws.columns:
         max_length = 0
         column_letter = get_column_letter(column_cells[0].column)
-
         for cell in column_cells:
             if cell.value is not None:
                 value = str(cell.value)
@@ -358,15 +308,12 @@ def create_modifications_sheet(wb, rows):
 
         # Largeur spécifique pour Date modification
         ws.column_dimensions["E"].width = 19
-        
         for row in ws.iter_rows():
             for cell in row:
                 cell.alignment = Alignment(
                     horizontal="center",
                     vertical="center"
                 )
-        
         ws.freeze_panes = "A2"
-        
         if rows:
             ws.auto_filter.ref = ws.dimensions

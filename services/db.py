@@ -39,7 +39,6 @@ async def reaffectation_tableau(t):
 
             if ok_count >= conf["capacite"]:
                 break
-
             attente = await conn.fetchrow("""
                 SELECT licence
                 FROM inscription_tableaux
@@ -78,26 +77,16 @@ async def init_db_pool():
     global pool
     if DATABASE_URL and "localhost" in DATABASE_URL:
         # Local (pas de SSL)
-        pool = await asyncpg.create_pool(
-            DATABASE_URL,
-            min_size=1,
-            max_size=5
-        )
+        pool = await asyncpg.create_pool(DATABASE_URL,min_size=1,max_size=5)
     else:
         # Production (Railway ou Neon → SSL obligatoire)
         
-        pool = await asyncpg.create_pool(
-            DATABASE_URL,
-            min_size=1,
-            max_size=10,
-            ssl="require"
-        )
+        pool = await asyncpg.create_pool(DATABASE_URL,min_size=1,max_size=10,ssl="require")
 # print(" Creation tables si besoin")
 #  init DB
 
 async def init_db():
     async with pool.acquire() as conn:
-        
         
         # créer la séquence
         await conn.execute("""
