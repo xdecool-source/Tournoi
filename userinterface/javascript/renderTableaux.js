@@ -15,9 +15,7 @@ function escapeHTML(str){
 import { NBRE_TABLEAU } from "./config.js";
 
 //  Render Tableaux 
-
 let tableauxGlobal = null;
-
 export function renderTableaux(
     TABLEAUX,
     places,
@@ -29,10 +27,9 @@ export function renderTableaux(
   
     // window.TABLEAUX_GLOBAL = TABLEAUX; 
     // const isAdmin = document.cookie.includes("admin=1");
-
     const box = document.getElementById("tableauxContainer");
-    // console.log("IS ADMIN RENDER:", isAdmin);
 
+    // console.log("IS ADMIN RENDER:", isAdmin);
     if(!box || !TABLEAUX) return;
     const points = Number(joueurPoints);
     box.innerHTML = Object.keys(TABLEAUX).map(key => {
@@ -84,9 +81,9 @@ export function renderTableaux(
     }
 
     if(isAdmin){
+
         // admin peut modifier
         // mais pas dépasser la liste d'attente
-
         if(att >= attMax){
             disabled = true;
             color = "red";
@@ -138,8 +135,8 @@ export function limitSelection(e){
         const grouped = {};
         checked.forEach(cb => {
             const c = tableauxGlobal?.[cb.value];
-            // Ne compte pas les tableaux exclus du quota
 
+            // Ne compte pas les tableaux exclus du quota
             if (c?.Comptage === false) {
                 return;
             }
@@ -152,7 +149,6 @@ export function limitSelection(e){
 
     // console.log("COUNTS =", counts);
     // console.log("LIMIT =", NBRE_TABLEAU);
-
     for (const jour in counts) {
     if (counts[jour] > NBRE_TABLEAU) {
         current.checked = false;
@@ -182,5 +178,4 @@ document.addEventListener("change", function(e){
         el.innerText = "Total : " + total + "€";
     }
     // console.log("TOTAL =", total); 
-    
 });

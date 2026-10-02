@@ -54,11 +54,9 @@ def generate():
         rows = fetch_inscriptions()
         deleted_rows =  get_deleted_inscriptions()
         modification_rows = get_modifications_inscriptions()
-        
         if not rows and not deleted_rows and not modification_rows:
             print("Aucune donnée.")
             return None
-
         data_by_table, data_joueurs = build_data(rows)
         wb = Workbook()
         wb.remove(wb.active)
@@ -70,19 +68,18 @@ def generate():
         create_modifications_sheet(wb, modification_rows)
         
     #  génération en mémoire
-
         stream = BytesIO()
         wb.save(stream)
         stream.seek(0)
         
     #  libere memoire
-        
         wb.close()  
         # print("Excel Généré en mémoire")
         return stream
 
     except Exception as e:
-        # log propre ici
+        
+        # log propre ici  
         print(f"Erreur génération Excel: {e}")
         return None
     

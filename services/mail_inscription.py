@@ -27,28 +27,23 @@ from core.config import TABLEAUX
 from services.db import get_conn, log_email
 
 #  Chargement environnement
-
 load_dotenv(".env", override=False)
 ENV = os.getenv("ENV", "dev")
 
 #  Smtp (DEV / LOCAL)
-
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
 SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASS = os.getenv("SMTP_PASS")
 
 #  Brevo (Production)
-
 BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 
 #  Identique
-
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 ORIGINE_EMAIL = os.getenv("ORIGINE_EMAIL")
 SITE_URL = os.getenv("SITE_URL")
 REPLY_TO_EMAIL = os.getenv("REPLY_TO_EMAIL")
-
 NBRE_TABLEAU = os.getenv("NBRE_TABLEAU")
 DATE_TOURNOI = os.getenv("DATE_TOURNOI")
 DATE_TOURNOI_JOUR = os.getenv("DATE_TOURNOI_JOUR")
@@ -60,11 +55,10 @@ NBRE_JOUR_AVANT_REMB = os.getenv("NBRE_JOUR_AVANT_REMB")
 env = Environment(loader=FileSystemLoader("userinterface/templates"))
 
 #  Construction HTML email
-
 async def build_email_html(data: dict, type_mail: str):
+    
     # print("DATA TABLEAUX:", data["tableaux"])
     reste_inscriptions = None
-    
     if type_mail == "creation":
         template_name = "email_creation.html"
     elif type_mail == "modification":
@@ -75,9 +69,7 @@ async def build_email_html(data: dict, type_mail: str):
         template_name = "email_creation.html"
     
     # print(" 1 - chargement template")
-    
     template = env.get_template(template_name)
-    
     if type_mail == "suppression":
         html_content = template.render(
             prenom=data["prenom"],
@@ -101,7 +93,6 @@ async def build_email_html(data: dict, type_mail: str):
         return html_content
     
     # print(" 2 - construction tableaux")
-    
     tableaux_details = []
     tableaux_str = ""   
     total_html = ""  
@@ -115,7 +106,6 @@ async def build_email_html(data: dict, type_mail: str):
             FROM inscription_tableaux
             WHERE licence=$1
         """, data["licence"])
-
         reste_inscriptions = len(rows) > 0
         total = sum(
             TABLEAUX.get(r["tableau"], {}).get("prix", 0)
@@ -140,25 +130,17 @@ async def build_email_html(data: dict, type_mail: str):
             nom = conf.get("label", t)
             prix = conf.get("prix", 0)
             jour = conf.get("jour", {}).get("label", "")
-            heure = conf.get("jour", {}).get("hour", "")
-
-           # if min_pts is None and max_pts is None:
-            #    ligne = f"{t} ({nom}, {jour} à {heure}) — {prix}€ {statut_txt}"
-           # else:
-           #     ligne = f"{nom} ({min_pts}-{max_pts} pts, {jour} à {heure}) — {prix}€ {statut_txt}"
-             
+            heure = conf.get("jour", {}).get("hour", "")             
             if min_pts is None and max_pts is None:
                 ligne = f"<b>{t}</b> ({conf.get('label', t)}) — {prix}€ {statut_txt}"
             else:
                 ligne = f"<b>{t}</b> ({min_pts}-{max_pts} pts) — {prix}€ {statut_txt}"
-
             tableaux_details.append(ligne)
 
         tableaux_str = "<br>".join(tableaux_details)
         total_html = f"<br><br>💰 Total : {total}€"
         
         # print(" 3 - render HTML")
-        
         jour = "Samedi" if event_id == 1 else "Dimanche"
         
         html_content = template.render(
@@ -183,11 +165,9 @@ async def build_email_html(data: dict, type_mail: str):
         return html_content
 
 #  Envoi SMTP Brevo(Dev)
-
 async def send_smtp_email(to_email: str, subject: str, html_content: str):
     
     #  print(" 4 - envoi SMTP")
-    
     message = EmailMessage()
     message["From"] = FROM_EMAIL
     message["To"] = to_email
@@ -209,12 +189,12 @@ async def send_smtp_email(to_email: str, subject: str, html_content: str):
             password=SMTP_PASS,
             start_tls=True,
         )
+        
         # print(" Mail Smtp Envoyé")
     except Exception as e:
         print(" Erreur Smtp :", e)
 
 #  Envoi Brevo Api (Production)
-
 async def send_brevo_email(to_email: str,subject: str,html_content: str):
     
     payload = {
@@ -241,11 +221,11 @@ async def send_brevo_email(to_email: str,subject: str,html_content: str):
         return result.get("messageId")
 
 #  Fonction principale
-
 async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
 
     html_content = await build_email_html(data, type_mail)
     if type_mail == "creation":
+        
         # print("HELLOASSO_CARTE =", HELLOASSO_CARTE)
         # print("TYPE_MAIL =", type_mail)
         if HELLOASSO_CARTE:
@@ -275,13 +255,11 @@ async def send_confirmation_email(to_email: str, data: dict, type_mail: str):
             event_id=data.get("event_id", 1),subject=subject,brevo_message_id="SMTP_DEV")
                       
 #  Fonction générique envoi de mail
-
 async def send_email(to_email: str, subject: str, html_content: str):
 
     # print("Mode Mail =", "Smtp" if ENV == "dev" else "Brevo")
-    
     if ENV == "prod":
         await send_brevo_email(to_email,subject,html_content)
     else:
         await send_smtp_email(to_email,subject,html_content)
-        
+

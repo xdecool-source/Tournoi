@@ -12,7 +12,6 @@ from datetime import datetime, timezone
 from core.config import BASE_URL, APP_ID, MOT_DE_PASSE, FFTT_API
 
 # ce numéro de série est calculé une seule fois au démarrage de l'APP
-
 if not BASE_URL:
     raise RuntimeError("BASE_URL manquant")
 if not APP_ID:
@@ -38,7 +37,6 @@ async def appel_fftt(endpoint, params_metier):
     
 #   Mock Dev 
 #   Simule un retour xml
-    
     if not FFTT_API:   
         licence = str(params_metier.get("licence", "000000")).strip()
         joueurs = {

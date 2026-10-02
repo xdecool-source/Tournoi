@@ -18,37 +18,29 @@ from dotenv import load_dotenv
 from email.message import EmailMessage
 
 #  Env
-
 load_dotenv(".env", override=False)
 ENV = os.getenv("ENV", "dev")
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 #  Smtp (Dev)
-
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
 SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASS = os.getenv("SMTP_PASS")
 
 #  Brevo
-
 BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 
 #  Commun
-
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 REPLY_TO_EMAIL = os.getenv("REPLY_TO_EMAIL")
-# print("Env Valeur =", ENV)
-# print("Smtp host =", SMTP_HOST)
-# print("From Email =", FROM_EMAIL)
 
 #  Stockages Codes
-
 verification_codes = {}
-# print("MAIL_CODE CHARGE")
-# Génération code
 
+# Génération code
 def generate_code():
+    
     return f"{secrets.randbelow(900000) + 100000}"
 
 def store_verification_code(email):
@@ -71,22 +63,24 @@ def verify_code(email, code):
     if not data:
         # print("AUCUN CODE")
         return False
+    
     # expiration
     if time.time() > data["expire"]:
         del verification_codes[email]
         # print("EXPIRE")
         return False
+    
     # mauvais code
     if data["code"] != code:
         # print("MAUVAIS CODE")
         return False
-    # SUCCESS
+    
+    # success
     del verification_codes[email]
     # print("SUPPRIME =", verification_codes)
     return True
 
 # Smtp Dev
-
 async def send_smtp_email(to_email, subject, html):
 
     msg = EmailMessage()
@@ -106,7 +100,6 @@ async def send_smtp_email(to_email, subject, html):
     print("Mail Smtp Envoyé")
 
 # Brevo prod
-
 async def send_brevo_email(to_email, subject, html):
 
     payload = {
@@ -135,7 +128,6 @@ async def send_brevo_email(to_email, subject, html):
     r.raise_for_status()
 
 # Routeur Mail 
-
 async def send_email(to_email, subject, html):
     
     # print("Mode Mail =", "Api brevo " if ENV == "prod" else "smtp brevo")
@@ -143,4 +135,3 @@ async def send_email(to_email, subject, html):
         await send_brevo_email(to_email, subject, html)
     else:
         await send_smtp_email(to_email, subject, html)
-    

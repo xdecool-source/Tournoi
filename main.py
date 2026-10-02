@@ -45,6 +45,7 @@ async def lifespan(app: FastAPI):
     await init_db_pool()
     await init_db()
     await init_archive_trigger()
+    
     # promotion automatique des listes d'attente dans db.py se services
     await reaffectation_all()
     yield

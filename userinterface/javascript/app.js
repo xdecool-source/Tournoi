@@ -30,7 +30,6 @@ window.openListeInscrits = function () {
 }
 
 // reveil database 
-
 document.addEventListener("DOMContentLoaded", () => {
     fetch("/wake-db").catch(() => {});
 });
@@ -41,7 +40,6 @@ window.updateAdminButtons = updateAdminButtons;
 async function init(){
 
     // console.log("INIT RUN");
-
     updateAdminButtons();
     tableauxGlobal  = await loadTableaux()
     await loadPlaces()
@@ -49,7 +47,6 @@ async function init(){
 
      // focus automatique licence
     // déclenche check quand on appuie sur Entrée
-
     document.getElementById("licence").addEventListener("keydown", e=>{
         if(e.key === "Enter"){
             check();
@@ -57,7 +54,6 @@ async function init(){
     });
 
     const licenceInput = document.getElementById("licence");
-
     if(licenceInput){
         licenceInput.addEventListener("click", () => {
             // console.log("CLICK OK"); // test
@@ -74,18 +70,20 @@ async function check(){
 
     // console.log("CHECK START");
     // remet toute l'interface à zéro
+    resetInterface();
 
-    resetInterface();   
     // const isAdmin = localStorage.getItem("isAdmin") === "1";
-
     const input = document.getElementById("licence");
     if(!input) return;
     const lic = input.value.trim();
     if(!lic) return;
+
     // cacher bouton liste inscrits et admin 
     // mode ADMIN : licence 000
-
     const btnListe = document.getElementById("btnListeInscrits");
+    if(btnListe){
+        btnListe.style.display = "block";
+    }
     const adminBtn = document.getElementById("adminBtn");
     const emailRow = document.querySelector(".email-row");
     const codeRow = document.querySelector(".code-row");
@@ -96,28 +94,29 @@ async function check(){
     const licence = input.value.trim();
 
     // Licence spéciale ADMIN = 000
-    if(licence === "000"){
-        // Afficher Admin uniquement sur grand écran
 
+    if(licence === "000"){
+        
+        // Afficher Admin uniquement sur grand écran
         if(adminBtn){
             if(window.innerWidth > 600)
                 {adminBtn.style.display = "block";}
             else{adminBtn.style.display = "none";}
         }
-        // Masquer complètement la partie inscription
 
+        // Masquer complètement la partie inscription
         if(inscriptionCard){
             inscriptionCard.classList.add("hidden");
             inscriptionCard.style.display = "none";
         }
+
         // Masquer email
-
         if(emailRow){emailRow.style.display = "none";}
+
         // Masquer code
-
         if(codeRow){codeRow.style.display = "none";}
-        // Masquer les tableaux
 
+        // Masquer les tableaux
         if(selectionTitre){
             selectionTitre.classList.add("hidden");
             selectionTitre.style.display = "none";
@@ -130,16 +129,17 @@ async function check(){
             totalPrix.classList.add("hidden");
             totalPrix.style.display = "none";
         }
-        // Ne pas afficher la liste des inscrits ici
-        if(btnListe){btnListe.style.display = "none";}
-        // Annuler un éventuel ancien timer
 
+        // Ne pas afficher la liste des inscrits ici
+        // if(btnListe){btnListe.style.display = "none";}
+        // Annuler un éventuel ancien timer
         clearTimeout(checkTimer);
+
         // IMPORTANT :
         // ne surtout pas continuer vers /licence/000
-
         return;
     }
+
     // Licence normale
     if(adminBtn){adminBtn.style.display = "none";}
     if(emailRow){emailRow.style.display = "";}
@@ -156,8 +156,8 @@ async function check(){
         });
 
         const dataAdmin = await resAdmin.json();
-        // console.log("ADMIN BACK:", dataAdmin);
 
+        // console.log("ADMIN BACK:", dataAdmin);
         setIsAdmin(dataAdmin.admin);
         const isAdmin = dataAdmin.admin; 
 
@@ -199,23 +199,23 @@ async function check(){
             }
             setCurrentPlayer(data);
             const errBox = document.getElementById("licenceError");
-            // cacher message si licence valide
 
+            // cacher message si licence valide
             if(errBox){errBox.classList.add("hidden");}
             if(!data.fftt){
                 // message inline
-                
+
                 if(errBox){
                     errBox.innerText = "Licence inconnue FFTT";
                     errBox.classList.remove("hidden");
                 }
+
                 // masquer tableaux
                 // xx document.getElementById("tableauxContainer").innerHTML="";
-
                 document.getElementById("selectionTitre").classList.remove("hidden");
                 document.getElementById("tableauxContainer").classList.remove("hidden");
-                // masquer inscription
 
+                // masquer inscription
                 const card = document.getElementById("inscriptionCard");
                 if(card){
                     card.style.display="none";
@@ -237,8 +237,8 @@ async function check(){
             const mailInput = document.getElementById("email");
             if(mailInput){
                 mailInput.value = data.mail || "";
-                // focus automatique email
 
+                // focus automatique email
                 requestAnimationFrame(() => {
                     try{
                         mailInput.focus({preventScroll:true});
@@ -263,22 +263,22 @@ async function check(){
                 });
             }
             if(data.already_inscrit){
-                // cacher verification email
 
+                // cacher verification email
                 const emailRow = document.querySelector(".email-row");
                 const codeRow = document.querySelector(".code-row");
                 if(emailRow) emailRow.style.display = "none";
                 if(codeRow) codeRow.style.display = "none";
-                // afficher tableaux
 
+                // afficher tableaux
                 document
                 .getElementById("tableauxContainer")
                 .classList.remove("hidden");
                 const msg = document.getElementById("alreadyMsg");
-
                 if (msg) {
                     console.log("MSG =", document.getElementById("alreadyMsg"));
                     msg.className = "infoBox";
+
                     // variable FROM_EMAIL initiliser dans config.js
                     if (!isAdmin) {
                         msg.innerHTML = `
@@ -301,7 +301,6 @@ async function check(){
                 }
                 const btn = document.querySelector("button[onclick='sendInscription()']");
                 // const adminBtn = document.getElementById("adminBtn");
-
                 if(btn){
                     if(!isAdmin){
                         btn.disabled = true;
@@ -333,7 +332,6 @@ async function updateAdminButtons(){
     const data = await res.json();
     const isAdmin = data.admin;
     // const adminBtn  = document.querySelector("button[onclick='loginAdmin()']");
-
     const adminBtn = document.getElementById("adminBtn");
     const logoutBtn = document.getElementById("logoutBtn");
     if(isAdmin){
@@ -348,6 +346,7 @@ async function updateAdminButtons(){
 window.addEventListener("load", init)
 
 // positionne le cursur dans la zone de saisie du N° de licence 
+
 window.addEventListener("load", () => {
     setTimeout(() => {
         const licence = document.getElementById("licence");
@@ -357,4 +356,3 @@ window.addEventListener("load", () => {
         }
     }, 100);
 });
-

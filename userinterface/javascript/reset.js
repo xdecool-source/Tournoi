@@ -10,42 +10,40 @@ export function resetInterface(){
     setEmailVerified(false);
     const btnValider = document.getElementById("btnValider");
     if(btnValider) btnValider.style.display = "none";
-    // remettre affichage cartes
 
+    // remettre affichage cartes
     document.getElementById("licenceCard")?.classList.remove("hidden");
     document.getElementById("inscriptionCard")?.classList.add("hidden");
     document.getElementById("recapCard")?.classList.add("hidden");
 
 // vider recap
-
 const recapContent = document.getElementById("recapContent");
 if(recapContent) recapContent.textContent = "";
 const res = document.getElementById("result");
 if(res) res.textContent = "";
-    // vider email
 
+    // vider email
     const mail = document.getElementById("email");
     if(mail){
         mail.value = "";
         mail.disabled = false;   
-        // réactive le champ email
     }
-    // vider code
 
+    // vider code
     const code = document.getElementById("verificationCode");
     if(code) code.value = "";
-    // réafficher email + code
 
+    // réafficher email + code
     const emailRow = document.querySelector(".email-row");
     const codeRow = document.querySelector(".code-row");
     if(emailRow) emailRow.style.display = "flex";
     if(codeRow) codeRow.style.display = "flex";
-    // cacher titre sélection
 
+    // cacher titre sélection
     const titre = document.getElementById("selectionTitre");
     if (titre) titre.classList.add("hidden");
-    // cacher tableaux
 
+    // cacher tableaux
     const tableaux = document.getElementById("tableauxContainer");
     if(tableaux) tableaux.classList.add("hidden");
     // masquer message déjà inscrit
@@ -55,24 +53,24 @@ if(res) res.textContent = "";
         msg.classList.add("hidden");
         msg.innerHTML = "";
     }
+
     // réactiver bouton inscription
-
     const btn = document.querySelector("button[onclick='sendInscription()']");
-    // const btn = document.getElementById("btnValider");
 
+    // const btn = document.getElementById("btnValider");
     if(btn){
         btn.disabled = false;
         btn.innerText = "Valider";
         btn.style.opacity = 1;
     }
+
     // réactiver bouton envoyer code
-
     const sendBtn = document.querySelector("button[onclick='sendCode()']");
-    // const sendBtn = document.getElementById("sendCodeBtn");
 
+    // const sendBtn = document.getElementById("sendCodeBtn");
     if(sendBtn) sendBtn.disabled = false;
+
     // décocher tableaux
-    
     document.querySelectorAll("#tableauxContainer input").forEach(el=>{
         el.checked = false;
         el.disabled = false;

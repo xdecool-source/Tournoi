@@ -9,5 +9,6 @@ export function openModal(msg){
 }
 
 export function closeModal(){
+    
     document.getElementById("errorModal").classList.add("hidden");
 }

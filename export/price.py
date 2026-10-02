@@ -45,21 +45,18 @@ def create_price_sheet(wb, data_joueurs, root_dir):
     ws = wb.create_sheet("Prix")
 
     # Logo Tournoi
-
     image_path = root_dir / "ressources" / "Tournoi.jpg"
     if image_path.exists():
         img = Image(str(image_path))
         img.width = min(img.width, 600)
         img.height = 110
         ws.add_image(img, "C1")
-
     start_row = 8
     total_valide_general = 0
     total_attente_general = 0
     lignes_prix = []
 
     # Calcul des montants
-
     for dossard, infos in sorted(data_joueurs.items()):
         montant_valide = 0
         montant_attente = 0
@@ -80,7 +77,6 @@ def create_price_sheet(wb, data_joueurs, root_dir):
             infos.keys()
             )
         """
-        
         lignes_prix.append([
             dossard,
             sanitize_excel(infos["Nom"]),
@@ -92,7 +88,6 @@ def create_price_sheet(wb, data_joueurs, root_dir):
         ])
 
     # Totaux
-
     ws[f"A{start_row}"] = "Montants par joueur"
     ws[f"A{start_row}"].font = Font(bold=True, size=14)
     ws[f"A{start_row+1}"] = "Total encaissé (validés) :"
@@ -107,7 +102,6 @@ def create_price_sheet(wb, data_joueurs, root_dir):
     ws[f"A{start_row+2}"].font = Font(bold=True)
 
     # Tableau détaillé
-
     header_row = start_row + 4
 
     headers = [
@@ -135,7 +129,6 @@ def create_price_sheet(wb, data_joueurs, root_dir):
     ws.freeze_panes = f"A{header_row+1}"
 
     # Auto largeur
-
     for col in ws.columns:
         max_length = 0
         col_letter = col[0].column_letter
@@ -143,4 +136,3 @@ def create_price_sheet(wb, data_joueurs, root_dir):
             if cell.value:
                 max_length = max(max_length,len(str(cell.value)))
         ws.column_dimensions[col_letter].width = max_length + 2
-        

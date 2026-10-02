@@ -30,7 +30,6 @@ def sanitize_excel(value):
     return value
 
 #  Styles  
-
 header_fill = PatternFill(start_color="FFFF00", fill_type="solid")
 header_font = Font(bold=True)
 thin_border = Border(
@@ -69,7 +68,6 @@ def build_data(rows):
             "Dossard": r["dossard"],"Licence": r["Licence"],"Nom": r["Nom Prénom"],"Classement": r["Classement"],
             "Club": r["Club"],"Mail": r["Mail"],"Statut": r["statut"]
         })
-
         joueur = data_joueurs[r["dossard"]]
         joueur["Licence"] = r["Licence"]
         joueur["Nom"] = r["Nom Prénom"]
@@ -82,7 +80,6 @@ def build_data(rows):
     return data_by_table, data_joueurs
 
 #  Creation des joueurs dans la feuille Joueurs
-
 def create_players_sheet(wb, data_joueurs):
     
     ws = wb.create_sheet("Joueurs")
@@ -94,7 +91,6 @@ def create_players_sheet(wb, data_joueurs):
     for col in ws[3]:
         col.fill = header_fill
         col.font = header_font
-
     for dossard, infos in sorted(data_joueurs.items()):
         ws.append([
             dossard,
@@ -105,7 +101,6 @@ def create_players_sheet(wb, data_joueurs):
             sanitize_excel(infos["Mail"]),
             ", ".join([f"{t} ({s})" for t, s in infos["Inscriptions"]])
         ])
-        
     for row in ws.iter_rows():
         for cell in row:
             cell.alignment = Alignment(horizontal="center",vertical="center")
@@ -113,8 +108,8 @@ def create_players_sheet(wb, data_joueurs):
     format_sheet(ws)
 
 #  Création de la feuille Tableaux 
-
 def create_table_sheets(wb, data_by_table):
+    
     for tableau, joueurs in sorted(data_by_table.items()):
         ws = wb.create_sheet(tableau)
         joueurs_sorted = sorted(joueurs, key=lambda x: x["Dossard"])
@@ -141,8 +136,8 @@ def create_table_sheets(wb, data_by_table):
             ws[f"A{row}"].alignment = Alignment(horizontal="center")
 
 #  Création des feuilles Tableaux 
-
 def create_tableaux_sheet(wb, data_by_table):
+    
     ws = wb.create_sheet("Tableaux")
     headers = [
         "Tableau","Points min","Points max","Capacité","Liste attente max",
@@ -182,7 +177,6 @@ def create_tableaux_sheet(wb, data_by_table):
         row += 1
 
 #  Ajustement largeur colonnes
-    
     for col in ws.columns:
         max_length = 0
         col_letter = col[0].column_letter
@@ -194,18 +188,15 @@ def create_tableaux_sheet(wb, data_by_table):
 def create_deleted_sheet(wb, deleted_rows):
     
     ws = wb.create_sheet("Suppression")
-
+    
     # Titre
     ws["A1"] = f"Total suppressions : {len(deleted_rows)}"
     ws["A1"].font = Font(bold=True)
-
     ws.append([])
-
     headers = [
         "Dossard","Licence","Nom","Prénom","Club",
         "Points","Mail","Date inscription","Date suppression"
     ]
-
     ws.append(headers)
 
     # Style header
@@ -235,26 +226,23 @@ def create_deleted_sheet(wb, deleted_rows):
     format_sheet(ws)
 
 def create_modifications_sheet(wb, rows):
+    
     ws = wb.create_sheet("Modifications")
-
     headers = [
         "dossard","Licence","Nom","Prénom","Date modification",
         "Tableaux avant","Tableaux après","Tableaux ajoutés","Tableaux supprimés","Montant avant",
         "Montant après","Différence"
     ]
-
     ws.append(headers)
-    
+
     # Première ligne en jaune
     yellow_fill = PatternFill(
         fill_type="solid",
         fgColor="FFFF00"
     )
-
     for cell in ws[1]:
         cell.fill = yellow_fill
         cell.font = Font(bold=True)
-
     for row in rows:
         def format_tableaux(value):
             if value is None:
@@ -267,7 +255,6 @@ def create_modifications_sheet(wb, rows):
             if isinstance(value, list):
                 return ", ".join(str(x) for x in value)
             return str(value)
-
         ws.append([
             row["dossard"],
             row["licence"],

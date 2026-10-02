@@ -331,7 +331,6 @@ async def promote_attente(t):
             """, row["licence"], t)
 
 #  Tableau par licencie 
-
 async def get_tableaux_by_licence(licence):
     
     async with pool.acquire() as conn:
@@ -343,9 +342,10 @@ async def get_tableaux_by_licence(licence):
         return [r["tableau"] for r in rows]
 
 #  connexion transaction
-
 @asynccontextmanager
+
 async def get_conn():
+    
     conn = await pool.acquire()
     try:
         yield conn
@@ -353,7 +353,6 @@ async def get_conn():
         await pool.release(conn)
 
 #  Check Envoi 
-
 async def should_send_admin_mail(conn, current_count):
 
     row = await conn.fetchrow("""
@@ -363,19 +362,16 @@ async def should_send_admin_mail(conn, current_count):
     """)
     
     # premier envoi si la ligne n'existe pas
-    
     if not row:
         return True
     last_count = row["last_count"]
     
     # envoyer seulement si le nombre d'inscriptions a changé
-    
     if current_count != last_count:
         return True
     return False
 	
 #  Mise a Jour  
-
 async def update_admin_mail_status(conn, current_count):
 
     await conn.execute("""
@@ -387,6 +383,7 @@ async def update_admin_mail_status(conn, current_count):
 async def init_archive_trigger():
 
     async with pool.acquire() as conn:
+        
         trigger_exists = await conn.fetchval("""
             SELECT EXISTS (
                 SELECT 1
@@ -394,9 +391,7 @@ async def init_archive_trigger():
                 WHERE tgname = 'before_delete_inscription'
             );
         """)
-
         if not trigger_exists:
-
             await conn.execute("""
             CREATE OR REPLACE FUNCTION archive_inscription()
             RETURNS TRIGGER AS $func$
@@ -436,4 +431,3 @@ async def wake_db():
     
     async with pool.acquire() as conn:
         await conn.execute("SELECT 1")
-              

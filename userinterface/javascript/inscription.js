@@ -10,6 +10,7 @@ import { showRecap } from "./recap.js"
 import { openModal, closeModal } from "./modal.js";
 
 window.sendInscription = sendInscription;
+
 export async function sendInscription(){
 
     // alert("CLICK DETECTED"); // on regarde si on rentre dans cette fonction
@@ -39,7 +40,6 @@ export async function sendInscription(){
     }
     
     // je recupere la saisie des tableaux 
-
     const selection = Array.from(
         document.querySelectorAll("#tableauxContainer input:checked")
     ).map(cb => cb.value);
@@ -54,19 +54,16 @@ export async function sendInscription(){
         alert("Licence non chargée");
         return;
     }    
+
     // blocage tableau plein
-
     let blocked = false;
-
     for(const t of selection){
-
         const p = places[t];
         if(!p) continue;
         const ok = Number(p.ok || 0);
         const capacite = Number(p.capacite || 0);
         const attente = Number(p.attente || 0);
         const attenteMax = Number(p.attente_max || 0);
-
         if(
             ok >= capacite &&
             attente >= attenteMax
@@ -79,11 +76,9 @@ export async function sendInscription(){
             break;
         }
     }
-
     if(blocked){
         return;
     }
-
     const payload = {
         licence: currentPlayer.licence,
         nom: currentPlayer.nom,
@@ -100,15 +95,14 @@ export async function sendInscription(){
         : "/inscription";
 
     //  anti double clic bouton
-
     const btn = document.querySelector("button[onclick='sendInscription()']");
     if(btn){
         btn.disabled = true;
         btn.innerText = "Enregistrement...";
     }
+
     // si réseau tombe evite crash JS
     let res;
-
     try{
         res = await fetch(url,{
             method,
@@ -123,12 +117,10 @@ export async function sendInscription(){
         openModal("Serveur inaccessible");
         return;
 }
-
     if(res.status === 401){
         openModal("Session admin expirée voir variable TIME_ADMIN_SESSION");
         return;
     }
-
     let data;
     try{
         data = await res.json();
@@ -139,15 +131,14 @@ export async function sendInscription(){
     // récupérer la réponse backend
     // const data = await res.json();
     // réactivation bouton
-
     if(btn){
         btn.disabled = false;
         btn.innerText = currentPlayer.already_inscrit
             ? "Modifier inscription"
             : "Valider";
     }
-    // gestion erreur backend
 
+    // gestion erreur backend
     if(data.success === false){
         openModal(data.error || "Erreur");
         return;
@@ -157,8 +148,8 @@ export async function sendInscription(){
         window.helloassoPaymentUrl = data.payment_url;
         window.helloassoMontant = data.montant;
     }
-    // tableaux refusés
 
+    // tableaux refusés
     if(data.refused && data.refused.length){
         openModal(
             "Inscription validée mais tableaux pleins : " +
@@ -166,15 +157,11 @@ export async function sendInscription(){
         );
     }
     closeModal();
+
     //  filtrer tableaux refusés backend
-    
     const validSelection = data.refused?.length
         ? selection.filter(t => !data.refused.includes(t))
         : selection;
-
-    // console.log("SELECTION:", selection);
-    // console.log("REFUSED:", data.refused);
-    // console.log("VALID:", validSelection);
     
 await showRecap(
     currentPlayer,

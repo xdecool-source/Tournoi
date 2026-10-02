@@ -9,6 +9,7 @@ import { places } from "./state.js";
 let placesEtag = null;
 
 export async function loadPlaces(){
+
     try{
         const r = await fetch("/places",{
             headers: placesEtag ? {"If-None-Match": placesEtag} : {}

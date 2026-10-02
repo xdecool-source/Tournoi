@@ -42,6 +42,7 @@ class HelloAssoClient:
     async def get_token(self, force_refresh=False):
 
         now = time.time()
+        
         # Token encore valide
         if (
             not force_refresh
@@ -54,21 +55,21 @@ class HelloAssoClient:
 
             # Une autre requête a peut-être déjà renouvelé
             # le token pendant qu'on attendait le lock.
+            
             now = time.time()
-
             if (
                 not force_refresh
                 and self.access_token
                 and now < self.token_expire - 60 # 2
             ):
                 return self.access_token
-
             for tentative in range(3):
 
                 try:
                     async with httpx.AsyncClient(
                         timeout=TIMEOUT
                     ) as client:
+                        
                         # Première authentification
                         if not self.refresh_token:
                             """
@@ -82,6 +83,7 @@ class HelloAssoClient:
                                     "client_secret":CLIENT_SECRET,
                                 },
                             )
+                            
                         # Renouvellement
                         else:
                             """
@@ -111,7 +113,6 @@ class HelloAssoClient:
                     expires_in = int(data.get("expires_in", 1800)) # 30 minutes 
                     # expires_in = 10 pour un test avec 10 sec et pas 30 minutes 
                     self.token_expire = (time.time() + expires_in)
-
                     """
                     print(
                         "Token HelloAsso renouvelé "
@@ -189,6 +190,7 @@ class HelloAssoClient:
                         "Token refusé par HelloAsso"
                     )
                     """
+                    
                     # On force un renouvellement
                     await self.get_token(
                         force_refresh=True
@@ -225,6 +227,7 @@ helloasso = HelloAssoClient()
 
 # Compatibilité avec ancien code
 async def create_checkout(montant, data):
+    
     return await helloasso.create_checkout(
         montant=montant,
         data=data
@@ -239,4 +242,3 @@ async def test_helloasso():
         if helloasso.refresh_token
         else None
     ))
-    

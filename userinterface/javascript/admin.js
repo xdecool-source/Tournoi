@@ -11,7 +11,6 @@ import { resetInterface } from "./reset.js";
 import { openModal } from "./modal.js";
 import { currentPlayer } from "./state.js";
 
-
 function updateAdminInterface(isAdmin){
 
     const adminBtn = document.getElementById("adminBtn");
@@ -32,11 +31,9 @@ function updateAdminInterface(isAdmin){
     }
 }
 
-
-
 export async function loginAdmin(){
-    // console.log("LOGIN FRONT CALLED "); 
 
+    // console.log("LOGIN FRONT CALLED "); 
     const pwd = prompt("Mot de passe admin");
     if(!pwd) return;
     const res = await fetch("/login-admin",{
@@ -48,11 +45,10 @@ export async function loginAdmin(){
 
     const data = await res.json();
     if(data.success){
-        
              updateAdminInterface(true);
+
             // await window.check(); 
             // juste rafraîchir l'affichage sans relancer tout
-
         if(currentPlayer){
             setTimeout(() => {
                 window.check();   // Reload complet avec isAdmin
@@ -123,7 +119,6 @@ export async function excelAdmin(){
 }
 
 // Fonctions utilisées par les onclick du HTML
-
 window.loginAdmin = loginAdmin;
 window.logoutAdmin = logoutAdmin;
 window.excelAdmin = excelAdmin;
